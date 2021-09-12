@@ -1,6 +1,6 @@
 # dbowland-gatsby
 
-Gatsby implementation of dbowland.com.
+Gatsby implementation of dbowland.com. Example: <https://d8m2rj7f9egv3.cloudfront.net/>
 
 ## Static Site
 
