@@ -1,0 +1,25 @@
+# Run tests for joke-ui
+name: Run tests for joke-ui
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  run_tests:
+    name: Run tests on static site content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Node 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: Install packages and run tests
+        run: npm ci && npm run test src/
+        env:
+          NODE_ENV: test

@@ -1,0 +1,3 @@
+name: jokes-ui
+runtime: nodejs
+description: Infrastructure for jokes-ui
