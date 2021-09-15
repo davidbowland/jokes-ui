@@ -1,6 +1,6 @@
-# Infrastructure for lambda-jokes-handler
+# Infrastructure for jokes-ui
 
-Infrastructure as Code for lambda-jokes-handler
+Infrastructure as Code for jokes-ui
 
 ## Setup
 
@@ -72,7 +72,7 @@ If the `developer` profile is not available, this command will fail.
 
 A preview will execute when a pull request is created to `master`. When the pull request is merged into `master`, the infrastructure will be automatically deployed to production.
 
-In extreme cases, code can be deployed locally with:
+In extreme cases, infrastructure can be deployed with:
 
 ```bash
 npm run deploy

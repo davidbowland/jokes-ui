@@ -1,6 +1,6 @@
-# dbowland-gatsby
+# jokes-ui
 
-Gatsby implementation of dbowland.com. Example: <https://d8m2rj7f9egv3.cloudfront.net/>
+Gatsby and Amplify implementation of jokes-api and jokes-infrastructure. Example: <https://d8m2rj7f9egv3.cloudfront.net/>
 
 ## Static Site
 
@@ -55,26 +55,10 @@ This project automatically deploys to production when a merge to `master` is mad
 
 ## Deploy Script
 
-See `deploy` directory for the script that copies the local folder `public` to a remote version folder, then updates the `.htaccess` file to deploy the new version. Testing this script requires the `DBOWLAND_SSH_USER` and `DBOWLAND_SSH_PASS` environment variables.
-
-## Workflow
-
-In order to execute or test the workflow locally, the `DBOWLAND_SSH_USER`, `DBOWLAND_SSH_PASS`, and `GITHUB_TOKEN` environment variables must be defined. Use the [GitHub token page](https://github.com/settings/tokens) to generate a new token, if necessary.
-
-This project uses [sftp](https://github.com/mscdex/ssh2-streams/blob/master/SFTPStream.md) to effect the deploy.
-
-### Manually Deploying
-
-Code can be manually deployed to production using the deploy command and specifying the version part to change:
+In extreme cases, the UI can be deployed with:
 
 ```bash
-npm run deploy --type=[major/minor/patch]
-```
-
-The most common deploy should be:
-
-```bash
-npm run deploy --type=minor
+npm run deploy
 ```
 
 ### Testing the Workflow
