@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Stop immediately on error
 set -e
@@ -19,4 +19,4 @@ cd infrastructure/
 NODE_ENV=production npm ci
 
 # Use pulumi to deploy project
-../scripts/infrastructure/deploy.sh
+./scripts/deploy.sh
