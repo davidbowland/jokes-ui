@@ -2,7 +2,7 @@ import * as aws from '@pulumi/aws'
 
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
-const ui_cdn = new aws.cloudfront.Distribution('ui-cdn', {
+export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
   defaultCacheBehavior: {
     allowedMethods: ['GET', 'HEAD'],
     cachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6', // Managed-CachingOptimized
