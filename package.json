@@ -14,7 +14,7 @@
     "lint": "prettier --write . && eslint --fix . --resolve-plugins-relative-to .",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install ; fi",
     "start": "gatsby develop",
-    "serve": "npm run build:prod && gatsby serve",
+    "serve": "npm run build && gatsby serve",
     "test": "jest --colors",
     "test:update-snapshots": "jest --colors -u"
   },

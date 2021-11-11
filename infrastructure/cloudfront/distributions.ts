@@ -1,8 +1,10 @@
 import * as aws from '@pulumi/aws'
 
+import { sourceS3Domain } from '@vars'
+
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
-const ui_cdn = new aws.cloudfront.Distribution('ui-cdn', {
+export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
   defaultCacheBehavior: {
     allowedMethods: ['GET', 'HEAD'],
     cachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6', // Managed-CachingOptimized
@@ -17,7 +19,7 @@ const ui_cdn = new aws.cloudfront.Distribution('ui-cdn', {
     originRequestPolicyId: '',
     realtimeLogConfigArn: '',
     smoothStreaming: false,
-    targetOriginId: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
+    targetOriginId: sourceS3Domain,
     trustedKeyGroups: [],
     trustedSigners: [],
     viewerProtocolPolicy: 'redirect-to-https',
@@ -29,8 +31,8 @@ const ui_cdn = new aws.cloudfront.Distribution('ui-cdn', {
   origins: [
     {
       customHeaders: [],
-      domainName: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
-      originId: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
+      domainName: sourceS3Domain,
+      originId: sourceS3Domain,
       originPath: '/jokes-ui',
     },
   ],
