@@ -1,5 +1,7 @@
 import * as aws from '@pulumi/aws'
 
+import { sourceS3Domain } from '@vars'
+
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
 export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
@@ -17,7 +19,7 @@ export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
     originRequestPolicyId: '',
     realtimeLogConfigArn: '',
     smoothStreaming: false,
-    targetOriginId: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
+    targetOriginId: sourceS3Domain,
     trustedKeyGroups: [],
     trustedSigners: [],
     viewerProtocolPolicy: 'redirect-to-https',
@@ -29,8 +31,8 @@ export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
   origins: [
     {
       customHeaders: [],
-      domainName: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
-      originId: 'jokes-ui-source.s3.us-east-2.amazonaws.com',
+      domainName: sourceS3Domain,
+      originId: sourceS3Domain,
       originPath: '/jokes-ui',
     },
   ],
