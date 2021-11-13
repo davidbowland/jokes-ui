@@ -1,1 +1,1 @@
-import './distributions'
+export * from './distributions'
