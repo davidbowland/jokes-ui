@@ -4,8 +4,12 @@ import * as pulumi from '@pulumi/pulumi'
 import './config'
 
 // Import modules to create resources
-import { cdn } from '@cloudfront'
+import '@cloudfront'
+import '@route53'
 
 // Output
+import { cdn } from '@cloudfront'
+import { jokesBowlandLink } from '@route53'
 
 export const cdnUrl = pulumi.interpolate`https://${cdn.domainName}`
+export const url = pulumi.interpolate`https://${jokesBowlandLink.fqdn}`

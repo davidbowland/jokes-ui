@@ -1,10 +1,11 @@
 import * as aws from '@pulumi/aws'
 
-import { sourceS3Domain } from '@vars'
+import { acmCertificateArn, sourceS3Domain } from '@vars'
 
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
 export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
+  aliases: ['jokes.bowland.link'],
   defaultCacheBehavior: {
     allowedMethods: ['GET', 'HEAD'],
     cachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6', // Managed-CachingOptimized
@@ -45,11 +46,11 @@ export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
   },
   retainOnDelete: false,
   viewerCertificate: {
-    acmCertificateArn: '',
-    cloudfrontDefaultCertificate: true,
+    acmCertificateArn,
+    cloudfrontDefaultCertificate: false,
     iamCertificateId: '',
-    minimumProtocolVersion: 'TLSv1',
-    sslSupportMethod: '',
+    minimumProtocolVersion: 'TLSv1.2_2018',
+    sslSupportMethod: 'sni-only',
   },
   waitForDeployment: true,
 })
