@@ -1,8 +1,8 @@
 {
-  "name": "lambda-jokes-handler-infrastructure",
+  "name": "jokes-ui-infrastructure",
   "version": "1.0.0",
   "private": true,
-  "description": "Infrastructure for lambda-jokes-handler",
+  "description": "Infrastructure for jokes-ui",
   "author": "David Bowland",
   "engines": {
     "node": "^16.0.0"
