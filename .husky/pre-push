@@ -4,6 +4,6 @@
 set -e
 
 # Double-check linting on all files
-npx eslint --fix .
+npx eslint --fix . --resolve-plugins-relative-to .
 # Ensure tests pass and coverage is met before push
 npx jest --colors
