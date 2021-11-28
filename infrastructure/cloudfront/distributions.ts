@@ -4,8 +4,16 @@ import { acmCertificateArn, sourceS3Domain } from '@vars'
 
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
+const errorCodePages = [400, 403, 404, 500]
+
 export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
   aliases: ['jokes.bowland.link'],
+  customErrorResponses: errorCodePages.map((errorCode) => ({
+    errorCachingMinTtl: 10,
+    errorCode,
+    responseCode: errorCode,
+    responsePagePath: `/${errorCode}.html`,
+  })),
   defaultCacheBehavior: {
     allowedMethods: ['GET', 'HEAD'],
     cachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6', // Managed-CachingOptimized
