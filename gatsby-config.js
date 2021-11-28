@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: 'Joke-ui',
-    siteUrl: 'https://dbowland.com/',
+    title: 'jokes-ui',
+    siteUrl: 'https://jokes.bowland.link',
   },
   plugins: [
     {
