@@ -3,7 +3,7 @@
 export const awsAccountId = process.env.AWS_ACCOUNT_ID
 
 export const createdBy = 'jokes-ui'
-export const createdFor = 'dbowland-jokes'
+export const createdFor = 'jokes'
 
 /* CDN */
 
