@@ -38,7 +38,7 @@ describe('Joke component', () => {
       render(<Joke />)
 
       expect(screen.getByText(/Loading.../i)).toBeDisabled()
-      expect(screen.getByRole('heading')).toHaveTextContent('')
+      expect(() => screen.getByText(joke1)).toThrow()
     })
 
     test('Rendering Joke displays a joke', async () => {
@@ -118,7 +118,7 @@ describe('Joke component', () => {
       act(() => editLabel.click())
 
       expect(await screen.findByText(/Update joke/i, { selector: 'button' })).toBeInTheDocument()
-      const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke text/i)) as HTMLInputElement
+      const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement
       expect(updateTextInput.value.length).toBeGreaterThan(0)
     })
 
@@ -149,7 +149,7 @@ describe('Joke component', () => {
         await editLabel.click()
       })
 
-      const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke text/i)) as HTMLInputElement
+      const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement
       expect(updateTextInput.value).not.toEqual(joke2)
       act(() => {
         fireEvent.change(updateTextInput, { target: { value: joke2 } })

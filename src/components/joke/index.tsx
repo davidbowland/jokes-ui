@@ -1,9 +1,11 @@
 import { Authenticator } from '@aws-amplify/ui-react'
-import React, { useEffect, useState } from 'react'
 import '@aws-amplify/ui-react/styles.css'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Radio from '@mui/material/Radio'
+import React, { useEffect, useState } from 'react'
 
 import JokeService, { JokeResponse, JokeType } from '@services/jokes'
-import './index.css'
 
 export interface JokeProps {
   initialize?: boolean
@@ -97,18 +99,22 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
 
   return (
     <>
-      <h1>{joke.joke}</h1>
-      <button onClick={nextJoke} disabled={isLoading && !isError}>
+      <article className="joke">{joke.joke}</article>
+      <Button
+        variant="contained"
+        onClick={nextJoke}
+        disabled={isLoading && !isError}
+        color={isError ? 'error' : 'primary'}
+      >
         {getButtonText()}
-      </button>
-      <Authenticator>
+      </Button>
+      <Authenticator className="amplify-authenticator">
         {({ signOut }) => (
           <div>
             <p>{adminNotice}</p>
             <div>
               <label>
-                <input
-                  type="radio"
+                <Radio
                   onChange={updateAdminView}
                   name="admin-view"
                   value={AdminView.ADD_JOKE}
@@ -118,8 +124,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
               </label>
               <br />
               <label>
-                <input
-                  type="radio"
+                <Radio
                   onChange={updateAdminView}
                   name="admin-view"
                   value={AdminView.EDIT_JOKE}
@@ -131,23 +136,30 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
             {adminView == AdminView.ADD_JOKE ? (
               <div>
                 <label>
-                  Joke to add
-                  <input
+                  <TextField
+                    variant="filled"
                     type="text"
+                    fullWidth
+                    label="Joke to add"
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
                     name="add-joke-text"
                     value={addJokeText}
                   />
                 </label>
-                <button onClick={addJoke}>Add joke</button>
+                <p>
+                  <Button variant="contained" onClick={addJoke}>
+                    Add joke
+                  </Button>
+                </p>
               </div>
             ) : (
               <div>
-                <p>Joke #{joke.index}</p>
                 <label>
-                  Joke text
-                  <input
+                  <TextField
+                    variant="filled"
                     type="text"
+                    fullWidth
+                    label={`Joke #${joke.index}`}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                       setJoke({ ...joke, joke: event.target.value })
                     }
@@ -155,11 +167,17 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
                     value={joke.joke}
                   />
                 </label>
-                <button onClick={updateJoke}>Update joke</button>
+                <p>
+                  <Button variant="contained" onClick={updateJoke}>
+                    Update joke
+                  </Button>
+                </p>
               </div>
             )}
             <div>
-              <button onClick={signOut}>Sign out</button>
+              <Button variant="outlined" color="error" onClick={signOut}>
+                Sign out
+              </Button>
             </div>
           </div>
         )}
