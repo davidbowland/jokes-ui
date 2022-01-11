@@ -22,20 +22,20 @@
     "**/*.{js,jsx,ts,tsx}": [
       "prettier --write --ignore-unknown",
       "eslint --fix --resolve-plugins-relative-to .",
-      "jest --colors --findRelatedTests"
+      "jest --colors --findRelatedTests --coverageThreshold '{}'"
     ],
     "**/*": [
       "prettier --write --ignore-unknown"
     ]
   },
   "dependencies": {
-    "@aws-amplify/ui-react": "^1.2.2",
+    "@aws-amplify/ui-react": "^2.1.6",
     "@fontsource/fira-code": "^4.2.2",
     "@fontsource/lato": "^4.2.2",
     "@fontsource/rokkitt": "^4.2.2",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
-    "aws-amplify": "^4.1.0",
+    "aws-amplify": "^4.3.12",
     "axios": "^0.21.1",
     "babel-plugin-styled-components": "^1.12.0",
     "crypto-browserify": "^3.12.0",
@@ -84,10 +84,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidbowland/dbowland-gatsby.git"
+    "url": "git+https://github.com/davidbowland/jokes-ui.git"
   },
   "bugs": {
-    "url": "https://github.com/davidbowland/dbowland-gatsby/issues"
+    "url": "https://github.com/davidbowland/jokes-ui/issues"
   },
-  "homepage": "https://github.com/davidbowland/dbowland-gatsby#readme"
+  "homepage": "https://github.com/davidbowland/jokes-ui#readme"
 }

@@ -1,30 +1,15 @@
-import { Auth } from 'aws-amplify'
-import { AmplifySignIn, AmplifySignOut } from '@aws-amplify/ui-react'
 import React from 'react'
 import '@testing-library/jest-dom'
 import { act, fireEvent, screen, render } from '@testing-library/react'
 
-import Joke, { AuthState } from './index'
+import Joke from './index'
 import JokeService, { JokeResponse } from '@services/jokes'
 
-jest.mock('aws-amplify', () => ({
-  __esModule: true,
-  default: {
-    configure: jest.fn(),
-  },
-  Auth: {
-    currentAuthenticatedUser: jest.fn().mockRejectedValue(undefined),
-  },
-}))
+const mockSignOut = jest.fn()
 jest.mock('@aws-amplify/ui-react', () => ({
-  AmplifyAuthContainer: jest.fn().mockImplementation(({ children }: { children?: JSX.Element }) => children ?? null),
-  AmplifyAuthenticator: jest.fn().mockImplementation(({ children }: { children?: JSX.Element }) => children ?? null),
-  AmplifySignIn: jest.fn().mockImplementation(({ children }: { children?: JSX.Element }) => children ?? null),
-  AmplifySignOut: jest.fn().mockImplementation(({ children }: { children?: JSX.Element }) => children ?? null),
+  Authenticator: jest.fn().mockImplementation(({ children }) => children({ signOut: mockSignOut }) ?? null),
 }))
 jest.mock('@services/jokes')
-
-type AuthStateChangeHandler = (state: AuthState) => void
 
 describe('Joke component', () => {
   const joke1 = 'Ha'
@@ -32,6 +17,7 @@ describe('Joke component', () => {
   const joke3 = '=)'
   const jokeResponse: JokeResponse = { 33: { joke: joke1 }, 42: { joke: joke2 }, 70: { joke: joke3 } }
 
+  const consoleError = console.error
   const getRandomJokes = jest.fn().mockResolvedValue(jokeResponse)
 
   beforeAll(() => {
@@ -39,16 +25,15 @@ describe('Joke component', () => {
     mockMath.random = () => 0
     global.Math = mockMath
 
+    console.error = jest.fn()
     JokeService.getRandomJokes = getRandomJokes
-    ;((AmplifySignIn as unknown) as jest.Mock).mockReturnValue(<button>Sign in</button>)
-    ;((AmplifySignOut as unknown) as jest.Mock).mockReturnValue(<button>Sign out</button>)
+  })
+
+  afterAll(() => {
+    console.error = consoleError
   })
 
   describe('Public functionality', () => {
-    beforeAll(() => {
-      ;(Auth.currentAuthenticatedUser as jest.Mock).mockRejectedValue(undefined)
-    })
-
     test('Rendering Joke renders no joke by default, for static rendering', () => {
       render(<Joke />)
 
@@ -114,8 +99,6 @@ describe('Joke component', () => {
     const putJoke = jest.fn()
 
     beforeAll(() => {
-      ;(Auth.currentAuthenticatedUser as jest.Mock).mockResolvedValue(undefined)
-
       JokeService.postJoke = postJoke
       JokeService.putJoke = putJoke
     })
@@ -180,63 +163,6 @@ describe('Joke component', () => {
 
       expect(putJoke).toBeCalledWith(expectedIndex, expect.objectContaining({ joke: joke2 }))
       expect(putJoke).toBeCalledTimes(1)
-    })
-
-    test('Sign out removes admin section and shows sign in', async () => {
-      const authStatePromise = new Promise((resolve) =>
-        ((AmplifySignOut as unknown) as jest.Mock).mockImplementationOnce(({ handleAuthStateChange }) => {
-          resolve(handleAuthStateChange)
-          return <button>Sign out</button>
-        })
-      )
-      render(<Joke initialize={true} />)
-      expect(await screen.findByText(/Sign out/i, { selector: 'button' })).toBeInTheDocument()
-
-      const handleAuthStateChange: AuthStateChangeHandler = (await authStatePromise) as any
-      act(() => {
-        handleAuthStateChange(AuthState.SignedOut)
-      })
-
-      expect(await screen.findByText(/Sign in/i, { selector: 'button' })).toBeInTheDocument()
-      expect(screen.queryByText(/Add joke/i, { selector: 'button' })).toBeNull()
-    })
-
-    test('Sign in adds admin section and shows sign in', async () => {
-      const authStatePromise = new Promise((resolve) =>
-        ((AmplifySignIn as unknown) as jest.Mock).mockImplementationOnce(({ handleAuthStateChange }) => {
-          resolve(handleAuthStateChange)
-          return <button>Sign in</button>
-        })
-      )
-      ;(Auth.currentAuthenticatedUser as jest.Mock).mockRejectedValueOnce(undefined)
-      render(<Joke initialize={true} />)
-      expect(await screen.findByText(/Sign in/i, { selector: 'button' })).toBeInTheDocument()
-
-      const handleAuthStateChange: AuthStateChangeHandler = (await authStatePromise) as any
-      act(() => {
-        handleAuthStateChange(AuthState.SignedIn)
-      })
-
-      expect(await screen.findByText(/Sign out/i, { selector: 'button' })).toBeInTheDocument()
-      expect(screen.getByText(/Add joke/i, { selector: 'button' })).toBeInTheDocument()
-    })
-
-    test("Unrecognized auth state changes don't change the auth state", async () => {
-      const authStatePromise = new Promise((resolve) =>
-        ((AmplifySignOut as unknown) as jest.Mock).mockImplementationOnce(({ handleAuthStateChange }) => {
-          resolve(handleAuthStateChange)
-          return <button>Sign in</button>
-        })
-      )
-      render(<Joke initialize={true} />)
-      expect(await screen.findByText(/Sign out/i, { selector: 'button' })).toBeInTheDocument()
-
-      const handleAuthStateChange: AuthStateChangeHandler = (await authStatePromise) as any
-      act(() => {
-        handleAuthStateChange((undefined as unknown) as AuthState)
-      })
-
-      expect(screen.getByText(/Sign out/i, { selector: 'button' })).toBeInTheDocument()
     })
   })
 })
