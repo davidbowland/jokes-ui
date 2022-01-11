@@ -1,8 +1,9 @@
-import { Auth } from 'aws-amplify'
-import { AmplifyAuthContainer, AmplifyAuthenticator, AmplifySignIn, AmplifySignOut } from '@aws-amplify/ui-react'
+import { Authenticator } from '@aws-amplify/ui-react'
 import React, { useEffect, useState } from 'react'
+import '@aws-amplify/ui-react/styles.css'
 
 import JokeService, { JokeResponse, JokeType } from '@services/jokes'
+import './index.css'
 
 export interface JokeProps {
   initialize?: boolean
@@ -34,7 +35,6 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const jokeList = (Object.keys(availableJokes) as unknown) as number[]
   const isLoading = jokeList.length == 0 || !joke
 
-  const [authState, setAuthState] = useState('' as AuthState)
   const [adminView, setAdminView] = useState(AdminView.ADD_JOKE)
   const [adminNotice, setAdminNotice] = useState('')
   const [addJokeText, setAddJokeText] = useState('')
@@ -95,93 +95,75 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
     }
   }, [availableJokes, joke])
 
-  useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then(() => {
-        setAuthState(AuthState.SignedIn)
-      })
-      .catch(() => undefined)
-  }, [])
-
-  const handleAuthStateChange = ((state: AuthState): void => {
-    if (state === AuthState.SignedIn || state === AuthState.SignedOut) {
-      setAuthState(state)
-    }
-  }) as any
-
   return (
     <>
       <h1>{joke.joke}</h1>
       <button onClick={nextJoke} disabled={isLoading && !isError}>
         {getButtonText()}
       </button>
-      {authState !== AuthState.SignedIn ? (
-        <AmplifyAuthContainer>
-          <AmplifyAuthenticator>
-            <AmplifySignIn handleAuthStateChange={handleAuthStateChange} slot="sign-in"></AmplifySignIn>
-          </AmplifyAuthenticator>
-        </AmplifyAuthContainer>
-      ) : (
-        <div>
-          <p>{adminNotice}</p>
+      <Authenticator>
+        {({ signOut }) => (
           <div>
-            <label>
-              <input
-                type="radio"
-                onChange={updateAdminView}
-                name="admin-view"
-                value={AdminView.ADD_JOKE}
-                checked={adminView == AdminView.ADD_JOKE}
-              />
-              Add joke
-            </label>
-            <br />
-            <label>
-              <input
-                type="radio"
-                onChange={updateAdminView}
-                name="admin-view"
-                value={AdminView.EDIT_JOKE}
-                checked={adminView == AdminView.EDIT_JOKE}
-              />
-              Edit joke
-            </label>
-          </div>
-          {adminView == AdminView.ADD_JOKE ? (
+            <p>{adminNotice}</p>
             <div>
               <label>
-                Joke to add
                 <input
-                  type="text"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
-                  name="add-joke-text"
-                  value={addJokeText}
+                  type="radio"
+                  onChange={updateAdminView}
+                  name="admin-view"
+                  value={AdminView.ADD_JOKE}
+                  checked={adminView == AdminView.ADD_JOKE}
                 />
+                Add joke
               </label>
-              <button onClick={addJoke}>Add joke</button>
-            </div>
-          ) : (
-            <div>
-              <p>Joke #{joke.index}</p>
+              <br />
               <label>
-                Joke text
                 <input
-                  type="text"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    setJoke({ ...joke, joke: event.target.value })
-                  }
-                  name="update-joke-text"
-                  value={joke.joke}
+                  type="radio"
+                  onChange={updateAdminView}
+                  name="admin-view"
+                  value={AdminView.EDIT_JOKE}
+                  checked={adminView == AdminView.EDIT_JOKE}
                 />
+                Edit joke
               </label>
-              <button onClick={updateJoke}>Update joke</button>
             </div>
-          )}
-          <div>
-            <AmplifySignOut handleAuthStateChange={handleAuthStateChange} slot="sign-out" />
+            {adminView == AdminView.ADD_JOKE ? (
+              <div>
+                <label>
+                  Joke to add
+                  <input
+                    type="text"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
+                    name="add-joke-text"
+                    value={addJokeText}
+                  />
+                </label>
+                <button onClick={addJoke}>Add joke</button>
+              </div>
+            ) : (
+              <div>
+                <p>Joke #{joke.index}</p>
+                <label>
+                  Joke text
+                  <input
+                    type="text"
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      setJoke({ ...joke, joke: event.target.value })
+                    }
+                    name="update-joke-text"
+                    value={joke.joke}
+                  />
+                </label>
+                <button onClick={updateJoke}>Update joke</button>
+              </div>
+            )}
+            <div>
+              <button onClick={signOut}>Sign out</button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </Authenticator>
     </>
   )
 }
