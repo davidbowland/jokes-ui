@@ -2,10 +2,6 @@ html {
   background-color: #000;
 }
 
-.amplify-authenticator {
-  margin-top: 50px;
-}
-
 .amplify-tabs {
   display: none;
 }
@@ -19,4 +15,8 @@ html {
 .main-content {
   background-color: #fff;
   padding: 50px;
+}
+
+.site-administration {
+  margin-top: 50px;
 }

@@ -103,35 +103,45 @@ describe('Joke component', () => {
       JokeService.putJoke = putJoke
     })
 
-    test('Being logged in shows add joke feature', async () => {
+    test('Being logged in shows edit joke feature and populates input text', async () => {
       render(<Joke initialize={true} />)
-
-      expect(await screen.findByText(/Add joke/i, { selector: 'button' })).toBeInTheDocument()
-      const addTextInput: HTMLInputElement = (await screen.findByLabelText('Joke to add')) as HTMLInputElement
-      expect(addTextInput.value.length).toEqual(0)
-    })
-
-    test('Clicking "Edit joke" changes to the edit screen and populates input text', async () => {
-      render(<Joke initialize={true} />)
-
-      const editLabel: HTMLLabelElement = (await screen.findByText(/Edit joke/i)) as HTMLLabelElement
-      act(() => editLabel.click())
 
       expect(await screen.findByText(/Update joke/i, { selector: 'button' })).toBeInTheDocument()
       const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement
       expect(updateTextInput.value.length).toBeGreaterThan(0)
     })
 
+    test('Clicking "Add joke" changes to the add screen', async () => {
+      render(<Joke initialize={true} />)
+
+      const editLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
+      act(() => editLabel.click())
+
+      const addJokeButtons: HTMLButtonElement[] = (await screen.findAllByText(/Add joke/i, {
+        selector: 'button',
+      })) as HTMLButtonElement[]
+      expect(addJokeButtons.length).toEqual(2)
+      const addTextInput: HTMLInputElement = (await screen.findByLabelText('Joke to add')) as HTMLInputElement
+      expect(addTextInput.value.length).toEqual(0)
+    })
+
     test('Clicking "Add joke" invokes the joke service', async () => {
       render(<Joke initialize={true} />)
+
+      const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
+      await act(async () => {
+        await addLabel.click()
+      })
 
       const addTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke to add/i)) as HTMLInputElement
       act(() => {
         fireEvent.change(addTextInput, { target: { value: adminJoke } })
       })
-      const addJokeButton: HTMLButtonElement = (await screen.findByText(/Add joke/i, {
-        selector: 'button',
-      })) as HTMLButtonElement
+      const addJokeButton: HTMLButtonElement = (
+        await screen.findAllByText(/Add joke/i, {
+          selector: 'button',
+        })
+      )[1] as HTMLButtonElement
       await act(async () => {
         await addJokeButton.click()
       })
@@ -143,11 +153,6 @@ describe('Joke component', () => {
     test('Editing the current joke and clicking the button invokes the joke service', async () => {
       const expectedIndex = Object.keys(jokeResponse)[0]
       render(<Joke initialize={true} />)
-
-      const editLabel: HTMLLabelElement = (await screen.findByText(/Edit joke/i)) as HTMLLabelElement
-      await act(async () => {
-        await editLabel.click()
-      })
 
       const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement
       expect(updateTextInput.value).not.toEqual(joke2)
