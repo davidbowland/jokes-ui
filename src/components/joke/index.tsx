@@ -1,8 +1,17 @@
 import { Authenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
-import Radio from '@mui/material/Radio'
+import Typography from '@mui/material/Typography'
 import React, { useEffect, useState } from 'react'
 
 import JokeService, { JokeResponse, JokeType } from '@services/jokes'
@@ -37,7 +46,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const jokeList = (Object.keys(availableJokes) as unknown) as number[]
   const isLoading = jokeList.length == 0 || !joke
 
-  const [adminView, setAdminView] = useState(AdminView.ADD_JOKE)
+  const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
   const [adminNotice, setAdminNotice] = useState('')
   const [addJokeText, setAddJokeText] = useState('')
 
@@ -75,9 +84,9 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
     setAdminNotice('Joke successfully updated!')
   }
 
-  const updateAdminView = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
     setAdminNotice('')
-    setAdminView(event.target.value as AdminView)
+    setAdminView(newValue)
   }
 
   const getButtonText = (): string => {
@@ -108,80 +117,77 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
       >
         {getButtonText()}
       </Button>
-      <Authenticator className="amplify-authenticator">
-        {({ signOut }) => (
-          <div>
-            <p>{adminNotice}</p>
-            <div>
-              <label>
-                <Radio
-                  onChange={updateAdminView}
-                  name="admin-view"
-                  value={AdminView.ADD_JOKE}
-                  checked={adminView == AdminView.ADD_JOKE}
-                />
-                Add joke
-              </label>
-              <br />
-              <label>
-                <Radio
-                  onChange={updateAdminView}
-                  name="admin-view"
-                  value={AdminView.EDIT_JOKE}
-                  checked={adminView == AdminView.EDIT_JOKE}
-                />
-                Edit joke
-              </label>
-            </div>
-            {adminView == AdminView.ADD_JOKE ? (
-              <div>
-                <label>
-                  <TextField
-                    variant="filled"
-                    type="text"
-                    fullWidth
-                    label="Joke to add"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
-                    name="add-joke-text"
-                    value={addJokeText}
-                  />
-                </label>
-                <p>
-                  <Button variant="contained" onClick={addJoke}>
-                    Add joke
-                  </Button>
-                </p>
-              </div>
-            ) : (
-              <div>
-                <label>
-                  <TextField
-                    variant="filled"
-                    type="text"
-                    fullWidth
-                    label={`Joke #${joke.index}`}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                      setJoke({ ...joke, joke: event.target.value })
-                    }
-                    name="update-joke-text"
-                    value={joke.joke}
-                  />
-                </label>
-                <p>
-                  <Button variant="contained" onClick={updateJoke}>
-                    Update joke
-                  </Button>
-                </p>
-              </div>
-            )}
-            <div>
-              <Button variant="outlined" color="error" onClick={signOut}>
-                Sign out
-              </Button>
-            </div>
-          </div>
-        )}
-      </Authenticator>
+      <section className="site-administration">
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Site Administration</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <Authenticator>
+                {({ signOut }) => (
+                  <div>
+                    <p>{adminNotice}</p>
+                    <TabContext value={adminView}>
+                      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={updateAdminView} aria-label="Administration tabs">
+                          <Tab label="Edit joke" value={AdminView.EDIT_JOKE} />
+                          <Tab label="Add joke" value={AdminView.ADD_JOKE} />
+                        </TabList>
+                      </Box>
+                      <TabPanel value={AdminView.EDIT_JOKE}>
+                        <label>
+                          <TextField
+                            variant="filled"
+                            type="text"
+                            fullWidth
+                            label={`Joke #${joke.index}`}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                              setJoke({ ...joke, joke: event.target.value })
+                            }
+                            name="update-joke-text"
+                            value={joke.joke}
+                          />
+                        </label>
+                        <p>
+                          <Button variant="contained" onClick={updateJoke}>
+                            Update joke
+                          </Button>
+                        </p>
+                      </TabPanel>
+                      <TabPanel value={AdminView.ADD_JOKE}>
+                        <label>
+                          <TextField
+                            variant="filled"
+                            type="text"
+                            fullWidth
+                            label="Joke to add"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                              setAddJokeText(event.target.value)
+                            }
+                            name="add-joke-text"
+                            value={addJokeText}
+                          />
+                        </label>
+                        <p>
+                          <Button variant="contained" onClick={addJoke}>
+                            Add joke
+                          </Button>
+                        </p>
+                      </TabPanel>
+                    </TabContext>
+                    <div>
+                      <Button variant="outlined" color="error" onClick={signOut}>
+                        Sign out
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </Authenticator>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </section>
     </>
   )
 }

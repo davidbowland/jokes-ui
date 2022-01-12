@@ -37,6 +37,8 @@
     "@fontsource/rokkitt": "^4.2.2",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/lab": "^5.0.0-alpha.64",
     "@mui/material": "^5.2.8",
     "aws-amplify": "^4.3.12",
     "axios": "^0.21.1",
