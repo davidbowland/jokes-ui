@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Tab from '@mui/material/Tab'
@@ -23,6 +24,11 @@ export interface JokeProps {
 export interface Client {
   endpoint: string
   fetchOptions: Record<string, unknown>
+}
+
+export interface AdminNotice {
+  severity?: 'error' | 'warning' | 'info' | 'success'
+  text: string
 }
 
 export enum AdminView {
@@ -47,7 +53,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const isLoading = jokeList.length == 0 || !joke
 
   const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
-  const [adminNotice, setAdminNotice] = useState('')
+  const [adminNotice, setAdminNotice] = useState({ text: '' } as AdminNotice)
   const [addJokeText, setAddJokeText] = useState('')
 
   const fetchJokeList = async (): Promise<void> => {
@@ -76,16 +82,16 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
 
   const addJoke = async (): Promise<void> => {
     const response = await JokeService.postJoke({ joke: addJokeText })
-    setAdminNotice(`Created joke #${response.id}`)
+    setAdminNotice({ severity: 'success', text: `Created joke #${response.id}` })
   }
 
   const updateJoke = async (): Promise<void> => {
     await JokeService.putJoke(joke.index, { joke: joke.joke })
-    setAdminNotice('Joke successfully updated!')
+    setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
   }
 
   const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
-    setAdminNotice('')
+    setAdminNotice({ text: '' })
     setAdminView(newValue)
   }
 
@@ -127,7 +133,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
               <Authenticator>
                 {({ signOut }) => (
                   <div>
-                    <p>{adminNotice}</p>
+                    {adminNotice.severity && <Alert severity={adminNotice.severity}>{adminNotice.text}</Alert>}
                     <TabContext value={adminView}>
                       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={updateAdminView} aria-label="Administration tabs">
