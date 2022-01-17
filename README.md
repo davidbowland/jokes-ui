@@ -1,13 +1,13 @@
 # jokes-ui
 
-Gatsby and Amplify implementation of jokes-api and jokes-infrastructure. Example: <https://d8m2rj7f9egv3.cloudfront.net/>
+Gatsby and Amplify implementation of jokes-api and jokes-infrastructure. Example: <https://jokes.bowland.link/>
 
 ## Static Site
 
 ### Prerequisites
 
 1. [Node 16](https://nodejs.org/en/)
-1. [NPM 7+](https://www.npmjs.com/)
+1. [NPM 8+](https://www.npmjs.com/)
 
 ### Local Development
 
