@@ -33,7 +33,7 @@ Amplify.configure({
 })
 
 export interface JokeType {
-  joke: string
+  contents: string
 }
 
 export interface JokeResponse {

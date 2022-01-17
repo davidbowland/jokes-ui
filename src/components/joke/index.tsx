@@ -81,12 +81,12 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }
 
   const addJoke = async (): Promise<void> => {
-    const response = await JokeService.postJoke({ joke: addJokeText })
+    const response = await JokeService.postJoke({ contents: addJokeText })
     setAdminNotice({ severity: 'success', text: `Created joke #${response.id}` })
   }
 
   const updateJoke = async (): Promise<void> => {
-    await JokeService.putJoke(joke.index, { joke: joke.joke })
+    await JokeService.putJoke(joke.index, { contents: joke.contents })
     setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
   }
 
@@ -105,16 +105,16 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }
 
   useEffect(() => {
-    if (jokeList.length == 0 && (initialize || joke.joke)) {
+    if (jokeList.length == 0 && (initialize || joke.contents)) {
       fetchJokeList()
-    } else if (!joke.joke && jokeList.length > 0) {
+    } else if (!joke.contents && jokeList.length > 0) {
       nextJoke()
     }
   }, [availableJokes, joke])
 
   return (
     <>
-      <article className="joke">{joke.joke}</article>
+      <article className="joke">{joke.contents}</article>
       <Button
         variant="contained"
         onClick={nextJoke}
@@ -149,10 +149,10 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
                             fullWidth
                             label={`Joke #${joke.index}`}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                              setJoke({ ...joke, joke: event.target.value })
+                              setJoke({ ...joke, contents: event.target.value })
                             }
                             name="update-joke-text"
-                            value={joke.joke}
+                            value={joke.contents}
                           />
                         </label>
                         <p>

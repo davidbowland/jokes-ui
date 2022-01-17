@@ -15,7 +15,7 @@ describe('Joke component', () => {
   const joke1 = 'Ha'
   const joke2 = 'lol'
   const joke3 = '=)'
-  const jokeResponse: JokeResponse = { 33: { joke: joke1 }, 42: { joke: joke2 }, 70: { joke: joke3 } }
+  const jokeResponse: JokeResponse = { 33: { contents: joke1 }, 42: { contents: joke2 }, 70: { contents: joke3 } }
 
   const consoleError = console.error
   const getRandomJokes = jest.fn().mockResolvedValue(jokeResponse)
@@ -61,7 +61,7 @@ describe('Joke component', () => {
     })
 
     test('Clicking the Next Joke button calls getRandomJokes when jokes run out', async () => {
-      getRandomJokes.mockResolvedValueOnce({ 33: { joke: joke1 } })
+      getRandomJokes.mockResolvedValueOnce({ 33: { contents: joke1 } })
       render(<Joke initialize={true} />)
 
       const nextJokeButton: HTMLButtonElement = (await screen.findByText(/Next joke/i)) as HTMLButtonElement
@@ -146,7 +146,7 @@ describe('Joke component', () => {
         await addJokeButton.click()
       })
 
-      expect(postJoke).toBeCalledWith(expect.objectContaining({ joke: adminJoke }))
+      expect(postJoke).toBeCalledWith(expect.objectContaining({ contents: adminJoke }))
       expect(postJoke).toBeCalledTimes(1)
     })
 
@@ -166,7 +166,7 @@ describe('Joke component', () => {
         await updateJokeButton.click()
       })
 
-      expect(putJoke).toBeCalledWith(expectedIndex, expect.objectContaining({ joke: joke2 }))
+      expect(putJoke).toBeCalledWith(expectedIndex, expect.objectContaining({ contents: joke2 }))
       expect(putJoke).toBeCalledTimes(1)
     })
   })
