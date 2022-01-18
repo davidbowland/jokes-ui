@@ -41,7 +41,7 @@ export interface JokeResponse {
 }
 
 export interface PostResponse {
-  id: string
+  index: string
 }
 
 export class JokeService {

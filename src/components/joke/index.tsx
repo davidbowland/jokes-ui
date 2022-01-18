@@ -82,7 +82,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
 
   const addJoke = async (): Promise<void> => {
     const response = await JokeService.postJoke({ contents: addJokeText })
-    setAdminNotice({ severity: 'success', text: `Created joke #${response.id}` })
+    setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
   }
 
   const updateJoke = async (): Promise<void> => {
