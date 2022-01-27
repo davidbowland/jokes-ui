@@ -1,11 +1,12 @@
 import * as aws from '@pulumi/aws'
 
 import { cdn } from '@cloudfront'
+import { domainName } from '@vars'
 import { zone } from './zones'
 
 // https://www.pulumi.com/registry/packages/aws/api-docs/route53/record/
 
-export const jokesBowlandLink = new aws.route53.Record('jokes-bowland-link', {
+export const jokesDomain = new aws.route53.Record('jokes-domain', {
   aliases: [
     {
       evaluateTargetHealth: false,
@@ -13,7 +14,7 @@ export const jokesBowlandLink = new aws.route53.Record('jokes-bowland-link', {
       zoneId: cdn.hostedZoneId,
     },
   ],
-  name: 'jokes.bowland.link',
+  name: `jokes.${domainName}`,
   type: 'A',
   zoneId: zone.then((zone) => zone.id),
 })

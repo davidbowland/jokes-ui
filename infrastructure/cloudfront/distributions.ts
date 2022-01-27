@@ -1,13 +1,13 @@
 import * as aws from '@pulumi/aws'
 
-import { acmCertificateArn, sourceS3Domain } from '@vars'
+import { acmCertificateArn, domainName, sourceS3Domain } from '@vars'
 
 // https://www.pulumi.com/docs/reference/pkg/aws/cloudfront/distribution/
 
 const errorCodePages = [400, 403, 404, 500]
 
 export const cdn = new aws.cloudfront.Distribution('ui-cdn', {
-  aliases: ['jokes.bowland.link'],
+  aliases: [`jokes.${domainName}`],
   customErrorResponses: errorCodePages.map((errorCode) => ({
     errorCachingMinTtl: 10,
     errorCode,
