@@ -1,3 +1,14 @@
+/* eslint-disable no-undef, @typescript-eslint/no-var-requires */
+if (process.env.DEVELOPMENT) {
+  require('dotenv').config({
+    path: '.env.development',
+  })
+} else {
+  require('dotenv').config({
+    path: `.env.${process.env.NODE_ENV}`,
+  })
+}
+
 module.exports = {
   siteMetadata: {
     title: 'jokes-ui',

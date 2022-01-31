@@ -4,7 +4,7 @@ global.___loader = {
 }
 
 // Environment variables
-process.env.COGNITO_APP_CLIENT_ID = 'somereallylongvalue1111'
-process.env.COGNITO_USER_POOL_ID = 'us-east_clientId'
-process.env.JOKE_API_BASE_URL = 'http://localhost'
-process.env.JOKE_API_FETCH_COUNT = 3
+process.env.GATSBY_COGNITO_APP_CLIENT_ID = 'somereallylongvalue1111'
+process.env.GATSBY_COGNITO_USER_POOL_ID = 'us-east_clientId'
+process.env.GATSBY_JOKE_API_BASE_URL = 'http://localhost'
+process.env.GATSBY_JOKE_API_FETCH_COUNT = 3

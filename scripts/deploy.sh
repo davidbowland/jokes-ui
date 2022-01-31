@@ -7,16 +7,10 @@ if [[ -z "$1" ]]; then
   $(./scripts/assumeDeveloperRole.sh)
 fi
 
-### Copy project to S3
+# Deploy infrastructure
 
-./scripts/copyToS3.sh skipAssumeRole
+aws cloudformation deploy --template-file template.yaml --stack-name jokes-ui-test --parameter-overrides AccountId=$AWS_ACCOUNT_ID Environment=test
 
-### Infrastructure
+# Copy project to S3
 
-cd infrastructure/
-
-# Ensure dependencies are installed
-NODE_ENV=production npm ci
-
-# Use pulumi to deploy project
-./scripts/deploy.sh
+./scripts/copyToS3.sh jokes-ui-test
