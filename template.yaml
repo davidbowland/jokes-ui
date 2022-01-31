@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Infrastructure for jokes UI
+
+Parameters:
+  AccountId:
+    Type: String
+    Description: AWS account ID
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues:
+      - prod
+      - test
+    Description: Environment for deploy
+
+Mappings:
+  EnvironmentMap:
+    prod:
+      bucketName: jokes-ui-source
+      certificate: adce1a21-90b4-4120-8548-111215e582f0
+      domain: jokes.dbowland.com
+      zoneId: Z072422417XWM8PIXXSFA
+    test:
+      bucketName: jokes-ui-test
+      certificate: 6a48cba7-feb9-4de5-8cbf-d383140fcdef
+      domain: jokes.bowland.link
+      zoneId: Z01312547RGU1BYKIJXY
+
+Resources:
+  OriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub
+          - 'Access identity for ${Domain}'
+          - Domain: !FindInMap [EnvironmentMap, !Ref Environment, domain]
+
+  UiBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: !FindInMap [EnvironmentMap, !Ref Environment, bucketName]
+
+  UiBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: UiBucket
+    Properties:
+      Bucket: !Ref UiBucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:Get*'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${UiBucket}/*'
+            Principal:
+              CanonicalUser: !GetAtt OriginAccessIdentity.S3CanonicalUserId
+
+  UiCloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !FindInMap [EnvironmentMap, !Ref Environment, domain]
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - 'GET'
+            - 'HEAD'
+            - 'OPTIONS'
+          CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6' # Managed-CachingOptimized
+          Compress: true
+          DefaultTTL: 0
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: 'redirect-to-https'
+        DefaultRootObject: 'index.html'
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - DomainName: !GetAtt UiBucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub
+                - 'origin-access-identity/cloudfront/${Identity}'
+                - Identity: !Ref OriginAccessIdentity
+        PriceClass: 'PriceClass_100'
+        ViewerCertificate:
+          AcmCertificateArn: !Sub
+            - 'arn:aws:acm:us-east-1:${AccountId}:certificate/${Certificate}'
+            - Certificate: !FindInMap [EnvironmentMap, !Ref Environment, certificate]
+          MinimumProtocolVersion: 'TLSv1.2_2018'
+          SslSupportMethod: 'sni-only'
+
+  DomainDns:
+    Type: AWS::Route53::RecordSet
+    DependsOn: UiCloudfrontDistribution
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt UiCloudfrontDistribution.DomainName
+        EvaluateTargetHealth: false
+        HostedZoneId: Z2FDTNDATAQYW2 # CloudFront resources HostedZoneId
+      HostedZoneId: !FindInMap [EnvironmentMap, !Ref Environment, zoneId]
+      Name: !FindInMap [EnvironmentMap, !Ref Environment, domain]
+      Type: A

@@ -1,9 +1,9 @@
 import Amplify, { API, Auth } from 'aws-amplify'
 
-const appClientId = process.env.COGNITO_APP_CLIENT_ID
-const userPoolId = process.env.COGNITO_USER_POOL_ID
-const baseUrl = process.env.JOKE_API_BASE_URL
-const fetchCount = process.env.JOKE_API_FETCH_COUNT
+const appClientId = process.env.GATSBY_COGNITO_APP_CLIENT_ID
+const userPoolId = process.env.GATSBY_COGNITO_USER_POOL_ID
+const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
+const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
 
 const apiName = 'JokesAPIGateway'
 const apiNameUnauthenticated = 'JokesAPIGatewayUnauthenticated'
