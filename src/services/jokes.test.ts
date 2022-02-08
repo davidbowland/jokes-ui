@@ -1,5 +1,6 @@
 import { Auth } from 'aws-amplify'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
+import { Operation as PatchOperation } from 'fast-json-patch'
 
 import JokeService, { JokeResponse } from './jokes'
 import { rest, server } from '@test/setup-server'
@@ -17,7 +18,7 @@ describe('Joke service', () => {
   describe('getJoke', () => {
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/v1/jokes/:id`, async (req, res, ctx) => {
+        rest.get(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
           const { id } = req.params
           if (!(id in randomJokeResult)) {
             return res(ctx.status(400))
@@ -42,7 +43,7 @@ describe('Joke service', () => {
 
     beforeAll(() => {
       server.use(
-        rest.post(`${baseUrl}/v1/jokes`, async (req, res, ctx) => {
+        rest.post(`${baseUrl}/jokes`, async (req, res, ctx) => {
           const body = postEndpoint(req.body)
           return res(body ? ctx.json(body) : ctx.status(400))
         })
@@ -65,32 +66,38 @@ describe('Joke service', () => {
     })
   })
 
-  describe('putJoke', () => {
-    const putEndpoint = jest.fn().mockReturnValue(200)
+  describe('patchJoke', () => {
+    const patchEndpoint = jest.fn().mockReturnValue(200)
     const index = (Object.keys(randomJokeResult)[0] as unknown) as number
-    const joke = Object.values(randomJokeResult)[0]
+    const operation = ([
+      {
+        op: 'add',
+        path: '/foo',
+        value: 'bar',
+      },
+    ] as unknown) as PatchOperation[]
 
     beforeAll(() => {
       server.use(
-        rest.put(`${baseUrl}/v1/jokes/:id`, async (req, res, ctx) => {
+        rest.patch(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
           const { id } = req.params
-          const body = putEndpoint(id, req.body)
+          const body = patchEndpoint(id, req.body)
           return res(body ? ctx.json(body) : ctx.status(400))
         })
       )
     })
 
-    test('Expect endpoint called with index and joke', async () => {
-      await JokeService.putJoke(index, joke)
-      expect(putEndpoint).toHaveBeenCalledTimes(1)
-      expect(putEndpoint).toHaveBeenCalledWith(index, joke)
+    test('Expect endpoint called with index and patch operation', async () => {
+      await JokeService.patchJoke(index, operation)
+      expect(patchEndpoint).toHaveBeenCalledTimes(1)
+      expect(patchEndpoint).toHaveBeenCalledWith(index, operation)
     })
   })
 
   describe('getRandomJokes', () => {
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/v1/jokes/random`, async (req, res, ctx) => {
+        rest.get(`${baseUrl}/jokes/random`, async (req, res, ctx) => {
           if (JokeService.recentIndexes.join(',') !== req.url.searchParams.get('avoid')) {
             return res(ctx.status(400))
           }
