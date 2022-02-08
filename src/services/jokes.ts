@@ -1,4 +1,5 @@
 import Amplify, { API, Auth } from 'aws-amplify'
+import { Operation as PatchOperation } from 'fast-json-patch'
 
 const appClientId = process.env.GATSBY_COGNITO_APP_CLIENT_ID
 const userPoolId = process.env.GATSBY_COGNITO_USER_POOL_ID
@@ -48,26 +49,26 @@ export class JokeService {
   static recentIndexes: number[] = []
 
   static async getJoke(index: number): Promise<JokeType> {
-    const response: JokeType = await API.get(apiName, `/v1/jokes/${index}`, {})
+    const response: JokeType = await API.get(apiName, `/jokes/${index}`, {})
     return response
   }
 
   static async postJoke(joke: JokeType): Promise<PostResponse> {
-    const response: PostResponse = await API.post(apiName, '/v1/jokes', {
+    const response: PostResponse = await API.post(apiName, '/jokes', {
       body: joke,
     })
     return response
   }
 
-  static async putJoke(index: number, joke: JokeType): Promise<string> {
-    const response: string = await API.put(apiName, `/v1/jokes/${index}`, {
-      body: joke,
+  static async patchJoke(index: number, operations: PatchOperation[]): Promise<string> {
+    const response: string = await API.patch(apiName, `/jokes/${index}`, {
+      body: operations,
     })
     return response
   }
 
   static async getRandomJokes(): Promise<JokeResponse> {
-    const response: JokeResponse = await API.get(apiNameUnauthenticated, '/v1/jokes/random', {
+    const response: JokeResponse = await API.get(apiNameUnauthenticated, '/jokes/random', {
       queryStringParameters: {
         count: fetchCount,
         avoid: JokeService.recentIndexes.join(','),

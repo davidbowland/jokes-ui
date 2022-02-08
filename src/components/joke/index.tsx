@@ -13,6 +13,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import jsonpatch from 'fast-json-patch'
 import React, { useEffect, useState } from 'react'
 
 import JokeService, { JokeResponse, JokeType } from '@services/jokes'
@@ -47,6 +48,7 @@ export interface DisplayedJoke extends JokeType {
 
 const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const [joke, setJoke] = useState({} as DisplayedJoke)
+  const [editJoke, setEditJoke] = useState({} as DisplayedJoke)
   const [availableJokes, setAvailableJokes] = useState({} as JokeResponse)
   const [isError, setIsError] = useState(false)
   const jokeList = (Object.keys(availableJokes) as unknown) as number[]
@@ -75,19 +77,29 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
     return { ...selectedJoke, index: randomIndex }
   }
 
-  const nextJoke = async (): Promise<void> => {
+  const setNextJoke = async (): Promise<void> => {
     // Setting the joke to empty forces fetchJokeList via useEffect
-    setJoke(jokeList.length === 0 ? ({} as DisplayedJoke) : getRandomJoke())
+    const nextJoke = jokeList.length === 0 ? ({} as DisplayedJoke) : getRandomJoke()
+    setJoke(nextJoke)
+    setEditJoke(nextJoke)
   }
 
   const addJoke = async (): Promise<void> => {
-    const response = await JokeService.postJoke({ contents: addJokeText })
-    setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
+    try {
+      const response = await JokeService.postJoke({ contents: addJokeText })
+      setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
+    } catch (error) {
+      setAdminNotice({ severity: 'error', text: (error as any).response })
+    }
   }
 
   const updateJoke = async (): Promise<void> => {
-    await JokeService.putJoke(joke.index, { contents: joke.contents })
-    setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
+    try {
+      await JokeService.patchJoke(joke.index, jsonpatch.compare(editJoke, joke, true))
+      setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
+    } catch (error) {
+      setAdminNotice({ severity: 'error', text: (error as any).response })
+    }
   }
 
   const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
@@ -108,7 +120,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
     if (jokeList.length == 0 && (initialize || joke.contents)) {
       fetchJokeList()
     } else if (!joke.contents && jokeList.length > 0) {
-      nextJoke()
+      setNextJoke()
     }
   }, [availableJokes, joke])
 
@@ -117,7 +129,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
       <article className="joke">{joke.contents}</article>
       <Button
         variant="contained"
-        onClick={nextJoke}
+        onClick={setNextJoke}
         disabled={isLoading && !isError}
         color={isError ? 'error' : 'primary'}
       >
