@@ -61,6 +61,8 @@ In extreme cases, the UI can be deployed with:
 npm run deploy
 ```
 
+The `developer` role and [AWS SAM CLI](https://aws.amazon.com/serverless/sam/) are required to deploy this project.
+
 ### Testing the Workflow
 
 Use [act](https://github.com/nektos/act) to test the GitHub workflow. Install it with:
@@ -106,3 +108,7 @@ npm run workflow
 - [actions/checkout](https://github.com/actions/checkout)
 
 - [ad-m/github-push-action](https://github.com/ad-m/github-push-action)
+
+### Deployment Documentation
+
+- [AWS SAM CLI](https://aws.amazon.com/serverless/sam/)

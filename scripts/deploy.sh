@@ -9,7 +9,7 @@ fi
 
 # Deploy infrastructure
 
-aws cloudformation deploy --template-file template.yaml --stack-name jokes-ui-test --parameter-overrides AccountId=$AWS_ACCOUNT_ID Environment=test
+sam deploy --stack-name jokes-ui-test --template-file template.yaml --region us-east-2 --capabilities CAPABILITY_NAMED_IAM --no-fail-on-empty-changeset --parameter-overrides AccountId=$AWS_ACCOUNT_ID Environment=test
 
 # Copy project to S3
 
