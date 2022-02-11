@@ -56,6 +56,10 @@ jobs:
           DEVELOPMENT: true
           NODE_ENV: production
 
+      - name: Install Python 2
+        uses: actions/setup-python@v2
+      - name: Install AWS SAM
+        uses: aws-actions/setup-sam@v1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -64,12 +68,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy test infrastructure
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: ${{ env.TESTING_STACK_NAME }}
-          template: ${{ env.TEMPLATE_NAME }}
-          no-fail-on-empty-changeset: 1
-          parameter-overrides: 'AccountId=${{ secrets.AWS_ACCOUNT_ID }},Environment=test'
+        shell: bash
+        run: |
+          sam deploy --stack-name ${{ env.TESTING_STACK_NAME }} \
+            --template-file ${{ env.TEMPLATE_NAME }} \
+            --region ${{ secrets.AWS_REGION }} \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }} Environment=test'
       - name: Copy static site to test S3 bucket
         run: ./scripts/copyToS3.sh ${TESTING_S3_BUCKET}
 
@@ -94,6 +100,10 @@ jobs:
           DEVELOPMENT: true
           NODE_ENV: production
 
+      - name: Install Python 2
+        uses: actions/setup-python@v2
+      - name: Install AWS SAM
+        uses: aws-actions/setup-sam@v1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -102,12 +112,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy test infrastructure
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: ${{ env.TESTING_STACK_NAME }}
-          template: ${{ env.TEMPLATE_NAME }}
-          no-fail-on-empty-changeset: 1
-          parameter-overrides: 'AccountId=${{ secrets.AWS_ACCOUNT_ID }},Environment=test'
+        shell: bash
+        run: |
+          sam deploy --stack-name ${{ env.TESTING_STACK_NAME }} \
+            --template-file ${{ env.TEMPLATE_NAME }} \
+            --region ${{ secrets.AWS_REGION }} \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }} Environment=test'
       - name: Copy static site to test S3 bucket
         run: ./scripts/copyToS3.sh ${{ env.TESTING_S3_BUCKET }}
 
@@ -131,6 +143,10 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Install Python 2
+        uses: actions/setup-python@v2
+      - name: Install AWS SAM
+        uses: aws-actions/setup-sam@v1
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -139,12 +155,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy production infrastructure
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: ${{ env.PROD_STACK_NAME }}
-          template: ${{ env.TEMPLATE_NAME }}
-          no-fail-on-empty-changeset: 1
-          parameter-overrides: 'AccountId=${{ secrets.AWS_ACCOUNT_ID }}'
+        shell: bash
+        run: |
+          sam deploy --stack-name ${{ env.PROD_STACK_NAME }} \
+            --template-file ${{ env.TEMPLATE_NAME }} \
+            --region ${{ secrets.AWS_REGION }} \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }}'
       - name: Copy static site to production S3 bucket
         run: ./scripts/copyToS3.sh ${{ env.PROD_S3_BUCKET }}
 
