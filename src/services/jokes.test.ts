@@ -8,7 +8,7 @@ import { rest, server } from '@test/setup-server'
 const baseUrl = process.env.JOKE_API_BASE_URL || 'http://localhost'
 
 describe('Joke service', () => {
-  const randomJokeResult: JokeResponse = { 3: { joke: 'rofl' }, 74: { joke: 'lol' } }
+  const randomJokeResult: JokeResponse = { 3: { contents: 'rofl' }, 74: { contents: 'lol' } }
 
   beforeAll(() => {
     const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession

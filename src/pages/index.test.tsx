@@ -5,6 +5,7 @@ import { render } from '@testing-library/react'
 import Humor from '.'
 import Joke from '@components/joke'
 
+jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke', () => ({
   __esModule: true,
   default: jest.fn(),
