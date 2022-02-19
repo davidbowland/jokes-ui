@@ -25,13 +25,7 @@ Mappings:
       zoneId: Z01312547RGU1BYKIJXY
 
 Resources:
-  OriginAccessIdentity:
-    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
-    Properties:
-      CloudFrontOriginAccessIdentityConfig:
-        Comment: !Sub
-          - 'Access identity for ${Domain}'
-          - Domain: !FindInMap [EnvironmentMap, !Ref Environment, domain]
+  # Bucket
 
   UiBucket:
     Type: AWS::S3::Bucket
@@ -55,6 +49,16 @@ Resources:
             Resource: !Sub 'arn:aws:s3:::${UiBucket}/*'
             Principal:
               CanonicalUser: !GetAtt OriginAccessIdentity.S3CanonicalUserId
+
+  # CDN
+
+  OriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub
+          - 'Access identity for ${Domain}'
+          - Domain: !FindInMap [EnvironmentMap, !Ref Environment, domain]
 
   UiCloudfrontDistribution:
     Type: AWS::CloudFront::Distribution
@@ -90,6 +94,8 @@ Resources:
             - Certificate: !FindInMap [EnvironmentMap, !Ref Environment, certificate]
           MinimumProtocolVersion: 'TLSv1.2_2018'
           SslSupportMethod: 'sni-only'
+
+  # DNS
 
   DomainDns:
     Type: AWS::Route53::RecordSet

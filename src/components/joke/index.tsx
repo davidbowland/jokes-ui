@@ -132,6 +132,8 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
         onClick={setNextJoke}
         disabled={isLoading && !isError}
         color={isError ? 'error' : 'primary'}
+        data-amplify-analytics-on="click"
+        data-amplify-analytics-name="next-joke-click"
       >
         {getButtonText()}
       </Button>

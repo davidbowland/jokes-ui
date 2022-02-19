@@ -3,6 +3,7 @@ import { Operation as PatchOperation } from 'fast-json-patch'
 
 const appClientId = process.env.GATSBY_COGNITO_APP_CLIENT_ID
 const userPoolId = process.env.GATSBY_COGNITO_USER_POOL_ID
+const identityPoolId = process.env.GATSBY_IDENTITY_POOL_ID
 const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
 
@@ -11,6 +12,7 @@ const apiNameUnauthenticated = 'JokesAPIGatewayUnauthenticated'
 
 Amplify.configure({
   Auth: {
+    identityPoolId,
     region: userPoolId.split('_')[0],
     userPoolId,
     userPoolWebClientId: appClientId,
