@@ -5,6 +5,7 @@ import { render } from '@testing-library/react'
 import BadRequest from './400'
 import ServerErrorMessage from '@components/server-error-message'
 
+jest.mock('@aws-amplify/analytics')
 jest.mock('@components/server-error-message', () => ({
   __esModule: true,
   default: jest.fn(),

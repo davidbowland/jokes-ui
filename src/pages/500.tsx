@@ -1,6 +1,7 @@
 import Container from '@mui/material/Container'
 import React from 'react'
 
+import '@config/amplify'
 import ServerErrorMessage from '@components/server-error-message'
 
 const InternalServerError = (): JSX.Element => {

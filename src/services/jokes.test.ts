@@ -6,6 +6,7 @@ import JokeService, { JokeResponse } from './jokes'
 import { rest, server } from '@test/setup-server'
 
 const baseUrl = process.env.JOKE_API_BASE_URL || 'http://localhost'
+jest.mock('@aws-amplify/analytics')
 
 describe('Joke service', () => {
   const randomJokeResult: JokeResponse = { 3: { contents: 'rofl' }, 74: { contents: 'lol' } }

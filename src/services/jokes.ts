@@ -1,39 +1,8 @@
-import Amplify, { API, Auth } from 'aws-amplify'
+import { API } from 'aws-amplify'
+import { apiName, apiNameUnauthenticated } from '@config/amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
-const appClientId = process.env.GATSBY_COGNITO_APP_CLIENT_ID
-const userPoolId = process.env.GATSBY_COGNITO_USER_POOL_ID
-const identityPoolId = process.env.GATSBY_IDENTITY_POOL_ID
-const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
-
-const apiName = 'JokesAPIGateway'
-const apiNameUnauthenticated = 'JokesAPIGatewayUnauthenticated'
-
-Amplify.configure({
-  Auth: {
-    identityPoolId,
-    region: userPoolId.split('_')[0],
-    userPoolId,
-    userPoolWebClientId: appClientId,
-    mandatorySignIn: false,
-  },
-  API: {
-    endpoints: [
-      {
-        name: apiName,
-        endpoint: baseUrl,
-        custom_header: async () => ({
-          Authorization: `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`,
-        }),
-      },
-      {
-        name: apiNameUnauthenticated,
-        endpoint: baseUrl,
-      },
-    ],
-  },
-})
 
 export interface JokeType {
   contents: string
