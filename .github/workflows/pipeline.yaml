@@ -7,11 +7,19 @@ on:
       - 'feature**'
 
 env:
+  PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   TEMPLATE_NAME: template.yaml
-  TESTING_S3_BUCKET: jokes-ui-test
   TESTING_STACK_NAME: jokes-ui-test
-  PROD_S3_BUCKET: jokes-ui-source
+  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/jokes-pipeline-test
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/jokes-cloudformation-test
+  TESTING_S3_BUCKET: jokes-ui-test
+  TESTING_REGION: ${{ secrets.AWS_REGION }}
   PROD_STACK_NAME: jokes-ui
+  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/jokes-pipeline
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/jokes-cloudformation
+  PROD_S3_BUCKET: jokes-ui-source
+  PROD_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
   test:
@@ -60,12 +68,16 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install AWS SAM
         uses: aws-actions/setup-sam@v1
-      - name: Configure AWS credentials
+      - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.TESTING_REGION }}
+          role-to-assume: ${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}
+          role-session-name: feature-deployment
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
 
       - name: Deploy test infrastructure
         shell: bash
@@ -104,12 +116,16 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install AWS SAM
         uses: aws-actions/setup-sam@v1
-      - name: Configure AWS credentials
+      - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.TESTING_REGION }}
+          role-to-assume: ${{ env.TESTING_PIPELINE_EXECUTION_ROLE }}
+          role-session-name: feature-deployment
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
 
       - name: Deploy test infrastructure
         shell: bash
@@ -147,12 +163,16 @@ jobs:
         uses: actions/setup-python@v2
       - name: Install AWS SAM
         uses: aws-actions/setup-sam@v1
-      - name: Configure AWS credentials
+      - name: Assume the production pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.PROD_REGION }}
+          role-to-assume: ${{ env.PROD_PIPELINE_EXECUTION_ROLE }}
+          role-session-name: feature-deployment
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
 
       - name: Deploy production infrastructure
         shell: bash
