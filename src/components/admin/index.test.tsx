@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import { act, fireEvent, screen, render } from '@testing-library/react'
 
 import Admin from './index'
-import JokeService from '@services/jokes'
+import * as jokeService from '@services/jokes'
 import { DisplayedJoke } from '@types'
 
 const mockSignOut = jest.fn()
@@ -33,7 +33,7 @@ describe('Admin component', () => {
 
   describe('Signed in functionality', () => {
     beforeAll(() => {
-      mocked(JokeService).postJoke.mockResolvedValue({ index: '62' })
+      mocked(jokeService).postJoke.mockResolvedValue({ index: '62' })
     })
 
     test('expect being logged in shows edit joke feature and populates input text', async () => {
@@ -59,7 +59,7 @@ describe('Admin component', () => {
     })
 
     test('expect clicking "Add joke" invokes the joke service', async () => {
-      mocked(JokeService).postJoke.mockResolvedValueOnce({ index: '17' })
+      mocked(jokeService).postJoke.mockResolvedValueOnce({ index: '17' })
       render(<Admin joke={adminJoke} setJoke={setJoke} />)
 
       const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
@@ -80,13 +80,13 @@ describe('Admin component', () => {
         await addJokeButton.click()
       })
 
-      expect(mocked(JokeService).postJoke).toBeCalledWith(expect.objectContaining({ contents: adminJoke.contents }))
-      expect(mocked(JokeService).postJoke).toBeCalledTimes(1)
+      expect(mocked(jokeService).postJoke).toBeCalledWith(expect.objectContaining({ contents: adminJoke.contents }))
+      expect(mocked(jokeService).postJoke).toBeCalledTimes(1)
       expect(screen.getByText('Created joke #17')).toBeInTheDocument()
     })
 
     test('expect failing add joke service displays message', async () => {
-      mocked(JokeService).postJoke.mockRejectedValueOnce({ response: 'fnord' })
+      mocked(jokeService).postJoke.mockRejectedValueOnce({ response: 'fnord' })
       render(<Admin joke={adminJoke} setJoke={setJoke} />)
 
       const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
@@ -125,16 +125,16 @@ describe('Admin component', () => {
         await updateJokeButton.click()
       })
 
-      expect(mocked(JokeService).patchJoke).toBeCalledWith(33, [
+      expect(mocked(jokeService).patchJoke).toBeCalledWith(33, [
         { op: 'test', path: '/contents', value: 'rofl' },
         { op: 'replace', path: '/contents', value: expectedJoke },
       ])
-      expect(mocked(JokeService).patchJoke).toBeCalledTimes(1)
+      expect(mocked(jokeService).patchJoke).toBeCalledTimes(1)
       expect(screen.getByText('Joke successfully updated!')).toBeInTheDocument()
     })
 
     test('expect failing edit joke service displays message', async () => {
-      mocked(JokeService).patchJoke.mockRejectedValueOnce({ response: 'fnord' })
+      mocked(jokeService).patchJoke.mockRejectedValueOnce({ response: 'fnord' })
       render(<Admin joke={adminJoke} setJoke={setJoke} />)
 
       const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement

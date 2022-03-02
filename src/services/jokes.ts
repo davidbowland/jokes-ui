@@ -9,38 +9,22 @@ interface PostResponse {
   index: string
 }
 
-export class JokeService {
-  static recentIndexes: number[] = []
+export const getJoke = async (index: number): Promise<JokeType> => API.get(apiName, `/jokes/${index}`, {})
 
-  static async getJoke(index: number): Promise<JokeType> {
-    const response: JokeType = await API.get(apiName, `/jokes/${index}`, {})
-    return response
-  }
+export const getRandomJokes = async (recentIndexes: string[]): Promise<JokeResponse> =>
+  API.get(apiNameUnauthenticated, '/jokes/random', {
+    queryStringParameters: {
+      count: fetchCount,
+      avoid: recentIndexes.join(','),
+    },
+  })
 
-  static async postJoke(joke: JokeType): Promise<PostResponse> {
-    const response: PostResponse = await API.post(apiName, '/jokes', {
-      body: joke,
-    })
-    return response
-  }
+export const patchJoke = async (index: number, operations: PatchOperation[]): Promise<string> =>
+  API.patch(apiName, `/jokes/${index}`, {
+    body: operations,
+  })
 
-  static async patchJoke(index: number, operations: PatchOperation[]): Promise<string> {
-    const response: string = await API.patch(apiName, `/jokes/${index}`, {
-      body: operations,
-    })
-    return response
-  }
-
-  static async getRandomJokes(): Promise<JokeResponse> {
-    const response: JokeResponse = await API.get(apiNameUnauthenticated, '/jokes/random', {
-      queryStringParameters: {
-        count: fetchCount,
-        avoid: JokeService.recentIndexes.join(','),
-      },
-    })
-    JokeService.recentIndexes = (Object.keys(response) as unknown) as number[]
-    return response
-  }
-}
-
-export default JokeService
+export const postJoke = async (joke: JokeType): Promise<PostResponse> =>
+  API.post(apiName, '/jokes', {
+    body: joke,
+  })

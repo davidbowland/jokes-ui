@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField'
 import jsonpatch from 'fast-json-patch'
 import React, { useEffect, useState } from 'react'
 
-import JokeService from '@services/jokes'
+import { patchJoke, postJoke } from '@services/jokes'
 import { DisplayedJoke } from '@types'
 
 export interface SignedInProps {
@@ -37,7 +37,7 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
 
   const addJoke = async (): Promise<void> => {
     try {
-      const response = await JokeService.postJoke({ contents: addJokeText })
+      const response = await postJoke({ contents: addJokeText })
       setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })
@@ -49,7 +49,7 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const newJoke = { ...joke!, contents: editJoke }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await JokeService.patchJoke(joke!.index, jsonpatch.compare(joke!, newJoke, true))
+      await patchJoke(joke!.index, jsonpatch.compare(joke!, newJoke, true))
       setJoke(newJoke)
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
     } catch (error) {

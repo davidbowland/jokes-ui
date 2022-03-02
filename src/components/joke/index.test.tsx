@@ -5,7 +5,7 @@ import { act, screen, render } from '@testing-library/react'
 
 import Joke from './index'
 import Admin from '@components/admin'
-import JokeService from '@services/jokes'
+import * as jokeService from '@services/jokes'
 import { JokeResponse } from '@types'
 
 jest.mock('@components/admin')
@@ -26,7 +26,7 @@ describe('Joke component', () => {
 
     console.error = jest.fn()
     mocked(Admin).mockReturnValue(<>Admin section</>)
-    mocked(JokeService).getRandomJokes.mockResolvedValue(jokeResponse)
+    mocked(jokeService).getRandomJokes.mockResolvedValue(jokeResponse)
   })
 
   afterAll(() => {
@@ -61,27 +61,28 @@ describe('Joke component', () => {
     })
 
     test('expect clicking the Next Joke button calls getRandomJokes when jokes run out', async () => {
-      mocked(JokeService).getRandomJokes.mockResolvedValueOnce({ 33: { contents: joke1 } })
+      mocked(jokeService).getRandomJokes.mockResolvedValueOnce({ 33: { contents: joke1 } })
       render(<Joke initialize={true} />)
 
       const nextJokeButton: HTMLButtonElement = (await screen.findByText(/Next joke/i)) as HTMLButtonElement
       act(() => nextJokeButton.click())
 
       expect(nextJokeButton).not.toBeDisabled()
-      expect(mocked(JokeService).getRandomJokes).toHaveBeenCalledTimes(2)
+      expect(mocked(jokeService).getRandomJokes).toHaveBeenCalledWith([])
+      expect(mocked(jokeService).getRandomJokes).toHaveBeenCalledWith(['33'])
     })
 
     test('expect error on getRandomJokes reject', async () => {
-      mocked(JokeService).getRandomJokes.mockRejectedValueOnce('fake error')
+      mocked(jokeService).getRandomJokes.mockRejectedValueOnce('fake error')
       render(<Joke initialize={true} />)
 
       const errorButton: HTMLButtonElement = (await screen.findByText(/Error! Try again./)) as HTMLButtonElement
       expect(errorButton).not.toBeDisabled()
-      expect(mocked(JokeService).getRandomJokes).toHaveBeenCalledTimes(1)
+      expect(mocked(jokeService).getRandomJokes).toHaveBeenCalledTimes(1)
     })
 
     test('expect clicking error button retries fetch', async () => {
-      mocked(JokeService).getRandomJokes.mockRejectedValueOnce('another error')
+      mocked(jokeService).getRandomJokes.mockRejectedValueOnce('another error')
       render(<Joke initialize={true} />)
 
       const errorButton: HTMLButtonElement = (await screen.findByText(/Error! Try again./i)) as HTMLButtonElement
@@ -89,7 +90,7 @@ describe('Joke component', () => {
 
       expect(await screen.findByText(/Next joke/i)).not.toBeDisabled()
       expect(screen.getByText(joke1)).toBeInTheDocument()
-      expect(mocked(JokeService).getRandomJokes).toHaveBeenCalledTimes(2)
+      expect(mocked(jokeService).getRandomJokes).toHaveBeenCalledTimes(2)
     })
 
     test('expect Admin component rendered', async () => {

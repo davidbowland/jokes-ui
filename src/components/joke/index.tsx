@@ -2,7 +2,7 @@ import Button from '@mui/material/Button'
 import React, { useEffect, useState } from 'react'
 
 import Admin from '@components/admin'
-import JokeService from '@services/jokes'
+import { getRandomJokes } from '@services/jokes'
 import { DisplayedJoke, JokeResponse } from '@types'
 
 export interface JokeProps {
@@ -13,13 +13,16 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const [joke, setJoke] = useState(undefined as DisplayedJoke | undefined)
   const [availableJokes, setAvailableJokes] = useState({} as JokeResponse)
   const [isError, setIsError] = useState(false)
+  const [recentIndexes, setRecentIndexes] = useState([] as string[])
   const jokeList = (Object.keys(availableJokes) as unknown) as number[]
   const isLoading = jokeList.length == 0 || !joke
 
   const fetchJokeList = async (): Promise<void> => {
     try {
       setIsError(false)
-      setAvailableJokes(await JokeService.getRandomJokes())
+      const fetchedJokes = await getRandomJokes(recentIndexes)
+      setAvailableJokes(fetchedJokes)
+      setRecentIndexes(Object.keys(fetchedJokes))
     } catch (error) {
       setIsError(true)
       console.error(error)
