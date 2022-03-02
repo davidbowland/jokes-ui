@@ -98,6 +98,7 @@ export default {
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
+    '^@types$': '<rootDir>/src/types',
     '^@test/(.*)$': '<rootDir>/test/$1',
     '@fontsource/rokkitt': '<rootDir>/__mocks__/file-mock.js',
   },
@@ -156,7 +157,7 @@ export default {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: 'node',
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

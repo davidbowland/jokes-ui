@@ -1,18 +1,11 @@
 import { API } from 'aws-amplify'
 import { apiName, apiNameUnauthenticated } from '@config/amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
+import { JokeType, JokeResponse } from '@types'
 
 const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
 
-export interface JokeType {
-  contents: string
-}
-
-export interface JokeResponse {
-  [key: number]: JokeType
-}
-
-export interface PostResponse {
+interface PostResponse {
   index: string
 }
 

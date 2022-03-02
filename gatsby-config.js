@@ -24,6 +24,7 @@ module.exports = {
           '@config': 'src/config',
           '@pages': 'src/pages',
           '@services': 'src/services',
+          '@types': 'src/types',
           '@test': 'test',
         },
         extensions: ['js', 'jsx', 'ts', 'tsx'],
