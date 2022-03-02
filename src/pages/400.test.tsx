@@ -14,7 +14,7 @@ describe('400 error page', () => {
     mocked(ServerErrorMessage).mockReturnValue(<></>)
   })
 
-  test('Rendering BadRequest renders ServerErrorMessage', () => {
+  test('expect rendering BadRequest renders ServerErrorMessage', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
     expect(mocked(ServerErrorMessage)).toBeCalledWith(

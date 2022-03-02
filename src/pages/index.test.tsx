@@ -15,7 +15,7 @@ describe('Humor page', () => {
     mocked(Joke).mockReturnValue(<></>)
   })
 
-  test('Rendering Humor renders Joke', () => {
+  test('expect rendering Humor renders Joke', () => {
     render(<Humor />)
     expect(mocked(Joke)).toHaveBeenCalledWith({ initialize: true }, expect.anything())
     expect(mocked(Joke)).toHaveBeenCalledTimes(1)

@@ -14,7 +14,7 @@ describe('404 error page', () => {
     mocked(ServerErrorMessage).mockReturnValue(<></>)
   })
 
-  test('Rendering NotFound renders ServerErrorMessage', () => {
+  test('expect rendering NotFound renders ServerErrorMessage', () => {
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
     expect(mocked(ServerErrorMessage)).toBeCalledWith(

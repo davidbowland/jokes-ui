@@ -52,13 +52,13 @@ describe('Joke service', () => {
       )
     })
 
-    test('Expect endpoint called with joke', async () => {
+    test('expect endpoint called with joke', async () => {
       await postJoke(joke)
       expect(postEndpoint).toHaveBeenCalledTimes(1)
       expect(postEndpoint).toHaveBeenCalledWith(joke)
     })
 
-    test('Expect result from call returned', async () => {
+    test('expect result from call returned', async () => {
       const expectedResult = { id: '148' }
       postEndpoint.mockReturnValue(expectedResult)
 
@@ -89,7 +89,7 @@ describe('Joke service', () => {
       )
     })
 
-    test('Expect endpoint called with index and patch operation', async () => {
+    test('expect endpoint called with index and patch operation', async () => {
       await patchJoke(index, operation)
       expect(patchEndpoint).toHaveBeenCalledTimes(1)
       expect(patchEndpoint).toHaveBeenCalledWith(index, operation)
@@ -110,7 +110,7 @@ describe('Joke service', () => {
       )
     })
 
-    test('Expect results using recentIndexes', async () => {
+    test('expect results using recentIndexes', async () => {
       const result = await getRandomJokes(recentIndexes)
 
       expect(result).toEqual(randomJokeResult)

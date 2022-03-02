@@ -14,7 +14,7 @@ describe('500 error page', () => {
     mocked(ServerErrorMessage).mockReturnValue(<></>)
   })
 
-  test('Rendering InternalServerError renders ServerErrorMessage', () => {
+  test('expect rendering InternalServerError renders ServerErrorMessage', () => {
     const expectedTitle = '500: Internal Server Error'
     render(<InternalServerError />)
     expect(mocked(ServerErrorMessage)).toBeCalledWith(
