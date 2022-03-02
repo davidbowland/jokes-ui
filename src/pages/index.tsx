@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import Joke from '@components/joke'
 
-// import '@config/amplify'
+import '@config/amplify'
 import '@fontsource/rokkitt'
 import 'normalize.css'
 import '@assets/css/index.css'
