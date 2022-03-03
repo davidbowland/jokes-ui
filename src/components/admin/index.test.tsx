@@ -7,6 +7,7 @@ import Admin from './index'
 import * as jokeService from '@services/jokes'
 import { DisplayedJoke } from '@types'
 
+jest.mock('@aws-amplify/analytics')
 const mockSignOut = jest.fn()
 jest.mock('@aws-amplify/ui-react', () => ({
   Authenticator: jest.fn().mockImplementation(({ children }) => children({ signOut: mockSignOut }) ?? null),

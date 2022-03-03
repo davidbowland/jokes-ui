@@ -8,6 +8,7 @@ import Admin from '@components/admin'
 import * as jokeService from '@services/jokes'
 import { JokeResponse } from '@types'
 
+jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')
 jest.mock('@services/jokes')
 
