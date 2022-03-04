@@ -2,10 +2,6 @@ html {
   background-color: #000;
 }
 
-.amplify-tabs {
-  display: none;
-}
-
 .joke {
   font-size: 32px;
   line-height: 1.5em;
