@@ -10,7 +10,10 @@ const baseUrl = process.env.JOKE_API_BASE_URL || 'http://localhost'
 jest.mock('@aws-amplify/analytics')
 
 describe('Joke service', () => {
-  const randomJokeResult: JokeResponse = { 3: { contents: 'rofl' }, 74: { contents: 'lol' } }
+  const randomJokeResult: JokeResponse[] = [
+    { id: 3, data: { contents: 'rofl' } },
+    { id: 74, data: { contents: 'lol' } },
+  ]
 
   beforeAll(() => {
     const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession
@@ -41,7 +44,7 @@ describe('Joke service', () => {
 
   describe('postJoke', () => {
     const postEndpoint = jest.fn().mockReturnValue(200)
-    const joke = Object.values(randomJokeResult)[0]
+    const joke = Object.values(randomJokeResult)[0].data
 
     beforeAll(() => {
       server.use(

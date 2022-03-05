@@ -11,7 +11,7 @@ interface PostResponse {
 
 export const getJoke = async (index: number): Promise<JokeType> => API.get(apiName, `/jokes/${index}`, {})
 
-export const getRandomJokes = async (recentIndexes: string[]): Promise<JokeResponse> =>
+export const getRandomJokes = async (recentIndexes: string[]): Promise<JokeResponse[]> =>
   API.get(apiNameUnauthenticated, '/jokes/random', {
     queryStringParameters: {
       count: fetchCount,

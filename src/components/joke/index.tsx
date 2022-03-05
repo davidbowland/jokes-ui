@@ -11,7 +11,7 @@ export interface JokeProps {
 
 const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   const [joke, setJoke] = useState(undefined as DisplayedJoke | undefined)
-  const [availableJokes, setAvailableJokes] = useState({} as JokeResponse)
+  const [availableJokes, setAvailableJokes] = useState([] as JokeResponse[])
   const [isError, setIsError] = useState(false)
   const [recentIndexes, setRecentIndexes] = useState([] as string[])
   const jokeList = (Object.keys(availableJokes) as unknown) as number[]
@@ -22,7 +22,7 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
       setIsError(false)
       const fetchedJokes = await getRandomJokes(recentIndexes)
       setAvailableJokes(fetchedJokes)
-      setRecentIndexes(Object.keys(fetchedJokes))
+      setRecentIndexes(fetchedJokes.map((item) => item.id.toString()))
     } catch (error) {
       setIsError(true)
       console.error(error)
@@ -30,12 +30,9 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }
 
   const getRandomJoke = (): DisplayedJoke => {
-    const randomIndex = jokeList[Math.floor(Math.random() * jokeList.length)]
-    const selectedJoke = availableJokes[randomIndex]
-    const { [randomIndex]: _, ...newAvailableJokes } = availableJokes
+    const [selectedJoke, ...newAvailableJokes] = availableJokes
     setAvailableJokes(newAvailableJokes)
-
-    return { ...selectedJoke, index: randomIndex }
+    return { ...selectedJoke.data, index: selectedJoke.id }
   }
 
   const setNextJoke = async (): Promise<void> => {

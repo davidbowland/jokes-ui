@@ -16,7 +16,11 @@ describe('Joke component', () => {
   const joke1 = 'Ha'
   const joke2 = 'lol'
   const joke3 = '=)'
-  const jokeResponse: JokeResponse = { 33: { contents: joke1 }, 42: { contents: joke2 }, 70: { contents: joke3 } }
+  const jokeResponse: JokeResponse[] = [
+    { id: 33, data: { contents: joke1 } },
+    { id: 42, data: { contents: joke2 } },
+    { id: 70, data: { contents: joke3 } },
+  ]
 
   const consoleError = console.error
 
@@ -61,7 +65,7 @@ describe('Joke component', () => {
   })
 
   test('expect clicking the Next Joke button calls getRandomJokes when jokes run out', async () => {
-    mocked(jokeService).getRandomJokes.mockResolvedValueOnce({ 33: { contents: joke1 } })
+    mocked(jokeService).getRandomJokes.mockResolvedValueOnce([{ id: 33, data: { contents: joke1 } }])
     render(<Joke initialize={true} />)
 
     const nextJokeButton: HTMLButtonElement = (await screen.findByText(/Next joke/i)) as HTMLButtonElement

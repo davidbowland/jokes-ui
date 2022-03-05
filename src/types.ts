@@ -7,5 +7,6 @@ export interface DisplayedJoke extends JokeType {
 }
 
 export interface JokeResponse {
-  [key: number]: JokeType
+  data: JokeType
+  id: number
 }
