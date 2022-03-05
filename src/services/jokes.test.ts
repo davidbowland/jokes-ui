@@ -6,7 +6,7 @@ import { getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { rest, server } from '@test/setup-server'
 import { JokeResponse } from '@types'
 
-const baseUrl = process.env.JOKE_API_BASE_URL || 'http://localhost'
+const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 jest.mock('@aws-amplify/analytics')
 
 describe('Joke service', () => {
