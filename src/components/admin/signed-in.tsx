@@ -1,6 +1,8 @@
 import Alert from '@mui/material/Alert'
+import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
@@ -34,17 +36,21 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
   const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
   const [adminNotice, setAdminNotice] = useState({ text: '' } as AdminNotice)
   const [addJokeText, setAddJokeText] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const addJoke = async (): Promise<void> => {
+    setIsLoading(true)
     try {
       const response = await postJoke({ contents: addJokeText })
       setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })
     }
+    setIsLoading(false)
   }
 
   const updateJoke = async (): Promise<void> => {
+    setIsLoading(true)
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const newJoke = { ...joke!, contents: editJoke }
@@ -55,6 +61,7 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })
     }
+    setIsLoading(false)
   }
 
   const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
@@ -122,6 +129,9 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
           Sign out
         </Button>
       </div>
+      <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   )
 }

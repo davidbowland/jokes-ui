@@ -1,4 +1,6 @@
+import Backdrop from '@mui/material/Backdrop'
 import Button from '@mui/material/Button'
+import CircularProgress from '@mui/material/CircularProgress'
 import React, { useEffect, useState } from 'react'
 
 import Admin from '@components/admin'
@@ -75,6 +77,12 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
         {getButtonText()}
       </Button>
       <Admin joke={joke} setJoke={setJoke} />
+      <Backdrop
+        open={isLoading && !isError && !joke?.contents}
+        sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   )
 }
