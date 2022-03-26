@@ -1,11 +1,11 @@
-import Backdrop from '@mui/material/Backdrop'
+import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
-import React, { useEffect, useState } from 'react'
+import Skeleton from '@mui/material/Skeleton'
 
+import { DisplayedJoke, JokeResponse } from '@types'
 import Admin from '@components/admin'
 import { getRandomJokes } from '@services/jokes'
-import { DisplayedJoke, JokeResponse } from '@types'
 
 export interface JokeProps {
   initialize?: boolean
@@ -65,24 +65,27 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
 
   return (
     <>
-      <article className="joke">{joke?.contents ?? 'Fetching joke'}</article>
+      <article className="joke" style={{ height: '4em' }}>
+        {joke?.contents ?? (
+          <>
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </>
+        )}
+      </article>
       <Button
-        variant="contained"
-        onClick={setNextJoke}
-        disabled={isLoading && !isError}
         color={isError ? 'error' : 'primary'}
-        data-amplify-analytics-on="click"
         data-amplify-analytics-name="next-joke-click"
+        data-amplify-analytics-on="click"
+        disabled={isLoading && !isError}
+        onClick={setNextJoke}
+        startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
+        variant="contained"
       >
         {getButtonText()}
       </Button>
       <Admin joke={joke} setJoke={setJoke} />
-      <Backdrop
-        open={isLoading && !isError && !joke?.contents}
-        sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </>
   )
 }
