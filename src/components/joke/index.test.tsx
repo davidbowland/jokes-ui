@@ -1,11 +1,11 @@
-import { mocked } from 'jest-mock'
-import React from 'react'
 import '@testing-library/jest-dom'
-import { act, screen, render } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
+import React from 'react'
+import { mocked } from 'jest-mock'
 
-import Joke from './index'
-import Admin from '@components/admin'
 import * as jokeService from '@services/jokes'
+import Admin from '@components/admin'
+import Joke from './index'
 import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
@@ -17,9 +17,9 @@ describe('Joke component', () => {
   const joke2 = 'lol'
   const joke3 = '=)'
   const jokeResponse: JokeResponse[] = [
-    { id: 33, data: { contents: joke1 } },
-    { id: 42, data: { contents: joke2 } },
-    { id: 70, data: { contents: joke3 } },
+    { data: { contents: joke1 }, id: 33 },
+    { data: { contents: joke2 }, id: 42 },
+    { data: { contents: joke3 }, id: 70 },
   ]
 
   const consoleError = console.error
@@ -65,7 +65,7 @@ describe('Joke component', () => {
   })
 
   test('expect clicking the Next Joke button calls getRandomJokes when jokes run out', async () => {
-    mocked(jokeService).getRandomJokes.mockResolvedValueOnce([{ id: 33, data: { contents: joke1 } }])
+    mocked(jokeService).getRandomJokes.mockResolvedValueOnce([{ data: { contents: joke1 }, id: 33 }])
     render(<Joke initialize={true} />)
 
     const nextJokeButton: HTMLButtonElement = (await screen.findByText(/Next joke/i)) as HTMLButtonElement

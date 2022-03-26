@@ -1,13 +1,13 @@
-import { Authenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import { Authenticator } from '@aws-amplify/ui-react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import React from 'react'
 
-import SignedIn from './signed-in'
 import { DisplayedJoke } from '@types'
+import SignedIn from './signed-in'
 
 export interface AdminProps {
   joke?: DisplayedJoke

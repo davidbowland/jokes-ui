@@ -1,10 +1,10 @@
-import { mocked } from 'jest-mock'
-import React from 'react'
 import '@testing-library/jest-dom'
-import { act, fireEvent, screen, render } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import React from 'react'
+import { mocked } from 'jest-mock'
 
-import Admin from './index'
 import * as jokeService from '@services/jokes'
+import Admin from './index'
 import { DisplayedJoke } from '@types'
 
 jest.mock('@aws-amplify/analytics')

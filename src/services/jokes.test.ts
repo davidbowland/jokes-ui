@@ -11,8 +11,8 @@ jest.mock('@aws-amplify/analytics')
 
 describe('Joke service', () => {
   const randomJokeResult: JokeResponse[] = [
-    { id: 3, data: { contents: 'rofl' } },
-    { id: 74, data: { contents: 'lol' } },
+    { data: { contents: 'rofl' }, id: 3 },
+    { data: { contents: 'lol' }, id: 74 },
   ]
 
   beforeAll(() => {

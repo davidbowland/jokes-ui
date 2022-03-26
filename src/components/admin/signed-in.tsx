@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
@@ -9,7 +10,6 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
 import jsonpatch from 'fast-json-patch'
-import React, { useEffect, useState } from 'react'
 
 import { patchJoke, postJoke } from '@services/jokes'
 import { DisplayedJoke } from '@types'
@@ -82,7 +82,7 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
       {adminNotice.severity && <Alert severity={adminNotice.severity}>{adminNotice.text}</Alert>}
       <TabContext value={adminView}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={updateAdminView} aria-label="Administration tabs">
+          <TabList aria-label="Administration tabs" onChange={updateAdminView}>
             <Tab label="Edit joke" value={AdminView.EDIT_JOKE} />
             <Tab label="Add joke" value={AdminView.ADD_JOKE} />
           </TabList>
@@ -90,13 +90,13 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
         <TabPanel value={AdminView.EDIT_JOKE}>
           <label>
             <TextField
-              variant="filled"
-              type="text"
               fullWidth
               label={`Joke #${joke.index}`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
               name="update-joke-text"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
+              type="text"
               value={editJoke}
+              variant="filled"
             />
           </label>
           <p>
@@ -108,13 +108,13 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
         <TabPanel value={AdminView.ADD_JOKE}>
           <label>
             <TextField
-              variant="filled"
-              type="text"
               fullWidth
               label="Joke to add"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
               name="add-joke-text"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
+              type="text"
               value={addJokeText}
+              variant="filled"
             />
           </label>
           <p>

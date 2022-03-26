@@ -1,13 +1,13 @@
 import Container from '@mui/material/Container'
-import React from 'react'
 import { Helmet } from 'react-helmet'
+import React from 'react'
 
 import Joke from '@components/joke'
 
+import '@assets/css/index.css'
 import '@config/amplify'
 import '@fontsource/rokkitt'
 import 'normalize.css'
-import '@assets/css/index.css'
 
 const Humor = (): JSX.Element => {
   return (
