@@ -21,7 +21,7 @@ const Admin = ({ joke, setJoke }: AdminProps): JSX.Element => {
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>Site Administration</AccordionSummary>
         <AccordionDetails>
           <Authenticator hideSignUp={true}>
-            {({ signOut }) => <SignedIn joke={joke} signOut={signOut} setJoke={setJoke} />}
+            {({ signOut }) => <SignedIn joke={joke} setJoke={setJoke} signOut={signOut} />}
           </Authenticator>
         </AccordionDetails>
       </Accordion>

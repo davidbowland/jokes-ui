@@ -100,7 +100,7 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
             />
           </label>
           <p>
-            <Button variant="contained" onClick={updateJoke}>
+            <Button onClick={updateJoke} variant="contained">
               Update joke
             </Button>
           </p>
@@ -118,14 +118,14 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
             />
           </label>
           <p>
-            <Button variant="contained" onClick={addJoke}>
+            <Button onClick={addJoke} variant="contained">
               Add joke
             </Button>
           </p>
         </TabPanel>
       </TabContext>
       <div>
-        <Button variant="outlined" color="error" onClick={signOut}>
+        <Button color="error" onClick={signOut} variant="outlined">
           Sign out
         </Button>
       </div>
