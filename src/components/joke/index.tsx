@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Skeleton from '@mui/material/Skeleton'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 
 import { DisplayedJoke, JokeResponse } from '@types'
 import Admin from '@components/admin'
@@ -64,8 +66,8 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }, [availableJokes, joke])
 
   return (
-    <>
-      <article className="joke" style={{ height: '4em' }}>
+    <Stack margin="auto" spacing={2}>
+      <Typography minHeight={'2.5em'} variant="h4">
         {joke?.contents ?? (
           <>
             <Skeleton />
@@ -73,20 +75,22 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
             <Skeleton />
           </>
         )}
-      </article>
-      <Button
-        color={isError ? 'error' : 'primary'}
-        data-amplify-analytics-name="next-joke-click"
-        data-amplify-analytics-on="click"
-        disabled={isLoading && !isError}
-        onClick={setNextJoke}
-        startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
-        variant="contained"
-      >
-        {getButtonText()}
-      </Button>
+      </Typography>
+      <div>
+        <Button
+          color={isError ? 'error' : 'primary'}
+          data-amplify-analytics-name="next-joke-click"
+          data-amplify-analytics-on="click"
+          disabled={isLoading && !isError}
+          onClick={setNextJoke}
+          startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
+          variant="contained"
+        >
+          {getButtonText()}
+        </Button>
+      </div>
       <Admin joke={joke} setJoke={setJoke} />
-    </>
+    </Stack>
   )
 }
 

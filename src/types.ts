@@ -1,3 +1,5 @@
+export { Theme } from '@mui/material/styles'
+
 export interface JokeType {
   contents: string
 }
