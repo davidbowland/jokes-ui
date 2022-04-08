@@ -42,7 +42,7 @@ describe('Joke component', () => {
     render(<Joke />)
 
     expect(screen.getByText(/Loading.../i)).toBeDisabled()
-    expect(() => screen.getByText(joke1)).toThrow()
+    expect(screen.queryByText(joke1)).not.toBeInTheDocument()
   })
 
   test('expect joke to be initialized when prompted', async () => {
