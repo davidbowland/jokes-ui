@@ -10,7 +10,6 @@ import Themed from '@components/themed'
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke')
 jest.mock('@components/themed')
-jest.mock('@fontsource/rokkitt')
 
 describe('Humor page', () => {
   beforeAll(() => {

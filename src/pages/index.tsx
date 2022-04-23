@@ -5,9 +5,6 @@ import React from 'react'
 import Joke from '@components/joke'
 import Themed from '@components/themed'
 
-import '@assets/css/index.css'
-import '@fontsource/rokkitt'
-
 const Humor = (): JSX.Element => {
   return (
     <Themed>
