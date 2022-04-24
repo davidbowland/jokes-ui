@@ -16,7 +16,6 @@ import { DisplayedJoke } from '@types'
 
 export interface SignedInProps {
   joke?: DisplayedJoke
-  signOut: () => void
   setJoke: (joke: DisplayedJoke | undefined) => void
 }
 
@@ -30,7 +29,7 @@ enum AdminView {
   EDIT_JOKE = 'edit',
 }
 
-const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
+const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
   const [editJoke, setEditJoke] = useState(joke?.contents ?? '')
 
   const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
@@ -124,11 +123,6 @@ const SignedIn = ({ joke, signOut, setJoke }: SignedInProps): JSX.Element => {
           </p>
         </TabPanel>
       </TabContext>
-      <div>
-        <Button color="error" onClick={signOut} variant="outlined">
-          Sign out
-        </Button>
-      </div>
       <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}>
         <CircularProgress color="inherit" />
       </Backdrop>

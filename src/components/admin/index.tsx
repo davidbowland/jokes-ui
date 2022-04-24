@@ -1,10 +1,7 @@
 import '@aws-amplify/ui-react/styles.css'
-import Accordion from '@mui/material/Accordion'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import { Authenticator } from '@aws-amplify/ui-react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Auth } from 'aws-amplify'
+import Divider from '@mui/material/Divider'
 
 import { DisplayedJoke } from '@types'
 import SignedIn from './signed-in'
@@ -15,18 +12,25 @@ export interface AdminProps {
 }
 
 const Admin = ({ joke, setJoke }: AdminProps): JSX.Element => {
-  return (
-    <section className="site-administration">
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>Site Administration</AccordionSummary>
-        <AccordionDetails>
-          <Authenticator hideSignUp={true}>
-            {({ signOut }) => <SignedIn joke={joke} setJoke={setJoke} signOut={signOut} />}
-          </Authenticator>
-        </AccordionDetails>
-      </Accordion>
-    </section>
-  )
+  const [isAdminVisible, setIsAdminVisible] = useState(false)
+
+  useEffect(() => {
+    Auth.currentAuthenticatedUser()
+      .then(() => setIsAdminVisible(true))
+      .catch(() => null)
+  }, [])
+
+  if (isAdminVisible) {
+    return (
+      <>
+        <Divider />
+        <section className="site-administration">
+          <SignedIn joke={joke} setJoke={setJoke} />
+        </section>
+      </>
+    )
+  }
+  return <></>
 }
 
 export default Admin

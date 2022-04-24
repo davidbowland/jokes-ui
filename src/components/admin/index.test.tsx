@@ -1,12 +1,15 @@
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import { Auth } from 'aws-amplify'
 import React from 'react'
 import { mocked } from 'jest-mock'
 
 import * as jokeService from '@services/jokes'
 import Admin from './index'
 import { DisplayedJoke } from '@types'
+import { user } from '@test/__mocks__'
 
+jest.mock('aws-amplify')
 jest.mock('@aws-amplify/analytics')
 const mockSignOut = jest.fn()
 jest.mock('@aws-amplify/ui-react', () => ({
@@ -26,11 +29,19 @@ describe('Admin component', () => {
     global.Math = mockMath
 
     console.error = jest.fn()
+    mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
     mocked(jokeService).postJoke.mockResolvedValue({ index: '62' })
   })
 
   afterAll(() => {
     console.error = consoleError
+  })
+
+  test('expect being logged out shows nothing', async () => {
+    mocked(Auth).currentAuthenticatedUser.mockRejectedValueOnce(undefined)
+    render(<Admin joke={adminJoke} setJoke={setJoke} />)
+
+    expect(screen.queryByText(/joke/i)).not.toBeInTheDocument()
   })
 
   test('expect being logged in shows edit joke feature and populates input text', async () => {
@@ -151,6 +162,6 @@ describe('Admin component', () => {
   test('expect missing joke shows unable to load jokes', async () => {
     render(<Admin joke={undefined} setJoke={setJoke} />)
 
-    expect(screen.getByText(/Unable to load jokes/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Unable to load jokes/i)).toBeInTheDocument()
   })
 })
