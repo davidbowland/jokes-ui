@@ -43,7 +43,6 @@ const appId = process.env.GATSBY_PINPOINT_ID
 const analyticsConfig = {
   AWSPinpoint: {
     appId,
-    mandatorySignIn: false,
     region: 'us-east-1',
   },
 }
