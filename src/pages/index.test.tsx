@@ -25,9 +25,4 @@ describe('Humor page', () => {
     expect(mocked(Joke)).toHaveBeenCalledWith({ initialize: true }, expect.anything())
     expect(mocked(Joke)).toHaveBeenCalledTimes(1)
   })
-
-  test('expect rendering Humor renders Authenticated', () => {
-    render(<Humor />)
-    expect(mocked(Authenticated)).toHaveBeenCalledTimes(1)
-  })
 })
