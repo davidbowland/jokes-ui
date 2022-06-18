@@ -104,7 +104,7 @@ describe('Admin component', () => {
 
     const addTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke to add/i)) as HTMLInputElement
     act(() => {
-      fireEvent.change(addTextInput, { target: { value: adminJoke } })
+      fireEvent.change(addTextInput, { target: { value: adminJoke.contents } })
     })
     const addJokeButton: HTMLButtonElement = (
       await screen.findAllByText(/Add joke/i, {
@@ -123,6 +123,9 @@ describe('Admin component', () => {
     render(<Admin joke={adminJoke} setJoke={setJoke} />)
 
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #33/i)) as HTMLInputElement
+    act(() => {
+      fireEvent.change(updateTextInput, { target: { value: expectedJoke } })
+    })
     act(() => {
       fireEvent.change(updateTextInput, { target: { value: expectedJoke } })
     })

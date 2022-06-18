@@ -24,16 +24,16 @@ describe('Joke service', () => {
     beforeAll(() => {
       server.use(
         rest.get(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
-          const { id } = req.params
+          const { id } = req.params as { id: string }
           if (!(id in randomJokeResult)) {
             return res(ctx.status(400))
           }
-          return res(ctx.json(randomJokeResult[id]))
+          return res(ctx.json(randomJokeResult[id as unknown as number]))
         })
       )
     })
 
-    test.each((Object.keys(randomJokeResult) as unknown) as number[])(
+    test.each(Object.keys(randomJokeResult) as unknown as number[])(
       'Expect results from client endpoint',
       async (expectedId: number) => {
         const result = await getJoke(expectedId)
@@ -73,14 +73,14 @@ describe('Joke service', () => {
 
   describe('patchJoke', () => {
     const patchEndpoint = jest.fn().mockReturnValue(200)
-    const index = (Object.keys(randomJokeResult)[0] as unknown) as number
-    const operation = ([
+    const index = Object.keys(randomJokeResult)[0] as unknown as number
+    const operation = [
       {
         op: 'add',
         path: '/foo',
         value: 'bar',
       },
-    ] as unknown) as PatchOperation[]
+    ] as unknown as PatchOperation[]
 
     beforeAll(() => {
       server.use(

@@ -1,4 +1,4 @@
-import { Authenticator } from '@aws-amplify/ui-react'
+import { Authenticator, ThemeProvider, defaultDarkModeOverride } from '@aws-amplify/ui-react'
 import Button from '@mui/material/Button'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import { CognitoUserAmplify } from '@aws-amplify/ui'
@@ -11,22 +11,29 @@ export interface JokesAuthenticatorProps {
 }
 
 const JokesAuthenticator = ({ setLoggedInUser, setShowLogin }: JokesAuthenticatorProps): JSX.Element => {
+  const theme = {
+    name: 'dark-mode-theme',
+    overrides: [defaultDarkModeOverride],
+  }
+
   return (
-    <main className="main-content">
+    <main style={{ padding: '50px' }}>
       <section>
-        <Stack margin="auto" spacing={2}>
-          <Authenticator hideSignUp={true}>
-            {({ user }) => {
-              setLoggedInUser(user)
-              return <></>
-            }}
-          </Authenticator>
-          <div style={{ textAlign: 'center' }}>
-            <Button onClick={() => setShowLogin(false)} startIcon={<CancelOutlinedIcon />} variant="outlined">
-              Cancel
-            </Button>
-          </div>
-        </Stack>
+        <ThemeProvider colorMode="system" theme={theme}>
+          <Stack margin="auto" spacing={2}>
+            <Authenticator hideSignUp={true}>
+              {({ user }) => {
+                setLoggedInUser(user)
+                return <></>
+              }}
+            </Authenticator>
+            <div style={{ textAlign: 'center' }}>
+              <Button onClick={() => setShowLogin(false)} startIcon={<CancelOutlinedIcon />} variant="outlined">
+                Cancel
+              </Button>
+            </div>
+          </Stack>
+        </ThemeProvider>
       </section>
     </main>
   )

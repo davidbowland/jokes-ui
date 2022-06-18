@@ -9,7 +9,7 @@ const Humor = (): JSX.Element => {
       <Helmet>
         <title>Humor | dbowland.com</title>
       </Helmet>
-      <main className="main-content">
+      <main style={{ padding: '50px' }}>
         <Joke initialize={typeof window !== 'undefined'} />
       </main>
     </>
