@@ -4,7 +4,7 @@ import { Analytics } from '@aws-amplify/analytics'
 const appClientId = process.env.GATSBY_COGNITO_APP_CLIENT_ID
 const userPoolId = process.env.GATSBY_COGNITO_USER_POOL_ID
 const identityPoolId = process.env.GATSBY_IDENTITY_POOL_ID
-const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
+export const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 
 // Authorization
 
