@@ -18,7 +18,7 @@ jest.mock('@aws-amplify/ui-react', () => ({
 jest.mock('@services/jokes')
 
 describe('Admin component', () => {
-  const adminJoke: DisplayedJoke = { contents: 'rofl', index: 33 }
+  const adminJoke: DisplayedJoke = { audio: { contentType: 'text/plain', data: 'yalp' }, contents: 'rofl', index: 33 }
 
   const consoleError = console.error
   const setJoke = jest.fn()
@@ -139,6 +139,8 @@ describe('Admin component', () => {
     expect(mocked(jokeService).patchJoke).toBeCalledWith(33, [
       { op: 'test', path: '/contents', value: 'rofl' },
       { op: 'replace', path: '/contents', value: expectedJoke },
+      { op: 'test', path: '/audio', value: { contentType: 'text/plain', data: 'yalp' } },
+      { op: 'remove', path: '/audio' },
     ])
     expect(mocked(jokeService).patchJoke).toBeCalledTimes(1)
     expect(screen.getByText('Joke successfully updated!')).toBeInTheDocument()

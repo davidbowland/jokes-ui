@@ -52,7 +52,7 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
     setIsLoading(true)
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const newJoke = { ...joke!, contents: editJoke }
+      const newJoke = { ...joke!, audio: undefined, contents: editJoke }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await patchJoke(joke!.index, jsonpatch.compare(joke!, newJoke, true))
       setJoke(newJoke)
