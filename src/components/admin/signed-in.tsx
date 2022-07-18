@@ -11,8 +11,8 @@ import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
 import jsonpatch from 'fast-json-patch'
 
+import { DisplayedJoke, RemoveOperation } from '@types'
 import { patchJoke, postJoke } from '@services/jokes'
-import { DisplayedJoke } from '@types'
 
 export interface SignedInProps {
   joke?: DisplayedJoke
@@ -52,9 +52,13 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
     setIsLoading(true)
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const newJoke = { ...joke!, audio: undefined, contents: editJoke }
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await patchJoke(joke!.index, jsonpatch.compare(joke!, newJoke, true))
+      const currentJoke = joke!
+      const newJoke = { ...currentJoke, contents: editJoke }
+      const jsonPatchOperations = [
+        ...jsonpatch.compare(currentJoke, newJoke, true),
+        { op: 'remove', path: '/audio' } as RemoveOperation,
+      ]
+      await patchJoke(currentJoke.index, jsonPatchOperations)
       setJoke(newJoke)
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
     } catch (error) {

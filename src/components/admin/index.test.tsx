@@ -139,7 +139,6 @@ describe('Admin component', () => {
     expect(mocked(jokeService).patchJoke).toBeCalledWith(33, [
       { op: 'test', path: '/contents', value: 'rofl' },
       { op: 'replace', path: '/contents', value: expectedJoke },
-      { op: 'test', path: '/audio', value: { contentType: 'text/plain', data: 'yalp' } },
       { op: 'remove', path: '/audio' },
     ])
     expect(mocked(jokeService).patchJoke).toBeCalledTimes(1)
