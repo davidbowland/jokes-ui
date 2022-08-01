@@ -48,7 +48,7 @@ module.exports = {
     },
   ],
   siteMetadata: {
-    siteUrl: 'https://jokes.bowland.link',
+    siteUrl: 'https://jokes.dbowland.com',
     title: 'jokes-ui',
   },
 }
