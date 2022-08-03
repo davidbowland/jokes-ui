@@ -49,7 +49,7 @@ describe('Joke service', () => {
     beforeAll(() => {
       server.use(
         rest.post(`${baseUrl}/jokes`, async (req, res, ctx) => {
-          const body = postEndpoint(req.body)
+          const body = postEndpoint(await req.json())
           return res(body ? ctx.json(body) : ctx.status(400))
         })
       )
@@ -86,7 +86,7 @@ describe('Joke service', () => {
       server.use(
         rest.patch(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
           const { id } = req.params
-          const body = patchEndpoint(id, req.body)
+          const body = patchEndpoint(id, await req.json())
           return res(body ? ctx.json(body) : ctx.status(400))
         })
       )
