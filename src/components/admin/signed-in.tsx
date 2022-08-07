@@ -77,12 +77,20 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
   }, [joke])
 
   if (joke === undefined) {
-    return <Alert severity={'error'}>Unable to load jokes</Alert>
+    return (
+      <Alert severity={'error'} variant="filled">
+        Unable to load jokes
+      </Alert>
+    )
   }
 
   return (
     <div>
-      {adminNotice.severity && <Alert severity={adminNotice.severity}>{adminNotice.text}</Alert>}
+      {adminNotice.severity && (
+        <Alert severity={adminNotice.severity} variant="filled">
+          {adminNotice.text}
+        </Alert>
+      )}
       <TabContext value={adminView}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList aria-label="Administration tabs" onChange={updateAdminView}>
