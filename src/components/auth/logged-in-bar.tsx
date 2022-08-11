@@ -36,7 +36,7 @@ const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): JSX.Element => {
           Jokes
         </Link>
       </Typography>
-      <Typography component="div">Welcome, admin</Typography>
+      <Typography component="div">admin</Typography>
       <IconButton
         aria-controls="menu-appbar"
         aria-haspopup="true"

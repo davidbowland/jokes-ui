@@ -117,7 +117,7 @@ describe('Authenticated component', () => {
       })
 
       expect(mocked(Authenticator)).toHaveBeenCalledTimes(1)
-      expect(await screen.findByText(/Welcome, admin/i)).toBeInTheDocument()
+      expect(await screen.findByText(/admin/i)).toBeInTheDocument()
     })
 
     test('expect going back from login goes back', async () => {
@@ -146,14 +146,14 @@ describe('Authenticated component', () => {
       user.deleteUser = jest.fn().mockImplementation((callback) => callback())
     })
 
-    test('expect welcome message', async () => {
+    test('expect user name', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
         </Authenticated>
       )
 
-      expect(await screen.findByText(/Welcome, admin/i)).toBeInTheDocument()
+      expect(await screen.findByText(/admin/i)).toBeInTheDocument()
     })
 
     test('expect working menu', async () => {
@@ -188,7 +188,7 @@ describe('Authenticated component', () => {
       expect(user.deleteUser).not.toHaveBeenCalled()
       expect(mocked(Auth).signOut).toHaveBeenCalled()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
-      expect(screen.queryByText(/Welcome, Dave/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Dave/i)).not.toBeInTheDocument()
       await waitFor(() => expect(mockLocationReload).toHaveBeenCalled())
     })
   })
