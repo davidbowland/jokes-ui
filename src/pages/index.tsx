@@ -1,3 +1,4 @@
+import Grid from '@mui/material/Grid'
 import { Helmet } from 'react-helmet'
 import React from 'react'
 
@@ -9,9 +10,11 @@ const Humor = (): JSX.Element => {
       <Helmet>
         <title>Humor | dbowland.com</title>
       </Helmet>
-      <main style={{ padding: '50px' }}>
-        <Joke initialize={typeof window !== 'undefined'} />
-      </main>
+      <Grid style={{ padding: '50px' }}>
+        <div style={{ margin: 'auto', maxWidth: '900px' }}>
+          <Joke initialize={typeof window !== 'undefined'} />
+        </div>
+      </Grid>
     </>
   )
 }

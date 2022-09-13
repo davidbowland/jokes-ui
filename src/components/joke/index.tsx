@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import CampaignIcon from '@mui/icons-material/Campaign'
 import CircularProgress from '@mui/material/CircularProgress'
+import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -93,30 +94,36 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
           </>
         )}
       </Typography>
-      <Stack direction="row" spacing={1}>
-        <Button
-          color="secondary"
-          data-amplify-analytics-name="text-to-speech-click"
-          data-amplify-analytics-on="click"
-          disabled={joke === undefined || isAudioLoading}
-          endIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <CampaignIcon />}
-          onClick={ttsClick}
-          variant="contained"
-        >
-          {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
-        </Button>
-        <Button
-          color={isError ? 'error' : 'primary'}
-          data-amplify-analytics-name="next-joke-click"
-          data-amplify-analytics-on="click"
-          disabled={isLoading && !isError}
-          onClick={setNextJoke}
-          startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
-          variant="contained"
-        >
-          {getButtonText()}
-        </Button>
-      </Stack>
+      <Grid container>
+        <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
+          <Button
+            color="secondary"
+            data-amplify-analytics-name="text-to-speech-click"
+            data-amplify-analytics-on="click"
+            disabled={joke === undefined || isAudioLoading}
+            endIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <CampaignIcon />}
+            onClick={ttsClick}
+            sx={{ width: { sm: 'auto', xs: '100%' } }}
+            variant="contained"
+          >
+            {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
+          </Button>
+        </Grid>
+        <Grid item order={{ sm: 2, xs: 1 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
+          <Button
+            color={isError ? 'error' : 'primary'}
+            data-amplify-analytics-name="next-joke-click"
+            data-amplify-analytics-on="click"
+            disabled={isLoading && !isError}
+            onClick={setNextJoke}
+            startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
+            sx={{ width: { sm: 'auto', xs: '100%' } }}
+            variant="contained"
+          >
+            {getButtonText()}
+          </Button>
+        </Grid>
+      </Grid>
       <Admin joke={joke} setJoke={setJoke} />
     </Stack>
   )

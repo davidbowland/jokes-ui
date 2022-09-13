@@ -111,7 +111,7 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
             />
           </label>
           <p>
-            <Button onClick={updateJoke} variant="contained">
+            <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
               Update joke
             </Button>
           </p>
@@ -129,7 +129,7 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
             />
           </label>
           <p>
-            <Button onClick={addJoke} variant="contained">
+            <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
               Add joke
             </Button>
           </p>

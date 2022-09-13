@@ -11,7 +11,7 @@ export interface ServerErrorProps {
 
 const ServerErrorMessage = ({ children, title }: ServerErrorProps): JSX.Element => {
   return (
-    <Stack margin="auto" padding={4} spacing={2}>
+    <Stack margin="auto" padding={4} spacing={2} sx={{ m: 'auto', maxWidth: '900px' }}>
       <Helmet>
         <title>{title} -- dbowland.com</title>
       </Helmet>
