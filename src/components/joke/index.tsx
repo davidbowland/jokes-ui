@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import CampaignIcon from '@mui/icons-material/Campaign'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
@@ -84,46 +87,52 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }, [availableJokes, joke])
 
   return (
-    <Stack margin="auto" spacing={2}>
-      <Typography minHeight={'2.5em'} variant="h4">
-        {joke?.contents ?? (
-          <>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </>
-        )}
-      </Typography>
-      <Grid container>
-        <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
-          <Button
-            color="secondary"
-            data-amplify-analytics-name="text-to-speech-click"
-            data-amplify-analytics-on="click"
-            disabled={joke === undefined || isAudioLoading}
-            endIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <CampaignIcon />}
-            onClick={ttsClick}
-            sx={{ width: { sm: 'auto', xs: '100%' } }}
-            variant="contained"
-          >
-            {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
-          </Button>
-        </Grid>
-        <Grid item order={{ sm: 2, xs: 1 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
-          <Button
-            color={isError ? 'error' : 'primary'}
-            data-amplify-analytics-name="next-joke-click"
-            data-amplify-analytics-on="click"
-            disabled={isLoading && !isError}
-            onClick={setNextJoke}
-            startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
-            sx={{ width: { sm: 'auto', xs: '100%' } }}
-            variant="contained"
-          >
-            {getButtonText()}
-          </Button>
-        </Grid>
-      </Grid>
+    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 900 }}>
+      <Card sx={{ p: { sm: '25px', xs: '15px' } }} variant="outlined">
+        <CardContent>
+          <Typography minHeight={'2.5em'} variant="h4">
+            {joke?.contents ?? (
+              <>
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </>
+            )}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Grid container>
+            <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
+              <Button
+                color="secondary"
+                data-amplify-analytics-name="text-to-speech-click"
+                data-amplify-analytics-on="click"
+                disabled={joke === undefined || isAudioLoading}
+                endIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <CampaignIcon />}
+                onClick={ttsClick}
+                sx={{ width: { sm: 'auto', xs: '100%' } }}
+                variant="outlined"
+              >
+                {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
+              </Button>
+            </Grid>
+            <Grid item order={{ sm: 2, xs: 1 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
+              <Button
+                color={isError ? 'error' : 'primary'}
+                data-amplify-analytics-name="next-joke-click"
+                data-amplify-analytics-on="click"
+                disabled={isLoading && !isError}
+                onClick={setNextJoke}
+                startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
+                sx={{ width: { sm: 'auto', xs: '100%' } }}
+                variant="outlined"
+              >
+                {getButtonText()}
+              </Button>
+            </Grid>
+          </Grid>
+        </CardActions>
+      </Card>
       <Admin joke={joke} setJoke={setJoke} />
     </Stack>
   )

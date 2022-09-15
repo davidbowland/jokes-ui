@@ -3,6 +3,9 @@ import Alert from '@mui/material/Alert'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
@@ -99,40 +102,48 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
           </TabList>
         </Box>
         <TabPanel value={AdminView.EDIT_JOKE}>
-          <label>
-            <TextField
-              fullWidth
-              label={`Joke #${joke.index}`}
-              name="update-joke-text"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
-              type="text"
-              value={editJoke}
-              variant="filled"
-            />
-          </label>
-          <p>
-            <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
-              Update joke
-            </Button>
-          </p>
+          <Card variant="outlined">
+            <CardContent>
+              <label>
+                <TextField
+                  fullWidth
+                  label={`Joke #${joke.index}`}
+                  name="update-joke-text"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
+                  type="text"
+                  value={editJoke}
+                  variant="filled"
+                />
+              </label>
+            </CardContent>
+            <CardActions>
+              <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="outlined">
+                Update joke
+              </Button>
+            </CardActions>
+          </Card>
         </TabPanel>
         <TabPanel value={AdminView.ADD_JOKE}>
-          <label>
-            <TextField
-              fullWidth
-              label="Joke to add"
-              name="add-joke-text"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
-              type="text"
-              value={addJokeText}
-              variant="filled"
-            />
-          </label>
-          <p>
-            <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
-              Add joke
-            </Button>
-          </p>
+          <Card variant="outlined">
+            <CardContent>
+              <label>
+                <TextField
+                  fullWidth
+                  label="Joke to add"
+                  name="add-joke-text"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
+                  type="text"
+                  value={addJokeText}
+                  variant="filled"
+                />
+              </label>
+            </CardContent>
+            <CardActions>
+              <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="outlined">
+                Add joke
+              </Button>
+            </CardActions>
+          </Card>
         </TabPanel>
       </TabContext>
       <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}>
