@@ -10,8 +10,10 @@ const Humor = (): JSX.Element => {
       <Helmet>
         <title>Humor | dbowland.com</title>
       </Helmet>
-      <Grid sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-        <Joke initialize={typeof window !== 'undefined'} />
+      <Grid container justifyContent="center" sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
+        <Grid item xs>
+          <Joke initialize={typeof window !== 'undefined'} />
+        </Grid>
       </Grid>
     </>
   )
