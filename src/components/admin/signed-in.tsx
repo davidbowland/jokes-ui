@@ -51,17 +51,15 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
     setIsLoading(false)
   }
 
-  const updateJoke = async (): Promise<void> => {
+  const updateJoke = async (joke: DisplayedJoke): Promise<void> => {
     setIsLoading(true)
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const currentJoke = joke!
-      const newJoke = { ...currentJoke, contents: editJoke }
-      const jsonPatchOperations = [
-        ...jsonpatch.compare(currentJoke, newJoke, true),
-        { op: 'remove', path: '/audio' } as RemoveOperation,
-      ]
-      await patchJoke(currentJoke.index, jsonPatchOperations)
+      const newJoke = { ...joke, contents: editJoke }
+      const jsonPatchOperations = jsonpatch.compare(joke, newJoke, true)
+      await patchJoke(
+        joke.index,
+        joke.audio ? [...jsonPatchOperations, { op: 'remove', path: '/audio' } as RemoveOperation] : jsonPatchOperations
+      )
       setJoke(newJoke)
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
     } catch (error) {
@@ -116,8 +114,12 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
                 />
               </label>
             </CardContent>
-            <CardActions>
-              <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="outlined">
+            <CardActions sx={{ p: 2 }}>
+              <Button
+                onClick={() => joke && updateJoke(joke)}
+                sx={{ width: { sm: 'auto', xs: '100%' } }}
+                variant="contained"
+              >
                 Update joke
               </Button>
             </CardActions>
@@ -138,8 +140,8 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
                 />
               </label>
             </CardContent>
-            <CardActions>
-              <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="outlined">
+            <CardActions sx={{ p: 2 }}>
+              <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
                 Add joke
               </Button>
             </CardActions>

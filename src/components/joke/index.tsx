@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import CampaignIcon from '@mui/icons-material/Campaign'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -87,9 +85,12 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
   }, [availableJokes, joke])
 
   return (
-    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 900 }}>
-      <Card sx={{ p: { sm: '25px', xs: '15px' } }} variant="outlined">
-        <CardContent>
+    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 900, minHeight: '70vh' }}>
+      <Typography sx={{ textAlign: 'center' }} variant="h3">
+        Random Joke
+      </Typography>
+      <Paper elevation={6} sx={{ p: { sm: '25px', xs: '15px' } }}>
+        <Stack spacing={2}>
           <Typography minHeight={'2.5em'} variant="h4">
             {joke?.contents ?? (
               <>
@@ -99,12 +100,9 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
               </>
             )}
           </Typography>
-        </CardContent>
-        <CardActions>
           <Grid container>
             <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
               <Button
-                color="secondary"
                 data-amplify-analytics-name="text-to-speech-click"
                 data-amplify-analytics-on="click"
                 disabled={joke === undefined || isAudioLoading}
@@ -125,14 +123,14 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
                 onClick={setNextJoke}
                 startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
                 sx={{ width: { sm: 'auto', xs: '100%' } }}
-                variant="outlined"
+                variant="contained"
               >
                 {getButtonText()}
               </Button>
             </Grid>
           </Grid>
-        </CardActions>
-      </Card>
+        </Stack>
+      </Paper>
       <Admin joke={joke} setJoke={setJoke} />
     </Stack>
   )
