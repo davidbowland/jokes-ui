@@ -7,7 +7,7 @@ import PrivacyPolicy from '@components/privacy-policy'
 
 const PrivacyPage = (): JSX.Element => {
   return (
-    <Paper elevation={1}>
+    <>
       <Helmet>
         <title>Privacy Policy -- jokes.dbowland.com</title>
       </Helmet>
@@ -16,7 +16,7 @@ const PrivacyPage = (): JSX.Element => {
           <PrivacyPolicy />
         </Paper>
       </main>
-    </Paper>
+    </>
   )
 }
 
