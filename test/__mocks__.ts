@@ -1,5 +1,5 @@
 /* eslint-disable sort-keys */
-import { CognitoUserAmplify } from '@aws-amplify/ui'
+import { AmplifyUser } from '@aws-amplify/ui'
 import { Theme } from '@types'
 
 export const theme = {
@@ -224,7 +224,7 @@ export const theme = {
   },
 } as unknown as Theme
 
-export const user: CognitoUserAmplify = {
+export const user: AmplifyUser = {
   username: '178300fb-3ab6-41e2-bab6-231964026e42',
   pool: {
     userPoolId: 'us-east-2_xqxzyIOz4',

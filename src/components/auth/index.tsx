@@ -1,8 +1,8 @@
 import '@aws-amplify/ui-react/styles.css'
 import React, { useEffect, useState } from 'react'
+import { AmplifyUser } from '@aws-amplify/ui'
 import AppBar from '@mui/material/AppBar'
 import { Auth } from 'aws-amplify'
-import { CognitoUserAmplify } from '@aws-amplify/ui'
 import Toolbar from '@mui/material/Toolbar'
 
 import JokesAuthenticator from './jokes-authenticator'
@@ -14,7 +14,7 @@ export interface AuthenticatedProps {
 }
 
 const Authenticated = ({ children }: AuthenticatedProps): JSX.Element => {
-  const [loggedInUser, setLoggedInUser] = useState<CognitoUserAmplify | undefined>(undefined)
+  const [loggedInUser, setLoggedInUser] = useState<AmplifyUser | undefined>(undefined)
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {

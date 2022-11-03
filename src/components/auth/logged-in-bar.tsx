@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
+import { AmplifyUser } from '@aws-amplify/ui'
 import { Auth } from 'aws-amplify'
 import Box from '@mui/material/Box'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import { CognitoUserAmplify } from '@aws-amplify/ui'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'gatsby'
 import List from '@mui/material/List'
@@ -15,7 +15,7 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import Typography from '@mui/material/Typography'
 
 export interface LoggedInBarProps {
-  setLoggedInUser: (user: CognitoUserAmplify | undefined) => void
+  setLoggedInUser: (user: AmplifyUser | undefined) => void
 }
 
 const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): JSX.Element => {

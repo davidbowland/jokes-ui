@@ -1,12 +1,12 @@
 import { Authenticator, ThemeProvider, defaultDarkModeOverride } from '@aws-amplify/ui-react'
+import { AmplifyUser } from '@aws-amplify/ui'
 import Button from '@mui/material/Button'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
-import { CognitoUserAmplify } from '@aws-amplify/ui'
 import React from 'react'
 import Stack from '@mui/material/Stack'
 
 export interface JokesAuthenticatorProps {
-  setLoggedInUser: (user: CognitoUserAmplify | undefined) => void
+  setLoggedInUser: (user: AmplifyUser | undefined) => void
   setShowLogin: (state: boolean) => void
 }
 
