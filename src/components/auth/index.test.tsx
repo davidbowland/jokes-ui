@@ -143,7 +143,6 @@ describe('Authenticated component', () => {
   describe('signed in', () => {
     beforeAll(() => {
       mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
-      user.deleteUser = jest.fn().mockImplementation((callback) => callback())
     })
 
     test('expect user name', async () => {
@@ -185,7 +184,6 @@ describe('Authenticated component', () => {
         signOutButton.click()
       })
 
-      expect(user.deleteUser).not.toHaveBeenCalled()
       expect(mocked(Auth).signOut).toHaveBeenCalled()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
       expect(screen.queryByText(/Dave/i)).not.toBeInTheDocument()
