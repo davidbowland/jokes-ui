@@ -1,70 +1,43 @@
 import React, { useEffect, useState } from 'react'
+import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
-import CampaignIcon from '@mui/icons-material/Campaign'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Skeleton from '@mui/material/Skeleton'
+import Snackbar from '@mui/material/Snackbar'
+import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { DisplayedJoke, JokeResponse } from '@types'
 import Admin from '@components/admin'
+import { JokeType } from '@types'
+import Navigation from '@components/navigation'
 import { baseUrl } from '@config/amplify'
-import { getRandomJokes } from '@services/jokes'
+import { getJoke } from '@services/jokes'
 
 export interface JokeProps {
-  initialize?: boolean
+  index?: number
 }
 
-const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
-  const [joke, setJoke] = useState(undefined as DisplayedJoke | undefined)
-  const [availableJokes, setAvailableJokes] = useState([] as JokeResponse[])
+const Joke = ({ index }: JokeProps): JSX.Element => {
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [joke, setJoke] = useState<JokeType | undefined>(undefined)
   const [isAudioLoading, setIsAudioLoading] = useState(false)
-  const [isError, setIsError] = useState(false)
-  const [recentIndexes, setRecentIndexes] = useState([] as string[])
-  const jokeList = Object.keys(availableJokes) as unknown as number[]
-  const isLoading = jokeList.length == 0 || !joke
 
-  const fetchJokeList = async (): Promise<void> => {
+  const fetchJoke = async (index: number): Promise<void> => {
     try {
-      setIsError(false)
-      const fetchedJokes = await getRandomJokes(recentIndexes)
-      setAvailableJokes(fetchedJokes)
-      setRecentIndexes(fetchedJokes.map((item) => item.id.toString()))
+      const joke = await getJoke(index)
+      setJoke(joke)
     } catch (error) {
-      setIsError(true)
       console.error(error)
+      setErrorMessage('Error fetching joke. Please reload to try again.')
     }
   }
 
-  const getButtonText = (): string => {
-    if (isError) {
-      return 'Error! Try again.'
-    } else if (isLoading) {
-      return 'Loading...'
-    }
-    return 'Next joke'
-  }
-
-  const getRandomJoke = (): DisplayedJoke => {
-    const [selectedJoke, ...newAvailableJokes] = availableJokes
-    setAvailableJokes(newAvailableJokes)
-    return { ...selectedJoke.data, index: selectedJoke.id }
-  }
-
-  const setNextJoke = async (): Promise<void> => {
-    if (jokeList.length === 0) {
-      fetchJokeList()
-    } else {
-      const nextJoke = getRandomJoke()
-      setJoke(nextJoke)
-    }
-  }
-
-  const ttsClick = async (): Promise<void> => {
+  const ttsClick = async (index: number): Promise<void> => {
     setIsAudioLoading(true)
-    const audio = new Audio(`${baseUrl}/jokes/${joke?.index}/tts`)
+    const audio = new Audio(`${baseUrl}/jokes/${index}/tts`)
     audio.addEventListener('canplaythrough', () => {
       audio.play()
     })
@@ -76,63 +49,52 @@ const Joke = ({ initialize = false }: JokeProps): JSX.Element => {
     })
   }
 
-  useEffect((): void => {
-    if (jokeList.length == 0 && (initialize || joke !== undefined)) {
-      fetchJokeList()
-    } else if (joke === undefined && jokeList.length > 0) {
-      setNextJoke()
+  const snackbarErrorClose = (): void => {
+    setErrorMessage(undefined)
+  }
+
+  useEffect(() => {
+    if (index) {
+      fetchJoke(index)
     }
-  }, [availableJokes, joke])
+  }, [index])
 
   return (
-    <Stack spacing={2} sx={{ margin: 'auto', maxWidth: 900, minHeight: '70vh' }}>
-      <Typography sx={{ textAlign: 'center' }} variant="h3">
-        Random Joke
-      </Typography>
-      <Paper elevation={6} sx={{ p: { sm: '25px', xs: '15px' } }}>
-        <Stack spacing={2}>
-          <Typography minHeight={'2.5em'} variant="h4">
-            {joke?.contents ?? (
-              <>
-                <Skeleton />
-                <Skeleton />
-                <Skeleton />
-              </>
-            )}
-          </Typography>
-          <Grid container>
-            <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
-              <Button
-                data-amplify-analytics-name="text-to-speech-click"
-                data-amplify-analytics-on="click"
-                disabled={joke === undefined || isAudioLoading}
-                endIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <CampaignIcon />}
-                onClick={ttsClick}
-                sx={{ width: { sm: 'auto', xs: '100%' } }}
-                variant="outlined"
-              >
-                {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
-              </Button>
-            </Grid>
-            <Grid item order={{ sm: 2, xs: 1 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
-              <Button
-                color={isError ? 'error' : 'primary'}
-                data-amplify-analytics-name="next-joke-click"
-                data-amplify-analytics-on="click"
-                disabled={isLoading && !isError}
-                onClick={setNextJoke}
-                startIcon={isLoading ? <CircularProgress color="inherit" size={14} /> : null}
-                sx={{ width: { sm: 'auto', xs: '100%' } }}
-                variant="contained"
-              >
-                {getButtonText()}
-              </Button>
-            </Grid>
+    <Paper elevation={6} sx={{ p: { sm: '25px', xs: '15px' } }}>
+      <Stack spacing={2}>
+        <Typography minHeight={'2.5em'} variant="h4">
+          {joke?.contents ?? (
+            <>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </>
+          )}
+        </Typography>
+        <Grid container justifyContent="center">
+          <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
+            <Button
+              data-amplify-analytics-name="text-to-speech-click"
+              data-amplify-analytics-on="click"
+              disabled={joke === undefined || isAudioLoading}
+              onClick={() => index && ttsClick(index)}
+              startIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <SpatialAudioOffIcon />}
+              sx={{ width: { sm: 'auto', xs: '100%' } }}
+              variant="outlined"
+            >
+              {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
+            </Button>
           </Grid>
-        </Stack>
-      </Paper>
-      <Admin joke={joke} setJoke={setJoke} />
-    </Stack>
+        </Grid>
+        {(joke?.contents || index === undefined) && <Navigation index={index} />}
+        {index && joke && <Admin index={index} joke={joke} setJoke={setJoke} />}
+        <Snackbar autoHideDuration={15_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
+          <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+      </Stack>
+    </Paper>
   )
 }
 

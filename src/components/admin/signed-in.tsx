@@ -14,12 +14,13 @@ import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
 import jsonpatch from 'fast-json-patch'
 
-import { DisplayedJoke, RemoveOperation } from '@types'
+import { JokeType, RemoveOperation } from '@types'
 import { patchJoke, postJoke } from '@services/jokes'
 
 export interface SignedInProps {
-  joke?: DisplayedJoke
-  setJoke: (joke: DisplayedJoke | undefined) => void
+  index: number
+  joke: JokeType
+  setJoke: (joke: JokeType | undefined) => void
 }
 
 interface AdminNotice {
@@ -32,8 +33,8 @@ enum AdminView {
   EDIT_JOKE = 'edit',
 }
 
-const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
-  const [editJoke, setEditJoke] = useState(joke?.contents ?? '')
+const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
+  const [editJoke, setEditJoke] = useState(joke.contents)
 
   const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
   const [adminNotice, setAdminNotice] = useState({ text: '' } as AdminNotice)
@@ -51,13 +52,13 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
     setIsLoading(false)
   }
 
-  const updateJoke = async (joke: DisplayedJoke): Promise<void> => {
+  const updateJoke = async (): Promise<void> => {
     setIsLoading(true)
     try {
       const newJoke = { ...joke, contents: editJoke }
       const jsonPatchOperations = jsonpatch.compare(joke, newJoke, true)
       await patchJoke(
-        joke.index,
+        index,
         joke.audio ? [...jsonPatchOperations, { op: 'remove', path: '/audio' } as RemoveOperation] : jsonPatchOperations
       )
       setJoke(newJoke)
@@ -74,16 +75,8 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
   }
 
   useEffect(() => {
-    setEditJoke(joke?.contents ?? '')
+    setEditJoke(joke.contents)
   }, [joke])
-
-  if (joke === undefined) {
-    return (
-      <Alert severity={'error'} variant="filled">
-        Unable to load jokes
-      </Alert>
-    )
-  }
 
   return (
     <div>
@@ -105,7 +98,7 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
               <label>
                 <TextField
                   fullWidth
-                  label={`Joke #${joke.index}`}
+                  label={`Joke #${index}`}
                   name="update-joke-text"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
                   type="text"
@@ -115,11 +108,7 @@ const SignedIn = ({ joke, setJoke }: SignedInProps): JSX.Element => {
               </label>
             </CardContent>
             <CardActions sx={{ p: 2 }}>
-              <Button
-                onClick={() => joke && updateJoke(joke)}
-                sx={{ width: { sm: 'auto', xs: '100%' } }}
-                variant="contained"
-              >
+              <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
                 Update joke
               </Button>
             </CardActions>

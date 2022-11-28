@@ -13,27 +13,16 @@ jest.mock('@aws-amplify/analytics')
 jest.mock('@aws-amplify/ui-react')
 
 describe('Authenticated component', () => {
-  const consoleError = console.error
   const mockLocationReload = jest.fn()
-  const windowLocationReload = window.location.reload
 
   beforeAll(() => {
     mocked(Auth).signOut.mockResolvedValue({})
     mocked(Authenticator).mockReturnValue(<></>)
     mocked(ThemeProvider).mockImplementation(({ children }) => children as unknown as JSX.Element)
 
-    console.error = jest.fn()
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { reload: mockLocationReload },
-    })
-  })
-
-  afterAll(() => {
-    console.error = consoleError
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: { replace: windowLocationReload },
     })
   })
 

@@ -5,7 +5,13 @@ import React from 'react'
 import Joke from '@components/joke'
 import PrivacyLink from '@components/privacy-link'
 
-const IndexPage = (): JSX.Element => {
+export interface JokePageProps {
+  params: {
+    index: string
+  }
+}
+
+const JokePage = ({ params }: JokePageProps): JSX.Element => {
   return (
     <>
       <Helmet>
@@ -13,7 +19,7 @@ const IndexPage = (): JSX.Element => {
       </Helmet>
       <Grid container justifyContent="center" sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
         <Grid item xs>
-          <Joke />
+          <Joke index={parseInt(params.index, 10)} />
           <PrivacyLink />
         </Grid>
       </Grid>
@@ -21,4 +27,4 @@ const IndexPage = (): JSX.Element => {
   )
 }
 
-export default IndexPage
+export default JokePage

@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react'
 import { Auth } from 'aws-amplify'
 import Divider from '@mui/material/Divider'
 
-import { DisplayedJoke } from '@types'
+import { JokeType } from '@types'
 import SignedIn from './signed-in'
 
 export interface AdminProps {
-  joke?: DisplayedJoke
-  setJoke: (joke: DisplayedJoke | undefined) => void
+  index: number
+  joke: JokeType
+  setJoke: (joke: JokeType | undefined) => void
 }
 
-const Admin = ({ joke, setJoke }: AdminProps): JSX.Element => {
+const Admin = ({ index, joke, setJoke }: AdminProps): JSX.Element => {
   const [isAdminVisible, setIsAdminVisible] = useState(false)
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Admin = ({ joke, setJoke }: AdminProps): JSX.Element => {
       <>
         <Divider />
         <section className="site-administration">
-          <SignedIn joke={joke} setJoke={setJoke} />
+          <SignedIn index={index} joke={joke} setJoke={setJoke} />
         </section>
       </>
     )

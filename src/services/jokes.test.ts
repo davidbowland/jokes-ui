@@ -2,7 +2,7 @@ import { Auth } from 'aws-amplify'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
-import { getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
+import { getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { rest, server } from '@test/setup-server'
 import { JokeResponse } from '@types'
 
@@ -34,12 +34,50 @@ describe('Joke service', () => {
     })
 
     test.each(Object.keys(randomJokeResult) as unknown as number[])(
-      'Expect results from client endpoint',
+      'Expect results from joke endpoint',
       async (expectedId: number) => {
         const result = await getJoke(expectedId)
         expect(result).toEqual(randomJokeResult[expectedId])
       }
     )
+  })
+
+  describe('getJokeCount', () => {
+    const count = 42
+
+    beforeAll(() => {
+      server.use(
+        rest.get(`${baseUrl}/jokes/count`, async (req, res, ctx) => {
+          return res(ctx.json({ count }))
+        })
+      )
+    })
+
+    test('Expect results from count endpoint', async () => {
+      const result = await getJokeCount()
+      expect(result).toEqual({ count })
+    })
+  })
+
+  describe('getRandomJokes', () => {
+    const recentIndexes = ['32', '45', '79']
+
+    beforeAll(() => {
+      server.use(
+        rest.get(`${baseUrl}/jokes/random`, async (req, res, ctx) => {
+          if (recentIndexes.join(',') !== req.url.searchParams.get('avoid')) {
+            return res(ctx.status(400))
+          }
+          return res(ctx.json(randomJokeResult))
+        })
+      )
+    })
+
+    test('expect results using recentIndexes', async () => {
+      const result = await getRandomJokes(recentIndexes)
+
+      expect(result).toEqual(randomJokeResult)
+    })
   })
 
   describe('postJoke', () => {
@@ -96,27 +134,6 @@ describe('Joke service', () => {
       await patchJoke(index, operation)
       expect(patchEndpoint).toHaveBeenCalledTimes(1)
       expect(patchEndpoint).toHaveBeenCalledWith(index, operation)
-    })
-  })
-
-  describe('getRandomJokes', () => {
-    const recentIndexes = ['32', '45', '79']
-
-    beforeAll(() => {
-      server.use(
-        rest.get(`${baseUrl}/jokes/random`, async (req, res, ctx) => {
-          if (recentIndexes.join(',') !== req.url.searchParams.get('avoid')) {
-            return res(ctx.status(400))
-          }
-          return res(ctx.json(randomJokeResult))
-        })
-      )
-    })
-
-    test('expect results using recentIndexes', async () => {
-      const result = await getRandomJokes(recentIndexes)
-
-      expect(result).toEqual(randomJokeResult)
     })
   })
 })

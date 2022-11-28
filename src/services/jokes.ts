@@ -1,15 +1,14 @@
-import { JokeResponse, JokeType } from '@types'
+import { JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 import { apiName, apiNameUnauthenticated } from '@config/amplify'
 import { API } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
 
-interface PostResponse {
-  index: string
-}
+export const getJoke = async (index: number): Promise<JokeType> =>
+  API.get(apiNameUnauthenticated, `/jokes/${index}`, {})
 
-export const getJoke = async (index: number): Promise<JokeType> => API.get(apiName, `/jokes/${index}`, {})
+export const getJokeCount = async (): Promise<JokeCount> => API.get(apiNameUnauthenticated, '/jokes/count', {})
 
 export const getRandomJokes = async (recentIndexes: string[]): Promise<JokeResponse[]> =>
   API.get(apiNameUnauthenticated, '/jokes/random', {

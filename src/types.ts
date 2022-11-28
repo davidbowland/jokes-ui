@@ -6,6 +6,10 @@ export interface JokeAudio {
   data: string
 }
 
+export interface JokeCount {
+  count: number
+}
+
 export interface JokeType {
   audio?: JokeAudio
   contents: string
@@ -18,4 +22,8 @@ export interface DisplayedJoke extends JokeType {
 export interface JokeResponse {
   data: JokeType
   id: number
+}
+
+export interface PostResponse {
+  index: string
 }
