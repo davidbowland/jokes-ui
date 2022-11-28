@@ -35,9 +35,16 @@ const Joke = ({ index }: JokeProps): JSX.Element => {
     }
   }
 
+  const getTtsUrl = (index: number): string => {
+    if (joke?.audio) {
+      return `data:${joke.audio.contentType};base64,${joke.audio.data}`
+    }
+    return `${baseUrl}/jokes/${index}/tts`
+  }
+
   const ttsClick = async (index: number): Promise<void> => {
     setIsAudioLoading(true)
-    const audio = new Audio(`${baseUrl}/jokes/${index}/tts`)
+    const audio = new Audio(getTtsUrl(index))
     audio.addEventListener('canplaythrough', () => {
       audio.play()
     })

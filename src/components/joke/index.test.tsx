@@ -7,6 +7,7 @@ import * as jokes from '@services/jokes'
 import { index, jokeType } from '@test/__mocks__'
 import Admin from '@components/admin'
 import Joke from './index'
+import { JokeType } from '@types'
 import Navigation from '@components/navigation'
 
 jest.mock('@aws-amplify/analytics')
@@ -74,7 +75,24 @@ describe('Joke component', () => {
       })
     })
 
+    test('expect clicking the Text-to-speech button plays joke audio', async () => {
+      render(<Joke index={index} />)
+
+      await screen.findByText(jokeType.contents)
+      const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
+        selector: 'button',
+      })) as HTMLButtonElement
+      await act(async () => {
+        ttsButton.click()
+      })
+
+      expect(global.Audio).toHaveBeenCalledWith('data:text/plain;base64,yalp')
+      expect(screen.queryByText('Fetching audio')).toBeInTheDocument()
+    })
+
     test('expect clicking the Text-to-speech button fetches the joke tts', async () => {
+      const jokeNoAudio: JokeType = { ...jokeType, audio: undefined }
+      mocked(jokes).getJoke.mockResolvedValueOnce(jokeNoAudio)
       render(<Joke index={index} />)
 
       await screen.findByText(jokeType.contents)
