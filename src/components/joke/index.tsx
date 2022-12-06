@@ -61,6 +61,7 @@ const Joke = ({ index }: JokeProps): JSX.Element => {
   }
 
   useEffect(() => {
+    setJoke(undefined)
     if (index) {
       fetchJoke(index)
     }
