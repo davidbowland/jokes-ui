@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import * as gatsby from 'gatsby'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { Auth } from 'aws-amplify'
 import React from 'react'
@@ -15,6 +16,7 @@ jest.mock('@aws-amplify/ui-react', () => ({
   Authenticator: jest.fn().mockImplementation(({ children }) => children({ signOut: mockSignOut }) ?? null),
 }))
 jest.mock('@services/jokes')
+jest.mock('gatsby')
 
 describe('Admin component', () => {
   const setJoke = jest.fn()
@@ -82,6 +84,7 @@ describe('Admin component', () => {
     expect(mocked(jokeService).postJoke).toBeCalledWith(expect.objectContaining({ contents: jokeType.contents }))
     expect(mocked(jokeService).postJoke).toBeCalledTimes(1)
     expect(screen.getByText('Created joke #17')).toBeInTheDocument()
+    expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/17')
   })
 
   test('expect failing add joke service displays message', async () => {

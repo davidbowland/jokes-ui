@@ -13,6 +13,7 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TextField from '@mui/material/TextField'
 import jsonpatch from 'fast-json-patch'
+import { navigate } from 'gatsby'
 
 import { JokeType, RemoveOperation } from '@types'
 import { patchJoke, postJoke } from '@services/jokes'
@@ -46,6 +47,7 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
     try {
       const response = await postJoke({ contents: addJokeText })
       setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
+      navigate(`/j/${response.index}`)
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })
     }

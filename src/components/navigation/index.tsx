@@ -7,9 +7,9 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import ShuffleIcon from '@mui/icons-material/Shuffle'
 import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
+import { navigate } from 'gatsby'
 
 import { getJokeCount } from '@services/jokes'
-import { navigate } from 'gatsby'
 
 export interface NavigationProps {
   index?: number
