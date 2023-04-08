@@ -11,10 +11,10 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import Admin from '@components/admin'
-import { JokeType } from '@types'
-import Navigation from '@components/navigation'
 import { baseUrl } from '@config/amplify'
 import { getJoke } from '@services/jokes'
+import { JokeType } from '@types'
+import Navigation from '@components/navigation'
 
 export interface JokeProps {
   index?: number

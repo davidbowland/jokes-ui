@@ -1,5 +1,5 @@
-import { JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 import { apiName, apiNameUnauthenticated } from '@config/amplify'
+import { JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 import { API } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 

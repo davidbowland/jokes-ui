@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 import * as gatsby from 'gatsby'
 import { act, render, screen, waitFor } from '@testing-library/react'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import * as jokes from '@services/jokes'
 import { index, jokeCount } from '@test/__mocks__'

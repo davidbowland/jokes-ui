@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
-import { Authenticator, ThemeProvider } from '@aws-amplify/ui-react'
 import { act, render, screen, waitFor } from '@testing-library/react'
+import { Authenticator, ThemeProvider } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify'
-import React from 'react'
 import { mocked } from 'jest-mock'
+import React from 'react'
 
 import Authenticated from './index'
 import { user } from '@test/__mocks__'
@@ -141,7 +141,7 @@ describe('Authenticated component', () => {
         </Authenticated>
       )
 
-      expect(await screen.findByText(/admin/i)).toBeInTheDocument()
+      expect(screen.queryByText(/Admin/i)).toBeInTheDocument()
     })
 
     test('expect working menu', async () => {
