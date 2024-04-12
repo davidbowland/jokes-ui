@@ -19,6 +19,10 @@ export interface DisplayedJoke extends JokeType {
   index: number
 }
 
+export interface InitialResponse extends JokeCount {
+  joke: JokeResponse
+}
+
 export interface JokeResponse {
   data: JokeType
   id: number

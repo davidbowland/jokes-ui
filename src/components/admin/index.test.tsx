@@ -23,7 +23,7 @@ describe('Admin component', () => {
 
   beforeAll(() => {
     const mockMath = Object.create(global.Math)
-    mockMath.random = () => 0
+    mockMath.random = jest.fn().mockReturnValue(0)
     global.Math = mockMath
 
     mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)

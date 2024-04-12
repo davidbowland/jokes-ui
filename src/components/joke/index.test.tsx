@@ -8,11 +8,9 @@ import { index, jokeType } from '@test/__mocks__'
 import Admin from '@components/admin'
 import Joke from './index'
 import { JokeType } from '@types'
-import Navigation from '@components/navigation'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')
-jest.mock('@components/navigation')
 jest.mock('@services/jokes')
 
 const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
@@ -20,15 +18,21 @@ const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 describe('Joke component', () => {
   beforeAll(() => {
     mocked(Admin).mockReturnValue(<>Admin</>)
-    mocked(Navigation).mockReturnValue(<>Navigation</>)
     mocked(jokes).getJoke.mockResolvedValue(jokeType)
   })
 
   describe('joke display', () => {
-    test('expect no joke rendered by default', async () => {
+    test('expect no joke rendered when initialJoke is omitted', async () => {
       render(<Joke />)
 
       expect(screen.queryByText(jokeType.contents)).not.toBeInTheDocument()
+    })
+
+    test('expect joke to be rendered when initialJoke is present', async () => {
+      render(<Joke initialJoke={jokeType} />)
+
+      expect(await screen.findByText(jokeType.contents)).toBeInTheDocument()
+      expect(mocked(Admin)).not.toHaveBeenCalled()
     })
 
     test('expect joke to be initialized when index passed', async () => {
@@ -36,7 +40,6 @@ describe('Joke component', () => {
 
       expect(await screen.findByText(jokeType.contents)).toBeInTheDocument()
       expect(mocked(Admin)).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), {})
-      expect(mocked(Navigation)).toHaveBeenCalledWith({ index }, {})
     })
 
     test('expect error message when getJoke rejects', async () => {

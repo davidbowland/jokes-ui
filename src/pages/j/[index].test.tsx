@@ -4,26 +4,26 @@ import React from 'react'
 import { render } from '@testing-library/react'
 
 import { index } from '@test/__mocks__'
-import Joke from '@components/joke'
 import JokePage from './[index]'
+import Navigation from '@components/navigation'
 import PrivacyLink from '@components/privacy-link'
 
 jest.mock('@aws-amplify/analytics')
-jest.mock('@components/joke')
+jest.mock('@components/navigation')
 jest.mock('@components/privacy-link')
 
 describe('Joke page', () => {
   const indexParam = `${index}`
 
   beforeAll(() => {
-    mocked(Joke).mockReturnValue(<></>)
+    mocked(Navigation).mockReturnValue(<></>)
     mocked(PrivacyLink).mockReturnValue(<></>)
   })
 
   test('expect rendering Index renders Joke', () => {
     render(<JokePage params={{ index: indexParam }} />)
-    expect(mocked(Joke)).toHaveBeenCalledWith({ index }, {})
-    expect(mocked(Joke)).toHaveBeenCalledTimes(1)
+    expect(mocked(Navigation)).toHaveBeenCalledWith({ initialIndex: index }, {})
+    expect(mocked(Navigation)).toHaveBeenCalledTimes(1)
   })
 
   test('expect rendering Index renders PrivacyLink', () => {

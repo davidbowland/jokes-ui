@@ -1,5 +1,5 @@
 /* eslint-disable sort-keys */
-import { DisplayedJoke, JokeCount, JokeResponse, JokeType, Theme } from '@types'
+import { DisplayedJoke, InitialResponse, JokeCount, JokeResponse, JokeType, Theme } from '@types'
 import { AmplifyUser } from '@aws-amplify/ui'
 
 export const displayedJoke: DisplayedJoke = {
@@ -7,10 +7,17 @@ export const displayedJoke: DisplayedJoke = {
   contents: 'LOL',
 }
 
+export const initialJoke = { contents: displayedJoke.contents }
+
 export const index = 42
 
 export const jokeCount: JokeCount = {
   count: 128,
+}
+
+export const initialResponse: InitialResponse = {
+  ...jokeCount,
+  joke: { data: initialJoke, id: displayedJoke.index },
 }
 
 export const jokeResponse: JokeResponse[] = [

@@ -2,8 +2,9 @@ import { Auth } from 'aws-amplify'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
-import { getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
+import { getInitialData, getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { rest, server } from '@test/setup-server'
+import { initialResponse } from '@test/__mocks__'
 import { JokeResponse } from '@types'
 
 const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
@@ -18,6 +19,21 @@ describe('Joke service', () => {
   beforeAll(() => {
     const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession
     jest.spyOn(Auth, 'currentSession').mockResolvedValue(userSession)
+  })
+
+  describe('getInitialData', () => {
+    beforeAll(() => {
+      server.use(
+        rest.get(`${baseUrl}/jokes/initial`, async (req, res, ctx) => {
+          return res(ctx.json(initialResponse))
+        })
+      )
+    })
+
+    test('Expect results from initial endpoint', async () => {
+      const result = await getInitialData()
+      expect(result).toEqual(initialResponse)
+    })
   })
 
   describe('getJoke', () => {

@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid'
 import { Helmet } from 'react-helmet'
 import React from 'react'
 
-import Joke from '@components/joke'
+import Navigation from '@components/navigation'
 import PrivacyLink from '@components/privacy-link'
 
 export interface JokePageProps {
@@ -19,7 +19,7 @@ const JokePage = ({ params }: JokePageProps): JSX.Element => {
       </Helmet>
       <Grid container justifyContent="center" sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
         <Grid item xs>
-          <Joke index={parseInt(params.index, 10)} />
+          <Navigation initialIndex={parseInt(params.index, 10)} />
           <PrivacyLink />
         </Grid>
       </Grid>
