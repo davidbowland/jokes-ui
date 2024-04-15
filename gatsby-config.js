@@ -51,4 +51,5 @@ module.exports = {
     siteUrl: 'https://jokes.dbowland.com',
     title: 'jokes-ui',
   },
+  trailingSlash: 'never',
 }
