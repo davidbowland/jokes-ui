@@ -15,6 +15,7 @@ jest.mock('@services/jokes')
 jest.mock('gatsby')
 
 describe('Navigation component', () => {
+  const mockAddJoke = jest.fn()
   const replaceState = jest.fn()
 
   beforeAll(() => {
@@ -23,7 +24,13 @@ describe('Navigation component', () => {
     global.Math = mockMath
     window.history.replaceState = replaceState
 
-    mocked(Joke).mockReturnValue(<></>)
+    mocked(Joke).mockImplementation(({ addJoke }) => {
+      const index = mockAddJoke()
+      if (index !== undefined) {
+        addJoke(index)
+      }
+      return <>Joke</>
+    })
     mocked(jokes).getInitialData.mockResolvedValue(initialResponse)
     mocked(jokes).getJokeCount.mockResolvedValue(jokeCount)
   })
@@ -127,7 +134,7 @@ describe('Navigation component', () => {
         previousJokeButton.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`)
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`, { state: jokeCount })
     })
 
     test('expect rendering first joke shows no previous button', async () => {
@@ -147,7 +154,7 @@ describe('Navigation component', () => {
         nextJokeButton.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`)
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`, { state: jokeCount })
     })
 
     test('expect rendering last joke shows no next button', async () => {
@@ -164,7 +171,7 @@ describe('Navigation component', () => {
 
       await screen.findByLabelText(/Random joke/i)
       expect(mocked(jokes).getInitialData).toHaveBeenCalled()
-      expect(replaceState).toHaveBeenCalledWith({}, '', '/j/42')
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/42', { replace: true, state: jokeCount })
     })
 
     test('expect clicking the random joke button changes the joke displayed', async () => {
@@ -175,7 +182,7 @@ describe('Navigation component', () => {
         randomJokeButton.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65')
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65', { state: jokeCount })
     })
 
     test('expect viewed jokes avoided', async () => {
@@ -186,11 +193,12 @@ describe('Navigation component', () => {
         randomJokeButton.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64')
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64', { state: jokeCount })
     })
 
     test('expect jokes start over when all have been viewed', async () => {
-      mocked(jokes).getJokeCount.mockResolvedValueOnce({ count: 2 })
+      const count = 2
+      mocked(jokes).getJokeCount.mockResolvedValueOnce({ count })
       render(<Navigation initialIndex={1} />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
@@ -201,8 +209,19 @@ describe('Navigation component', () => {
         randomJokeButton.click()
       })
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2')
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2')
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
+      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
+    })
+  })
+
+  describe('addJoke', () => {
+    test('expect adding a joke changes the joke index', () => {
+      const newIndex = 724
+      mockAddJoke.mockReturnValueOnce(newIndex)
+      render(<Navigation initialIndex={index} />)
+
+      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, initialJoke: undefined }), {})
+      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index: newIndex, initialJoke: undefined }), {})
     })
   })
 })

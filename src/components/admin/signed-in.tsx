@@ -18,12 +18,6 @@ import TextField from '@mui/material/TextField'
 import { JokeType, RemoveOperation } from '@types'
 import { patchJoke, postJoke } from '@services/jokes'
 
-export interface SignedInProps {
-  index: number
-  joke: JokeType
-  setJoke: (joke: JokeType | undefined) => void
-}
-
 interface AdminNotice {
   severity?: 'error' | 'warning' | 'info' | 'success'
   text: string
@@ -32,6 +26,12 @@ interface AdminNotice {
 enum AdminView {
   ADD_JOKE = 'add',
   EDIT_JOKE = 'edit',
+}
+
+export interface SignedInProps {
+  index: number
+  joke: JokeType
+  setJoke: (joke: JokeType, targetIndex?: number) => void
 }
 
 const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
@@ -45,8 +45,10 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
   const addJoke = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      const response = await postJoke({ contents: addJokeText })
+      const newJoke: JokeType = { contents: addJokeText }
+      const response = await postJoke(newJoke)
       setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
+      setJoke(newJoke, response.index)
       navigate(`/j/${response.index}`)
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })

@@ -16,8 +16,8 @@ describe('Joke page', () => {
   const indexParam = `${index}`
 
   beforeAll(() => {
-    mocked(Navigation).mockReturnValue(<></>)
-    mocked(PrivacyLink).mockReturnValue(<></>)
+    mocked(Navigation).mockReturnValue(<>Navigation</>)
+    mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   test('expect rendering Index renders Joke', () => {

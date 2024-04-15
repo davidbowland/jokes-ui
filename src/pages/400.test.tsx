@@ -11,16 +11,16 @@ jest.mock('@components/server-error-message')
 
 describe('400 error page', () => {
   beforeAll(() => {
-    mocked(ServerErrorMessage).mockReturnValue(<></>)
+    mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
   test('expect rendering BadRequest renders ServerErrorMessage', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
-    expect(mocked(ServerErrorMessage)).toBeCalledWith(
+    expect(mocked(ServerErrorMessage)).toHaveBeenCalledWith(
       expect.objectContaining({ title: expectedTitle }),
       expect.anything()
     )
-    expect(mocked(ServerErrorMessage)).toBeCalledTimes(1)
+    expect(mocked(ServerErrorMessage)).toHaveBeenCalledTimes(1)
   })
 })

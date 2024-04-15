@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -14,24 +15,28 @@ import { getJoke } from '@services/jokes'
 import { JokeType } from '@types'
 
 export interface JokeProps {
+  addJoke: (index: number) => void
   index?: number
   initialJoke?: JokeType
 }
 
-const Joke = ({ index, initialJoke }: JokeProps): JSX.Element => {
+const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [isAudioLoading, setIsAudioLoading] = useState(false)
-  const [joke, setJoke] = useState<JokeType | undefined>(initialJoke)
 
-  const fetchJoke = async (index: number): Promise<void> => {
-    try {
-      const joke = await getJoke(index)
-      setJoke(joke)
-    } catch (error) {
-      console.error(error)
-      setErrorMessage('Error fetching joke. Please reload to try again.')
-    }
-  }
+  const client = useQueryClient()
+  const {
+    data: joke,
+    error,
+    isLoadingError,
+  } = useQuery<JokeType | null>(
+    {
+      initialData: initialJoke,
+      queryFn: () => (index ? getJoke(index) : null),
+      queryKey: [index],
+    },
+    client
+  )
 
   const getTtsUrl = (index: number): string => {
     if (joke?.audio) {
@@ -54,15 +59,25 @@ const Joke = ({ index, initialJoke }: JokeProps): JSX.Element => {
     })
   }
 
+  const setJoke = (joke: JokeType, targetIndex?: number): void => {
+    if (targetIndex === undefined) {
+      client.setQueryData<JokeType>([index], joke)
+    } else {
+      addJoke(targetIndex)
+      client.setQueryData<JokeType>([targetIndex], joke)
+    }
+  }
+
   const snackbarErrorClose = (): void => {
     setErrorMessage(undefined)
   }
 
   useEffect(() => {
-    if (index !== undefined && joke === undefined) {
-      fetchJoke(index)
+    if (isLoadingError) {
+      console.error(error)
+      setErrorMessage('Error fetching joke. Please reload to try again.')
     }
-  }, [index])
+  }, [error, isLoadingError])
 
   return (
     <>

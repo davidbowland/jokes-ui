@@ -11,11 +11,11 @@ jest.mock('@components/privacy-policy')
 
 describe('Privacy page', () => {
   beforeAll(() => {
-    mocked(PrivacyPolicy).mockReturnValue(<></>)
+    mocked(PrivacyPolicy).mockReturnValue(<>PrivacyPolicy</>)
   })
 
   test('Rendering PrivacyPage also renders PrivacyPolicy', () => {
     render(<PrivacyPage />)
-    expect(mocked(PrivacyPolicy)).toBeCalledTimes(1)
+    expect(mocked(PrivacyPolicy)).toHaveBeenCalledTimes(1)
   })
 })

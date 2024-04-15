@@ -13,8 +13,8 @@ jest.mock('@components/privacy-link')
 
 describe('Index page', () => {
   beforeAll(() => {
-    mocked(Navigation).mockReturnValue(<></>)
-    mocked(PrivacyLink).mockReturnValue(<></>)
+    mocked(Navigation).mockReturnValue(<>Navigation</>)
+    mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   test('expect rendering Index renders Joke', () => {

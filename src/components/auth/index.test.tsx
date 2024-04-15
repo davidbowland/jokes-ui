@@ -17,7 +17,7 @@ describe('Authenticated component', () => {
 
   beforeAll(() => {
     mocked(Auth).signOut.mockResolvedValue({})
-    mocked(Authenticator).mockReturnValue(<></>)
+    mocked(Authenticator).mockReturnValue(<>Authenticator</>)
     mocked(ThemeProvider).mockImplementation(({ children }) => children as unknown as JSX.Element)
 
     Object.defineProperty(window, 'location', {
@@ -89,7 +89,7 @@ describe('Authenticated component', () => {
       // @ts-ignore
       mocked(Authenticator).mockImplementationOnce(({ children }: unknown) => {
         logInCallback.mockImplementation(() => children && children({ signOut: jest.fn(), user }))
-        return <></>
+        return <>Authenticator</>
       })
 
       render(

@@ -29,5 +29,5 @@ export interface JokeResponse {
 }
 
 export interface PostResponse {
-  index: string
+  index: number
 }

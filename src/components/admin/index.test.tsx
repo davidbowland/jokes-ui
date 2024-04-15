@@ -27,7 +27,7 @@ describe('Admin component', () => {
     global.Math = mockMath
 
     mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
-    mocked(jokeService).postJoke.mockResolvedValue({ index: '62' })
+    mocked(jokeService).postJoke.mockResolvedValue({ index: 62 })
   })
 
   test('expect being logged out shows nothing', async () => {
@@ -60,7 +60,7 @@ describe('Admin component', () => {
   })
 
   test('expect clicking "Add joke" invokes the joke service', async () => {
-    mocked(jokeService).postJoke.mockResolvedValueOnce({ index: '17' })
+    mocked(jokeService).postJoke.mockResolvedValueOnce({ index: 17 })
     render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
 
     const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
@@ -81,8 +81,8 @@ describe('Admin component', () => {
       await addJokeButton.click()
     })
 
-    expect(mocked(jokeService).postJoke).toBeCalledWith(expect.objectContaining({ contents: jokeType.contents }))
-    expect(mocked(jokeService).postJoke).toBeCalledTimes(1)
+    expect(mocked(jokeService).postJoke).toHaveBeenCalledWith(expect.objectContaining({ contents: jokeType.contents }))
+    expect(mocked(jokeService).postJoke).toHaveBeenCalledTimes(1)
     expect(screen.getByText('Created joke #17')).toBeInTheDocument()
     expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/17')
   })
@@ -130,12 +130,12 @@ describe('Admin component', () => {
       await updateJokeButton.click()
     })
 
-    expect(mocked(jokeService).patchJoke).toBeCalledWith(42, [
+    expect(mocked(jokeService).patchJoke).toHaveBeenCalledWith(42, [
       { op: 'test', path: '/contents', value: 'LAWLS' },
       { op: 'replace', path: '/contents', value: expectedJoke },
       { op: 'remove', path: '/audio' },
     ])
-    expect(mocked(jokeService).patchJoke).toBeCalledTimes(1)
+    expect(mocked(jokeService).patchJoke).toHaveBeenCalledTimes(1)
     expect(screen.getByText('Joke successfully updated!')).toBeInTheDocument()
   })
 
@@ -158,11 +158,11 @@ describe('Admin component', () => {
       await updateJokeButton.click()
     })
 
-    expect(mocked(jokeService).patchJoke).toBeCalledWith(42, [
+    expect(mocked(jokeService).patchJoke).toHaveBeenCalledWith(42, [
       { op: 'test', path: '/contents', value: 'LAWLS' },
       { op: 'replace', path: '/contents', value: expectedJoke },
     ])
-    expect(mocked(jokeService).patchJoke).toBeCalledTimes(1)
+    expect(mocked(jokeService).patchJoke).toHaveBeenCalledTimes(1)
     expect(screen.getByText('Joke successfully updated!')).toBeInTheDocument()
   })
 

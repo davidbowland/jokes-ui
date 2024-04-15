@@ -13,7 +13,7 @@ describe('Server error message component', () => {
   const children = 'Nothing to see here'
 
   beforeAll(() => {
-    mocked(PrivacyLink).mockReturnValue(<></>)
+    mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   test('expect rendering ServerErrorMessage has title in output', () => {

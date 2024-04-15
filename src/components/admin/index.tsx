@@ -9,7 +9,7 @@ import SignedIn from './signed-in'
 export interface AdminProps {
   index: number
   joke: JokeType
-  setJoke: (joke: JokeType | undefined) => void
+  setJoke: (joke: JokeType, targetIndex?: number) => void
 }
 
 const Admin = ({ index, joke, setJoke }: AdminProps): JSX.Element => {

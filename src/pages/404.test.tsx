@@ -11,7 +11,7 @@ jest.mock('@components/server-error-message')
 
 describe('404 error page', () => {
   beforeAll(() => {
-    mocked(ServerErrorMessage).mockReturnValue(<></>)
+    mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
     Object.defineProperty(window, 'location', {
       configurable: true,
       value: { pathname: '' },

@@ -20,11 +20,18 @@ export interface NavigationProps {
 }
 
 const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState((typeof window !== 'undefined' && window?.history?.state?.count) || 0)
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
   const [index, setIndex] = useState<number | undefined>(initialIndex)
   const [initialJoke, setInitialJoke] = useState<JokeType | undefined>(undefined)
   const [recentIndexes, setRecentIndexes] = useState<number[]>(index ? [index] : [])
+
+  const addJoke = (index: number): void => {
+    setCount(index)
+    setIndex(index)
+    setInitialJoke(undefined)
+    setRecentIndexes((recent) => [...recent, index])
+  }
 
   const fetchCount = async (): Promise<void> => {
     try {
@@ -44,7 +51,7 @@ const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
       setInitialJoke(initialData.joke.data)
 
       // Update the URL to reflect the URL of this joke
-      window.history.replaceState({}, '', `/j/${initialData.joke.id}`)
+      navigate(`/j/${initialData.joke.id}`, { replace: true, state: { count: initialData.count } })
     } catch (error) {
       console.error(error)
       setErrorMessage('Error fetching initial joke data. Please reload to try again.')
@@ -52,9 +59,9 @@ const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
   }
 
   const navigateToIndex = (index: number): void => {
-    navigate(`/j/${index}`)
+    navigate(`/j/${index}`, { state: { count } })
     setIndex(index)
-    setRecentIndexes([...recentIndexes, index])
+    setRecentIndexes((recent) => [...recent, index])
     setInitialJoke(undefined)
   }
 
@@ -89,7 +96,7 @@ const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
   return (
     <Paper elevation={6} sx={{ p: { sm: '25px', xs: '15px' } }}>
       <Stack spacing={2}>
-        <Joke index={index} initialJoke={initialJoke} key={index} />
+        <Joke addJoke={addJoke} index={index} initialJoke={initialJoke} key={index} />
         {count > 0 && (
           <Grid container justifyContent="center" sx={{ textAlign: 'center' }}>
             <Grid item sm xs={12}></Grid>
