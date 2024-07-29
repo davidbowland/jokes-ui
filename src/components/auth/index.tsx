@@ -14,7 +14,7 @@ export interface AuthenticatedProps {
 }
 
 const Authenticated = ({ children }: AuthenticatedProps): JSX.Element => {
-  const [loggedInUser, setLoggedInUser] = useState<AmplifyUser | undefined>(undefined)
+  const [loggedInUser, setLoggedInUser] = useState<AmplifyUser | undefined>()
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {

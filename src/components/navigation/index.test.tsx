@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import * as gatsby from 'gatsby'
-import { act, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { mocked } from 'jest-mock'
 import React from 'react'
 
@@ -21,6 +21,7 @@ describe('Navigation component', () => {
   beforeAll(() => {
     const mockMath = Object.create(global.Math)
     mockMath.random = jest.fn().mockReturnValue(0.5)
+    console.error = jest.fn()
     global.Math = mockMath
     window.history.replaceState = replaceState
 
@@ -83,9 +84,7 @@ describe('Navigation component', () => {
 
       await screen.findByText(/Error fetching initial joke data. Please reload to try again./i)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(
         screen.queryByText(/Error fetching initial joke data. Please reload to try again./i)
@@ -115,9 +114,7 @@ describe('Navigation component', () => {
 
       await screen.findByText(/Error fetching joke count. Please reload to try again./i)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching joke count. Please reload to try again../i)).not.toBeInTheDocument()
     })
@@ -130,9 +127,7 @@ describe('Navigation component', () => {
       const previousJokeButton: HTMLButtonElement = (await screen.findByLabelText(
         /Previous joke/i
       )) as HTMLButtonElement
-      act(() => {
-        previousJokeButton.click()
-      })
+      fireEvent.click(previousJokeButton)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`, { state: jokeCount })
     })
@@ -150,9 +145,7 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={index} />)
 
       const nextJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Next joke/i)) as HTMLButtonElement
-      act(() => {
-        nextJokeButton.click()
-      })
+      fireEvent.click(nextJokeButton)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`, { state: jokeCount })
     })
@@ -178,9 +171,7 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={index} />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      act(() => {
-        randomJokeButton.click()
-      })
+      fireEvent.click(randomJokeButton)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65', { state: jokeCount })
     })
@@ -189,9 +180,7 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={65} />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      act(() => {
-        randomJokeButton.click()
-      })
+      fireEvent.click(randomJokeButton)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64', { state: jokeCount })
     })
@@ -202,12 +191,8 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={1} />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      act(() => {
-        randomJokeButton.click()
-      })
-      act(() => {
-        randomJokeButton.click()
-      })
+      fireEvent.click(randomJokeButton)
+      fireEvent.click(randomJokeButton)
 
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
       expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })

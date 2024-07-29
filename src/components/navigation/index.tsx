@@ -21,9 +21,9 @@ export interface NavigationProps {
 
 const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
   const [count, setCount] = useState((typeof window !== 'undefined' && window?.history?.state?.count) || 0)
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [index, setIndex] = useState<number | undefined>(initialIndex)
-  const [initialJoke, setInitialJoke] = useState<JokeType | undefined>(undefined)
+  const [initialJoke, setInitialJoke] = useState<JokeType | undefined>()
   const [recentIndexes, setRecentIndexes] = useState<number[]>(index ? [index] : [])
 
   const addJoke = (index: number): void => {
@@ -38,7 +38,7 @@ const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
       const jokeCount = await getJokeCount()
       setCount(jokeCount.count)
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching joke count', { error })
       setErrorMessage('Error fetching joke count. Please reload to try again.')
     }
   }
@@ -53,7 +53,7 @@ const Navigation = ({ initialIndex }: NavigationProps): JSX.Element => {
       // Update the URL to reflect the URL of this joke
       navigate(`/j/${initialData.joke.id}`, { replace: true, state: { count: initialData.count } })
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching initial joke data', { error })
       setErrorMessage('Error fetching initial joke data. Please reload to try again.')
     }
   }

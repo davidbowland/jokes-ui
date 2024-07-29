@@ -8,6 +8,7 @@ import PrivacyPolicy from '@components/privacy-policy'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/privacy-policy')
+jest.mock('@config/amplify')
 
 describe('Privacy page', () => {
   beforeAll(() => {

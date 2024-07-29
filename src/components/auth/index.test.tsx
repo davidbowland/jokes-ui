@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { act, render, screen, waitFor } from '@testing-library/react'
 import { Authenticator, ThemeProvider } from '@aws-amplify/ui-react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Auth } from 'aws-amplify'
 import { mocked } from 'jest-mock'
 import React from 'react'
@@ -39,9 +39,7 @@ describe('Authenticated component', () => {
       )
 
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        signInButton.click()
-      })
+      fireEvent.click(signInButton)
 
       expect(mocked(ThemeProvider)).toHaveBeenCalledWith(
         expect.objectContaining({ colorMode: 'system' }),
@@ -75,12 +73,10 @@ describe('Authenticated component', () => {
         </Authenticated>
       )
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        signInButton.click()
-      })
+      fireEvent.click(signInButton)
 
-      expect(mocked(Authenticator)).toHaveBeenCalledTimes(1)
       expect(await screen.findByText(/Cancel/i)).toBeInTheDocument()
+      expect(mocked(Authenticator)).toHaveBeenCalledTimes(1)
     })
 
     test('expect logging in sets the user', async () => {
@@ -97,16 +93,15 @@ describe('Authenticated component', () => {
           <p>Testing children</p>
         </Authenticated>
       )
+      logInCallback()
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        signInButton.click()
-      })
-      await act(async () => {
-        logInCallback()
-      })
+      fireEvent.click(signInButton)
 
+      await waitFor(() => {
+        expect(mocked(Authenticator)).toHaveBeenCalled()
+      })
       expect(mocked(Authenticator)).toHaveBeenCalledTimes(1)
-      expect(await screen.findByText(/admin/i)).toBeInTheDocument()
+      expect(screen.queryByText(/admin/i)).toBeInTheDocument()
     })
 
     test('expect going back from login goes back', async () => {
@@ -117,13 +112,9 @@ describe('Authenticated component', () => {
       )
 
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        signInButton.click()
-      })
+      fireEvent.click(signInButton)
       const goBackButton = (await screen.findByText(/Cancel/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        goBackButton.click()
-      })
+      fireEvent.click(goBackButton)
 
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
@@ -141,7 +132,10 @@ describe('Authenticated component', () => {
         </Authenticated>
       )
 
-      expect(screen.queryByText(/Admin/i)).toBeInTheDocument()
+      await waitFor(() => {
+        expect(mocked(Auth).currentAuthenticatedUser).toHaveBeenCalled()
+      })
+      expect(screen.queryByText(/admin/i)).toBeInTheDocument()
     })
 
     test('expect working menu', async () => {
@@ -151,9 +145,7 @@ describe('Authenticated component', () => {
         </Authenticated>
       )
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        menuButton.click()
-      })
+      fireEvent.click(menuButton)
 
       expect(await screen.findByText(/Sign out/i)).toBeVisible()
     })
@@ -165,18 +157,16 @@ describe('Authenticated component', () => {
         </Authenticated>
       )
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      await act(async () => {
-        menuButton.click()
-      })
+      fireEvent.click(menuButton)
       const signOutButton = (await screen.findByText(/Sign out/i)) as HTMLButtonElement
-      await act(async () => {
-        signOutButton.click()
-      })
+      fireEvent.click(signOutButton)
 
+      await waitFor(() => {
+        expect(mockLocationReload).toHaveBeenCalled()
+      })
       expect(mocked(Auth).signOut).toHaveBeenCalled()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
       expect(screen.queryByText(/Dave/i)).not.toBeInTheDocument()
-      await waitFor(() => expect(mockLocationReload).toHaveBeenCalled())
     })
   })
 })

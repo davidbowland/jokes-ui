@@ -21,7 +21,7 @@ export interface JokeProps {
 }
 
 const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+  const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [isAudioLoading, setIsAudioLoading] = useState(false)
 
   const client = useQueryClient()
@@ -74,7 +74,7 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
 
   useEffect(() => {
     if (isLoadingError) {
-      console.error(error)
+      console.error('Error fetching joke', { error })
       setErrorMessage('Error fetching joke. Please reload to try again.')
     }
   }, [error, isLoadingError])

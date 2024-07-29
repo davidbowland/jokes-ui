@@ -51,6 +51,7 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
       setJoke(newJoke, response.index)
       navigate(`/j/${response.index}`)
     } catch (error) {
+      console.error('Error adding joke', { addJokeText, error })
       setAdminNotice({ severity: 'error', text: (error as any).response })
     }
     setIsLoading(false)
@@ -68,6 +69,7 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
       setJoke(newJoke)
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
     } catch (error) {
+      console.error('Error updating joke', { editJoke, error, index })
       setAdminNotice({ severity: 'error', text: (error as any).response })
     }
     setIsLoading(false)

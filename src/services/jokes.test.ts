@@ -3,7 +3,7 @@ import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 import { getInitialData, getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
-import { rest, server } from '@test/setup-server'
+import { http, HttpResponse, server } from '@test/setup-server'
 import { initialResponse } from '@test/__mocks__'
 import { JokeResponse } from '@types'
 
@@ -24,8 +24,8 @@ describe('Joke service', () => {
   describe('getInitialData', () => {
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/jokes/initial`, async (req, res, ctx) => {
-          return res(ctx.json(initialResponse))
+        http.get(`${baseUrl}/jokes/initial`, async () => {
+          return HttpResponse.json(initialResponse)
         })
       )
     })
@@ -39,12 +39,12 @@ describe('Joke service', () => {
   describe('getJoke', () => {
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
-          const { id } = req.params as { id: string }
+        http.get(`${baseUrl}/jokes/:id`, async ({ params }) => {
+          const { id } = params as { id: string }
           if (!(id in randomJokeResult)) {
-            return res(ctx.status(400))
+            return new HttpResponse(null, { status: 404 })
           }
-          return res(ctx.json(randomJokeResult[id as unknown as number]))
+          return HttpResponse.json(randomJokeResult[id as unknown as number])
         })
       )
     })
@@ -63,8 +63,8 @@ describe('Joke service', () => {
 
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/jokes/count`, async (req, res, ctx) => {
-          return res(ctx.json({ count }))
+        http.get(`${baseUrl}/jokes/count`, async () => {
+          return HttpResponse.json({ count })
         })
       )
     })
@@ -80,11 +80,12 @@ describe('Joke service', () => {
 
     beforeAll(() => {
       server.use(
-        rest.get(`${baseUrl}/jokes/random`, async (req, res, ctx) => {
-          if (recentIndexes.join(',') !== req.url.searchParams.get('avoid')) {
-            return res(ctx.status(400))
+        http.get(`${baseUrl}/jokes/random`, async ({ request }) => {
+          const url = new URL(request.url)
+          if (recentIndexes.join(',') !== url.searchParams.get('avoid')) {
+            return new HttpResponse(null, { status: 400 })
           }
-          return res(ctx.json(randomJokeResult))
+          return HttpResponse.json(randomJokeResult)
         })
       )
     })
@@ -102,9 +103,9 @@ describe('Joke service', () => {
 
     beforeAll(() => {
       server.use(
-        rest.post(`${baseUrl}/jokes`, async (req, res, ctx) => {
-          const body = postEndpoint(await req.json())
-          return res(body ? ctx.json(body) : ctx.status(400))
+        http.post(`${baseUrl}/jokes`, async ({ request }) => {
+          const body = postEndpoint(await request.json())
+          return body ? HttpResponse.json(body) : HttpResponse.json(null, { status: 400 })
         })
       )
     })
@@ -138,10 +139,10 @@ describe('Joke service', () => {
 
     beforeAll(() => {
       server.use(
-        rest.patch(`${baseUrl}/jokes/:id`, async (req, res, ctx) => {
-          const { id } = req.params
-          const body = patchEndpoint(id, await req.json())
-          return res(body ? ctx.json(body) : ctx.status(400))
+        http.patch(`${baseUrl}/jokes/:id`, async ({ params, request }) => {
+          const { id } = params
+          const body = patchEndpoint(id, await request.json())
+          return body ? HttpResponse.json(body) : HttpResponse.json(null, { status: 400 })
         })
       )
     })

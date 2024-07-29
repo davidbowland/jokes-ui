@@ -13,7 +13,7 @@ const queryClient = new QueryClient({
     queries: {
       gcTime: STALE_TIME,
       staleTime: STALE_TIME,
-    }
+    },
   },
 })
 

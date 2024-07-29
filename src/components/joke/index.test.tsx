@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { act, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { mocked } from 'jest-mock'
 import React from 'react'
@@ -42,6 +42,7 @@ describe('Joke component', () => {
       return <>Admin</>
     })
     mocked(jokes).getJoke.mockResolvedValue(jokeType)
+    console.error = jest.fn()
   })
 
   describe('joke display', () => {
@@ -96,9 +97,7 @@ describe('Joke component', () => {
 
       await screen.findByText(/Error fetching joke. Please reload to try again./i)
       const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      act(() => {
-        closeSnackbarButton.click()
-      })
+      fireEvent.click(closeSnackbarButton)
 
       expect(screen.queryByText(/Error fetching joke. Please reload to try again./i)).not.toBeInTheDocument()
     })
@@ -130,9 +129,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(async () => {
-        ttsButton.click()
-      })
+      fireEvent.click(ttsButton)
 
       expect(global.Audio).toHaveBeenCalledWith('data:text/plain;base64,yalp')
       expect(screen.queryByText('Fetching audio')).toBeInTheDocument()
@@ -151,9 +148,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(async () => {
-        ttsButton.click()
-      })
+      fireEvent.click(ttsButton)
 
       expect(global.Audio).toHaveBeenCalledWith(`${baseUrl}/jokes/${index}/tts`)
       expect(screen.queryByText('Fetching audio')).toBeInTheDocument()
@@ -170,9 +165,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(async () => {
-        ttsButton.click()
-      })
+      fireEvent.click(ttsButton)
 
       expect(mockPlay).toHaveBeenCalledTimes(1)
     })
@@ -196,9 +189,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(async () => {
-        ttsButton.click()
-      })
+      fireEvent.click(ttsButton)
 
       expect(await screen.findByText('Text-to-speech')).toBeEnabled()
     })
@@ -222,9 +213,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      await act(async () => {
-        ttsButton.click()
-      })
+      fireEvent.click(ttsButton)
 
       expect(await screen.findByText('Text-to-speech')).toBeEnabled()
     })

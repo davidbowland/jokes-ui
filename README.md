@@ -6,8 +6,8 @@ Gatsby and Amplify implementation of jokes-api and jokes-infrastructure. Example
 
 ### Prerequisites
 
-1. [Node 16](https://nodejs.org/en/)
-1. [NPM 8+](https://www.npmjs.com/)
+1. [Node](https://nodejs.org/en/)
+1. [NPM](https://www.npmjs.com/)
 
 ### Local Development
 
@@ -33,12 +33,6 @@ Manually run tests with:
 
 ```bash
 npm run test
-```
-
-Snapshots can be updated with:
-
-```bash
-npm run test:update-snapshots
 ```
 
 ### Prettier / Linter
@@ -108,7 +102,3 @@ npm run workflow
 - [actions/checkout](https://github.com/actions/checkout)
 
 - [ad-m/github-push-action](https://github.com/ad-m/github-push-action)
-
-### Deployment Documentation
-
-- [AWS SAM CLI](https://aws.amazon.com/serverless/sam/)
