@@ -26,7 +26,7 @@ export const jokeResponse: JokeResponse[] = [
 ]
 
 export const jokeType: JokeType = {
-  audio: { contentType: 'text/plain', data: 'yalp' },
+  audio: { base64: 'yalp', contentType: 'text/plain' },
   contents: 'LAWLS',
 }
 

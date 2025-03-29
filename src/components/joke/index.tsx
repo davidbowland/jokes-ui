@@ -40,7 +40,7 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
 
   const getTtsUrl = (index: number): string => {
     if (joke?.audio) {
-      return `data:${joke.audio.contentType};base64,${joke.audio.data}`
+      return `data:${joke.audio.contentType};base64,${joke.audio.base64}`
     }
     return `${baseUrl}/jokes/${index}/tts`
   }
@@ -54,7 +54,8 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
     audio.addEventListener('ended', () => {
       setIsAudioLoading(false)
     })
-    audio.addEventListener('error', () => {
+    audio.addEventListener('error', (error) => {
+      console.error('Error playing audio', { error })
       setIsAudioLoading(false)
     })
   }

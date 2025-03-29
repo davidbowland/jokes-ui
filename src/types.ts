@@ -2,8 +2,9 @@ export { RemoveOperation } from 'fast-json-patch'
 export { Theme } from '@mui/material/styles'
 
 export interface JokeAudio {
+  base64: string
   contentType: string
-  data: string
+  version?: string
 }
 
 export interface JokeCount {
