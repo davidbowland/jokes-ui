@@ -1,14 +1,13 @@
-import { Auth } from 'aws-amplify'
+import { API, Auth } from 'aws-amplify'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 import { getInitialData, getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
-import { http, HttpResponse, server } from '@test/setup-server'
 import { initialResponse } from '@test/__mocks__'
 import { JokeResponse } from '@types'
 
-const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
 jest.mock('@aws-amplify/analytics')
+jest.mock('aws-amplify')
 
 describe('Joke service', () => {
   const randomJokeResult: JokeResponse[] = [
@@ -18,35 +17,26 @@ describe('Joke service', () => {
 
   beforeAll(() => {
     const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession
-    jest.spyOn(Auth, 'currentSession').mockResolvedValue(userSession)
+    jest.mocked(Auth).currentSession.mockResolvedValue(userSession)
   })
 
   describe('getInitialData', () => {
     beforeAll(() => {
-      server.use(
-        http.get(`${baseUrl}/jokes/initial`, async () => {
-          return HttpResponse.json(initialResponse)
-        })
-      )
+      jest.mocked(API).get.mockResolvedValue(initialResponse)
     })
 
     test('Expect results from initial endpoint', async () => {
       const result = await getInitialData()
       expect(result).toEqual(initialResponse)
+      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/initial', {})
     })
   })
 
   describe('getJoke', () => {
     beforeAll(() => {
-      server.use(
-        http.get(`${baseUrl}/jokes/:id`, async ({ params }) => {
-          const { id } = params as { id: string }
-          if (!(id in randomJokeResult)) {
-            return new HttpResponse(null, { status: 404 })
-          }
-          return HttpResponse.json(randomJokeResult[id as unknown as number])
-        })
-      )
+      jest.mocked(API).get.mockImplementation(async (_, path) => {
+        return randomJokeResult[parseInt(path.split('/').pop() as string, 10)]
+      })
     })
 
     test.each(Object.keys(randomJokeResult) as unknown as number[])(
@@ -54,6 +44,7 @@ describe('Joke service', () => {
       async (expectedId: number) => {
         const result = await getJoke(expectedId)
         expect(result).toEqual(randomJokeResult[expectedId])
+        expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', `/jokes/${expectedId}`, {})
       }
     )
   })
@@ -62,16 +53,13 @@ describe('Joke service', () => {
     const count = 42
 
     beforeAll(() => {
-      server.use(
-        http.get(`${baseUrl}/jokes/count`, async () => {
-          return HttpResponse.json({ count })
-        })
-      )
+      jest.mocked(API).get.mockResolvedValue({ count })
     })
 
     test('Expect results from count endpoint', async () => {
       const result = await getJokeCount()
       expect(result).toEqual({ count })
+      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/count', {})
     })
   })
 
@@ -79,41 +67,31 @@ describe('Joke service', () => {
     const recentIndexes = ['32', '45', '79']
 
     beforeAll(() => {
-      server.use(
-        http.get(`${baseUrl}/jokes/random`, async ({ request }) => {
-          const url = new URL(request.url)
-          if (recentIndexes.join(',') !== url.searchParams.get('avoid')) {
-            return new HttpResponse(null, { status: 400 })
-          }
-          return HttpResponse.json(randomJokeResult)
-        })
-      )
+      jest.mocked(API).get.mockResolvedValue(randomJokeResult)
     })
 
     test('expect results using recentIndexes', async () => {
       const result = await getRandomJokes(recentIndexes)
 
       expect(result).toEqual(randomJokeResult)
+      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/random', {
+        queryStringParameters: { avoid: '32,45,79', count: '3' },
+      })
     })
   })
 
   describe('postJoke', () => {
-    const postEndpoint = jest.fn().mockReturnValue(200)
+    const postEndpoint = jest.fn()
     const joke = Object.values(randomJokeResult)[0].data
 
     beforeAll(() => {
-      server.use(
-        http.post(`${baseUrl}/jokes`, async ({ request }) => {
-          const body = postEndpoint(await request.json())
-          return body ? HttpResponse.json(body) : HttpResponse.json(null, { status: 400 })
-        })
-      )
+      jest.mocked(API).post.mockImplementation(postEndpoint)
     })
 
     test('expect endpoint called with joke', async () => {
       await postJoke(joke)
       expect(postEndpoint).toHaveBeenCalledTimes(1)
-      expect(postEndpoint).toHaveBeenCalledWith(joke)
+      expect(API.post).toHaveBeenCalledWith('JokesAPIGateway', '/jokes', { body: joke })
     })
 
     test('expect result from call returned', async () => {
@@ -127,7 +105,7 @@ describe('Joke service', () => {
   })
 
   describe('patchJoke', () => {
-    const patchEndpoint = jest.fn().mockReturnValue(200)
+    const patchEndpoint = jest.fn()
     const index = Object.keys(randomJokeResult)[0] as unknown as number
     const operation = [
       {
@@ -138,19 +116,15 @@ describe('Joke service', () => {
     ] as unknown as PatchOperation[]
 
     beforeAll(() => {
-      server.use(
-        http.patch(`${baseUrl}/jokes/:id`, async ({ params, request }) => {
-          const { id } = params
-          const body = patchEndpoint(id, await request.json())
-          return body ? HttpResponse.json(body) : HttpResponse.json(null, { status: 400 })
-        })
-      )
+      jest.mocked(API).patch.mockImplementation(patchEndpoint)
     })
 
     test('expect endpoint called with index and patch operation', async () => {
       await patchJoke(index, operation)
       expect(patchEndpoint).toHaveBeenCalledTimes(1)
-      expect(patchEndpoint).toHaveBeenCalledWith(index, operation)
+      expect(API.patch).toHaveBeenCalledWith('JokesAPIGateway', `/jokes/${index}`, {
+        body: operation,
+      })
     })
   })
 })
