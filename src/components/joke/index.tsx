@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import Admin from '@components/admin'
+import { baseUrl } from '@config/amplify'
+import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
-import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
 import Typography from '@mui/material/Typography'
-
-import Admin from '@components/admin'
-import { baseUrl } from '@config/amplify'
 import { getJoke } from '@services/jokes'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { JokeType } from '@types'
+import React, { useEffect, useState } from 'react'
 
 export interface JokeProps {
   addJoke: (index: number) => void
@@ -35,7 +34,7 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
       queryFn: () => (index ? getJoke(index) : null),
       queryKey: [index],
     },
-    client
+    client,
   )
 
   const getTtsUrl = (index: number): string => {

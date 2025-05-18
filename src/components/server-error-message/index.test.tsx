@@ -1,9 +1,8 @@
+import PrivacyLink from '@components/privacy-link'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import { mocked } from 'jest-mock'
 import React from 'react'
 
-import PrivacyLink from '@components/privacy-link'
 import ServerErrorMessage from './index'
 
 jest.mock('@components/privacy-link')
@@ -13,7 +12,7 @@ describe('Server error message component', () => {
   const children = 'Nothing to see here'
 
   beforeAll(() => {
-    mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
+    jest.mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   test('expect rendering ServerErrorMessage has title in output', () => {
@@ -38,6 +37,6 @@ describe('Server error message component', () => {
   test('expect rendering ServerErrorMessage has privacy link', () => {
     render(<ServerErrorMessage title={title}> </ServerErrorMessage>)
 
-    expect(mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+    expect(PrivacyLink).toHaveBeenCalledTimes(1)
   })
 })

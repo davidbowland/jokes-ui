@@ -1,9 +1,9 @@
 import '@aws-amplify/ui-react/styles.css'
-import React, { useEffect, useState } from 'react'
-import { Auth } from 'aws-amplify'
 import Divider from '@mui/material/Divider'
-
 import { JokeType } from '@types'
+import { Auth } from 'aws-amplify'
+import React, { useEffect, useState } from 'react'
+
 import SignedIn from './signed-in'
 
 export interface AdminProps {

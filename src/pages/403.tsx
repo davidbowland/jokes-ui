@@ -1,6 +1,5 @@
-import React from 'react'
-
 import ServerErrorMessage from '@components/server-error-message'
+import React from 'react'
 
 const Forbidden = (): JSX.Element => {
   return (

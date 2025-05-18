@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import Joke from '@components/joke'
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import ShuffleIcon from '@mui/icons-material/Shuffle'
 import Alert from '@mui/material/Alert'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { navigate } from 'gatsby'
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import Paper from '@mui/material/Paper'
-import ShuffleIcon from '@mui/icons-material/Shuffle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
-
 import { getInitialData, getJokeCount } from '@services/jokes'
-import Joke from '@components/joke'
 import { JokeType } from '@types'
+import { navigate } from 'gatsby'
+import React, { useEffect, useState } from 'react'
 
 export interface NavigationProps {
   initialIndex?: number

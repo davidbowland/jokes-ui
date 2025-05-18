@@ -1,14 +1,13 @@
+import Admin from '@components/admin'
+import * as jokes from '@services/jokes'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { index, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { mocked } from 'jest-mock'
+import { JokeType } from '@types'
 import React from 'react'
 
-import * as jokes from '@services/jokes'
-import { index, jokeType } from '@test/__mocks__'
-import Admin from '@components/admin'
 import Joke from './index'
-import { JokeType } from '@types'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')
@@ -33,7 +32,7 @@ describe('Joke component', () => {
   const mockSetJoke = jest.fn()
 
   beforeAll(() => {
-    mocked(Admin).mockImplementation(({ setJoke }) => {
+    jest.mocked(Admin).mockImplementation(({ setJoke }) => {
       const setJokeArgs = mockSetJoke()
       if (setJokeArgs !== undefined) {
         const [joke, index] = setJokeArgs
@@ -41,7 +40,7 @@ describe('Joke component', () => {
       }
       return <>Admin</>
     })
-    mocked(jokes).getJoke.mockResolvedValue(jokeType)
+    jest.mocked(jokes).getJoke.mockResolvedValue(jokeType)
     console.error = jest.fn()
   })
 
@@ -50,7 +49,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(screen.queryByText(jokeType.contents)).not.toBeInTheDocument()
@@ -60,7 +59,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} initialJoke={jokeType} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(await screen.findByText(jokeType.contents)).toBeInTheDocument()
@@ -70,29 +69,29 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(await screen.findByText(jokeType.contents)).toBeInTheDocument()
     })
 
     test('expect error message when getJoke rejects', async () => {
-      mocked(jokes).getJoke.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getJoke.mockRejectedValueOnce(undefined)
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(await screen.findByText(/Error fetching joke. Please reload to try again./i)).toBeInTheDocument()
     })
 
     test('expect closing error message removes it', async () => {
-      mocked(jokes).getJoke.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getJoke.mockRejectedValueOnce(undefined)
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(/Error fetching joke. Please reload to try again./i)
@@ -122,7 +121,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
@@ -137,11 +136,11 @@ describe('Joke component', () => {
 
     test('expect clicking the text-to-speech button fetches the joke tts', async () => {
       const jokeNoAudio: JokeType = { ...jokeType, audio: undefined }
-      mocked(jokes).getJoke.mockResolvedValueOnce(jokeNoAudio)
+      jest.mocked(jokes).getJoke.mockResolvedValueOnce(jokeNoAudio)
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
@@ -158,7 +157,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
@@ -182,7 +181,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
@@ -206,7 +205,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
@@ -224,22 +223,22 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} initialJoke={jokeType} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
-      expect(mocked(Admin)).not.toHaveBeenCalled()
+      expect(Admin).not.toHaveBeenCalled()
     })
 
     test('expect Admin to be rendered when index passed', async () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       await screen.findByText(jokeType.contents)
-      expect(mocked(Admin)).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), {})
+      expect(Admin).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), {})
     })
 
     test('expect setJoke updates the current joke', async () => {
@@ -250,7 +249,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} initialJoke={jokeType} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(await screen.findByText(newContents)).toBeInTheDocument()
@@ -265,7 +264,7 @@ describe('Joke component', () => {
       render(
         <Wrapper>
           <Joke addJoke={mockAddJoke} index={index} initialJoke={jokeType} />
-        </Wrapper>
+        </Wrapper>,
       )
 
       expect(mockAddJoke).toHaveBeenCalledWith(newIndex)

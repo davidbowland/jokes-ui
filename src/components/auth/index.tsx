@@ -1,9 +1,9 @@
-import '@aws-amplify/ui-react/styles.css'
-import React, { useEffect, useState } from 'react'
 import { AmplifyUser } from '@aws-amplify/ui'
+import '@aws-amplify/ui-react/styles.css'
 import AppBar from '@mui/material/AppBar'
-import { Auth } from 'aws-amplify'
 import Toolbar from '@mui/material/Toolbar'
+import { Auth } from 'aws-amplify'
+import React, { useEffect, useState } from 'react'
 
 import JokesAuthenticator from './jokes-authenticator'
 import LoggedInBar from './logged-in-bar'

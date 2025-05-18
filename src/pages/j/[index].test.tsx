@@ -1,12 +1,11 @@
-import '@testing-library/jest-dom'
-import { mocked } from 'jest-mock'
-import React from 'react'
-import { render } from '@testing-library/react'
-
-import { index } from '@test/__mocks__'
-import JokePage from './[index]'
 import Navigation from '@components/navigation'
 import PrivacyLink from '@components/privacy-link'
+import { index } from '@test/__mocks__'
+import '@testing-library/jest-dom'
+import { render } from '@testing-library/react'
+import React from 'react'
+
+import JokePage from './[index]'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/navigation')
@@ -16,18 +15,18 @@ describe('Joke page', () => {
   const indexParam = `${index}`
 
   beforeAll(() => {
-    mocked(Navigation).mockReturnValue(<>Navigation</>)
-    mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
+    jest.mocked(Navigation).mockReturnValue(<>Navigation</>)
+    jest.mocked(PrivacyLink).mockReturnValue(<>PrivacyLink</>)
   })
 
   test('expect rendering Index renders Joke', () => {
     render(<JokePage params={{ index: indexParam }} />)
-    expect(mocked(Navigation)).toHaveBeenCalledWith({ initialIndex: index }, {})
-    expect(mocked(Navigation)).toHaveBeenCalledTimes(1)
+    expect(Navigation).toHaveBeenCalledWith({ initialIndex: index }, {})
+    expect(Navigation).toHaveBeenCalledTimes(1)
   })
 
   test('expect rendering Index renders PrivacyLink', () => {
     render(<JokePage params={{ index: indexParam }} />)
-    expect(mocked(PrivacyLink)).toHaveBeenCalledTimes(1)
+    expect(PrivacyLink).toHaveBeenCalledTimes(1)
   })
 })

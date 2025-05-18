@@ -1,12 +1,11 @@
-import '@testing-library/jest-dom'
-import * as gatsby from 'gatsby'
-import { fireEvent, render, screen } from '@testing-library/react'
-import { mocked } from 'jest-mock'
-import React from 'react'
-
+import Joke from '@components/joke'
 import * as jokes from '@services/jokes'
 import { index, initialJoke, initialResponse, jokeCount } from '@test/__mocks__'
-import Joke from '@components/joke'
+import '@testing-library/jest-dom'
+import { fireEvent, render, screen } from '@testing-library/react'
+import * as gatsby from 'gatsby'
+import React from 'react'
+
 import Navigation from './index'
 
 jest.mock('@aws-amplify/analytics')
@@ -25,15 +24,15 @@ describe('Navigation component', () => {
     global.Math = mockMath
     window.history.replaceState = replaceState
 
-    mocked(Joke).mockImplementation(({ addJoke }) => {
+    jest.mocked(Joke).mockImplementation(({ addJoke }) => {
       const index = mockAddJoke()
       if (index !== undefined) {
         addJoke(index)
       }
       return <>Joke</>
     })
-    mocked(jokes).getInitialData.mockResolvedValue(initialResponse)
-    mocked(jokes).getJokeCount.mockResolvedValue(jokeCount)
+    jest.mocked(jokes).getInitialData.mockResolvedValue(initialResponse)
+    jest.mocked(jokes).getJokeCount.mockResolvedValue(jokeCount)
   })
 
   describe('rendering', () => {
@@ -65,21 +64,21 @@ describe('Navigation component', () => {
       render(<Navigation />)
 
       await screen.findByLabelText(/Random joke/i)
-      expect(mocked(jokes).getInitialData).toHaveBeenCalled()
-      expect(mocked(jokes).getJokeCount).not.toHaveBeenCalled()
+      expect(jest.mocked(jokes).getInitialData).toHaveBeenCalled()
+      expect(jest.mocked(jokes).getJokeCount).not.toHaveBeenCalled()
     })
 
     test('expect error message when getInitialData rejects', async () => {
-      mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
       render(<Navigation />)
 
       expect(
-        await screen.findByText(/Error fetching initial joke data. Please reload to try again./i)
+        await screen.findByText(/Error fetching initial joke data. Please reload to try again./i),
       ).toBeInTheDocument()
     })
 
     test('expect closing getInitialData error message removes it', async () => {
-      mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
       render(<Navigation />)
 
       await screen.findByText(/Error fetching initial joke data. Please reload to try again./i)
@@ -87,7 +86,7 @@ describe('Navigation component', () => {
       fireEvent.click(closeSnackbarButton)
 
       expect(
-        screen.queryByText(/Error fetching initial joke data. Please reload to try again./i)
+        screen.queryByText(/Error fetching initial joke data. Please reload to try again./i),
       ).not.toBeInTheDocument()
     })
   })
@@ -97,19 +96,19 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={index} />)
 
       await screen.findByLabelText(/Random joke/i)
-      expect(mocked(jokes).getJokeCount).toHaveBeenCalled()
-      expect(mocked(jokes).getInitialData).not.toHaveBeenCalled()
+      expect(jest.mocked(jokes).getJokeCount).toHaveBeenCalled()
+      expect(jest.mocked(jokes).getInitialData).not.toHaveBeenCalled()
     })
 
     test('expect error message when getJokeCount rejects', async () => {
-      mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
       render(<Navigation initialIndex={index} />)
 
       expect(await screen.findByText(/Error fetching joke count. Please reload to try again./i)).toBeInTheDocument()
     })
 
     test('expect closing getJokeCount error message removes it', async () => {
-      mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
+      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
       render(<Navigation initialIndex={index} />)
 
       await screen.findByText(/Error fetching joke count. Please reload to try again./i)
@@ -125,11 +124,11 @@ describe('Navigation component', () => {
       render(<Navigation initialIndex={index} />)
 
       const previousJokeButton: HTMLButtonElement = (await screen.findByLabelText(
-        /Previous joke/i
+        /Previous joke/i,
       )) as HTMLButtonElement
       fireEvent.click(previousJokeButton)
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`, { state: jokeCount })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`, { state: jokeCount })
     })
 
     test('expect rendering first joke shows no previous button', async () => {
@@ -147,7 +146,7 @@ describe('Navigation component', () => {
       const nextJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Next joke/i)) as HTMLButtonElement
       fireEvent.click(nextJokeButton)
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`, { state: jokeCount })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`, { state: jokeCount })
     })
 
     test('expect rendering last joke shows no next button', async () => {
@@ -163,8 +162,8 @@ describe('Navigation component', () => {
       render(<Navigation />)
 
       await screen.findByLabelText(/Random joke/i)
-      expect(mocked(jokes).getInitialData).toHaveBeenCalled()
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/42', { replace: true, state: jokeCount })
+      expect(jest.mocked(jokes).getInitialData).toHaveBeenCalled()
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/42', { replace: true, state: jokeCount })
     })
 
     test('expect clicking the random joke button changes the joke displayed', async () => {
@@ -173,7 +172,7 @@ describe('Navigation component', () => {
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
       fireEvent.click(randomJokeButton)
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65', { state: jokeCount })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65', { state: jokeCount })
     })
 
     test('expect viewed jokes avoided', async () => {
@@ -182,20 +181,20 @@ describe('Navigation component', () => {
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
       fireEvent.click(randomJokeButton)
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64', { state: jokeCount })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64', { state: jokeCount })
     })
 
     test('expect jokes start over when all have been viewed', async () => {
       const count = 2
-      mocked(jokes).getJokeCount.mockResolvedValueOnce({ count })
+      jest.mocked(jokes).getJokeCount.mockResolvedValueOnce({ count })
       render(<Navigation initialIndex={1} />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
       fireEvent.click(randomJokeButton)
       fireEvent.click(randomJokeButton)
 
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
-      expect(mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
+      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
     })
   })
 

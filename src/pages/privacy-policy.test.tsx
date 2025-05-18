@@ -1,10 +1,9 @@
+import PrivacyPolicy from '@components/privacy-policy'
 import '@testing-library/jest-dom'
-import { mocked } from 'jest-mock'
-import React from 'react'
 import { render } from '@testing-library/react'
+import React from 'react'
 
 import PrivacyPage from './privacy-policy'
-import PrivacyPolicy from '@components/privacy-policy'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/privacy-policy')
@@ -12,11 +11,11 @@ jest.mock('@config/amplify')
 
 describe('Privacy page', () => {
   beforeAll(() => {
-    mocked(PrivacyPolicy).mockReturnValue(<>PrivacyPolicy</>)
+    jest.mocked(PrivacyPolicy).mockReturnValue(<>PrivacyPolicy</>)
   })
 
   test('Rendering PrivacyPage also renders PrivacyPolicy', () => {
     render(<PrivacyPage />)
-    expect(mocked(PrivacyPolicy)).toHaveBeenCalledTimes(1)
+    expect(PrivacyPolicy).toHaveBeenCalledTimes(1)
   })
 })

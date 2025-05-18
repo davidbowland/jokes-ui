@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
 import Alert from '@mui/material/Alert'
 import Backdrop from '@mui/material/Backdrop'
 import Box from '@mui/material/Box'
@@ -7,16 +9,13 @@ import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
+import Tab from '@mui/material/Tab'
+import TextField from '@mui/material/TextField'
+import { patchJoke, postJoke } from '@services/jokes'
+import { JokeType, RemoveOperation } from '@types'
 import jsonpatch from 'fast-json-patch'
 import { navigate } from 'gatsby'
-import Tab from '@mui/material/Tab'
-import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
-import TextField from '@mui/material/TextField'
-
-import { JokeType, RemoveOperation } from '@types'
-import { patchJoke, postJoke } from '@services/jokes'
+import React, { useEffect, useState } from 'react'
 
 interface AdminNotice {
   severity?: 'error' | 'warning' | 'info' | 'success'
@@ -64,7 +63,9 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
       const jsonPatchOperations = jsonpatch.compare(joke, newJoke, true)
       await patchJoke(
         index,
-        joke.audio ? [...jsonPatchOperations, { op: 'remove', path: '/audio' } as RemoveOperation] : jsonPatchOperations
+        joke.audio
+          ? [...jsonPatchOperations, { op: 'remove', path: '/audio' } as RemoveOperation]
+          : jsonPatchOperations,
       )
       setJoke(newJoke)
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })

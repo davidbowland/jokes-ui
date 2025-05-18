@@ -1,9 +1,8 @@
-import Grid from '@mui/material/Grid'
-import { Helmet } from 'react-helmet'
-import React from 'react'
-
 import Navigation from '@components/navigation'
 import PrivacyLink from '@components/privacy-link'
+import Grid from '@mui/material/Grid'
+import React from 'react'
+import { Helmet } from 'react-helmet'
 
 export interface JokePageProps {
   params: {

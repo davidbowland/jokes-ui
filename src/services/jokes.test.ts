@@ -1,10 +1,10 @@
-import { API, Auth } from 'aws-amplify'
+import { initialResponse } from '@test/__mocks__'
+import { JokeResponse } from '@types'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
+import { API, Auth } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 import { getInitialData, getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
-import { initialResponse } from '@test/__mocks__'
-import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('aws-amplify')
@@ -25,7 +25,7 @@ describe('Joke service', () => {
       jest.mocked(API).get.mockResolvedValue(initialResponse)
     })
 
-    test('Expect results from initial endpoint', async () => {
+    it('returns results from initial endpoint', async () => {
       const result = await getInitialData()
       expect(result).toEqual(initialResponse)
       expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/initial', {})
@@ -39,13 +39,13 @@ describe('Joke service', () => {
       })
     })
 
-    test.each(Object.keys(randomJokeResult) as unknown as number[])(
-      'Expect results from joke endpoint',
+    it.each(Object.keys(randomJokeResult) as unknown as number[])(
+      'returns joke from jokes endpoint',
       async (expectedId: number) => {
         const result = await getJoke(expectedId)
         expect(result).toEqual(randomJokeResult[expectedId])
         expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', `/jokes/${expectedId}`, {})
-      }
+      },
     )
   })
 
@@ -56,7 +56,7 @@ describe('Joke service', () => {
       jest.mocked(API).get.mockResolvedValue({ count })
     })
 
-    test('Expect results from count endpoint', async () => {
+    it('returns joke count from the count endpoint', async () => {
       const result = await getJokeCount()
       expect(result).toEqual({ count })
       expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/count', {})
@@ -70,7 +70,7 @@ describe('Joke service', () => {
       jest.mocked(API).get.mockResolvedValue(randomJokeResult)
     })
 
-    test('expect results using recentIndexes', async () => {
+    it('returns random jokes using recentIndexes', async () => {
       const result = await getRandomJokes(recentIndexes)
 
       expect(result).toEqual(randomJokeResult)
@@ -88,13 +88,13 @@ describe('Joke service', () => {
       jest.mocked(API).post.mockImplementation(postEndpoint)
     })
 
-    test('expect endpoint called with joke', async () => {
+    it('invokes the jokes endpoint to create a joke', async () => {
       await postJoke(joke)
       expect(postEndpoint).toHaveBeenCalledTimes(1)
       expect(API.post).toHaveBeenCalledWith('JokesAPIGateway', '/jokes', { body: joke })
     })
 
-    test('expect result from call returned', async () => {
+    it('returns the result from the create joke endpoint', async () => {
       const expectedResult = { id: '148' }
       postEndpoint.mockReturnValue(expectedResult)
 
@@ -119,7 +119,7 @@ describe('Joke service', () => {
       jest.mocked(API).patch.mockImplementation(patchEndpoint)
     })
 
-    test('expect endpoint called with index and patch operation', async () => {
+    it('invokes the patch enpoint with index and patch operation', async () => {
       await patchJoke(index, operation)
       expect(patchEndpoint).toHaveBeenCalledTimes(1)
       expect(API.patch).toHaveBeenCalledWith('JokesAPIGateway', `/jokes/${index}`, {

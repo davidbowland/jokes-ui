@@ -1,12 +1,12 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import React, { useMemo } from 'react'
-import CssBaseline from '@mui/material/CssBaseline'
-import useMediaQuery from '@mui/material/useMediaQuery'
-
-import '@config/amplify'
-
 import '@assets/css/index.css'
+import Disclaimer from '@components/disclaimer'
+import '@config/amplify'
 import '@fontsource/roboto'
+import Box from '@mui/material/Box'
+import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import React, { useMemo } from 'react'
 
 export interface ThemedProps {
   children: JSX.Element | JSX.Element[]
@@ -14,6 +14,7 @@ export interface ThemedProps {
 
 const Themed = ({ children }: ThemedProps): JSX.Element => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+
   const theme = useMemo(
     () =>
       createTheme({
@@ -23,15 +24,19 @@ const Themed = ({ children }: ThemedProps): JSX.Element => {
             paper: prefersDarkMode ? '#121212' : '#fff',
           },
           mode: prefersDarkMode ? 'dark' : 'light',
+          text: {
+            primary: prefersDarkMode ? '#fff' : '#000',
+          },
         },
       }),
-    [prefersDarkMode]
+    [prefersDarkMode],
   )
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <Box sx={{ backgroundColor: 'background.default', color: 'text.primary', minHeight: '100vh' }}>{children}</Box>
+      <Disclaimer />
     </ThemeProvider>
   )
 }

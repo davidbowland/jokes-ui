@@ -1,10 +1,10 @@
-import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
 import { AmplifyUser } from '@aws-amplify/ui'
-import Button from '@mui/material/Button'
+import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
+import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
-import React from 'react'
 import Stack from '@mui/material/Stack'
+import React from 'react'
 
 export interface JokesAuthenticatorProps {
   setLoggedInUser: (user: AmplifyUser | undefined) => void

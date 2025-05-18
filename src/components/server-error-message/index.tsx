@@ -1,10 +1,10 @@
+import PrivacyLink from '@components/privacy-link'
 import Grid from '@mui/material/Grid'
-import { Helmet } from 'react-helmet'
+import Typography from '@mui/material/Typography'
 import { Link } from 'gatsby'
 import React from 'react'
-import Typography from '@mui/material/Typography'
+import { Helmet } from 'react-helmet'
 
-import PrivacyLink from '@components/privacy-link'
 export interface ServerErrorProps {
   children: React.ReactNode
   title: string
