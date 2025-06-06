@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import InternalServerError from './500'
+import InternalServerError, { Head } from './500'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/server-error-message')
@@ -13,7 +13,7 @@ describe('500 error page', () => {
     jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
-  test('expect rendering InternalServerError renders ServerErrorMessage', () => {
+  it('renders ServerErrorMessage', () => {
     const expectedTitle = '500: Internal Server Error'
     render(<InternalServerError />)
     expect(ServerErrorMessage).toHaveBeenCalledWith(
@@ -21,5 +21,16 @@ describe('500 error page', () => {
       expect.anything(),
     )
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns title in Head component', () => {
+    const { container } = render(<Head />)
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <title>
+          500: Internal Server Error | dbowland.com
+        </title>
+      </div>
+    `)
   })
 })

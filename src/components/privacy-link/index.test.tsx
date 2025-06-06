@@ -4,8 +4,8 @@ import React from 'react'
 
 import PrivacyLink from './index'
 
-describe('provacy-link component', () => {
-  test('expect privacy link rendered', async () => {
+describe('privacy-link component', () => {
+  it('renders privacy link', async () => {
     render(<PrivacyLink />)
 
     expect(await screen.findByText(/privacy policy/i)).toBeInTheDocument()

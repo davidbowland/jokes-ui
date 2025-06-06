@@ -1,48 +1,24 @@
 import Admin from '@components/admin'
-import { baseUrl } from '@config/amplify'
+import { JokeType } from '@types'
+import React, { useState } from 'react'
+
 import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
-import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
-import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
-import { getJoke } from '@services/jokes'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { JokeType } from '@types'
-import React, { useEffect, useState } from 'react'
 
 export interface JokeProps {
-  addJoke: (index: number) => void
+  addJoke: (newJoke: JokeType) => Promise<number>
+  getTtsUrl: (index: number) => string
+  joke?: JokeType
   index?: number
-  initialJoke?: JokeType
+  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
 }
 
-const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState<string | undefined>()
+const Joke = ({ addJoke, getTtsUrl, index, joke, updateJoke }: JokeProps): React.ReactNode => {
   const [isAudioLoading, setIsAudioLoading] = useState(false)
-
-  const client = useQueryClient()
-  const {
-    data: joke,
-    error,
-    isLoadingError,
-  } = useQuery<JokeType | null>(
-    {
-      initialData: initialJoke,
-      queryFn: () => (index ? getJoke(index) : null),
-      queryKey: [index],
-    },
-    client,
-  )
-
-  const getTtsUrl = (index: number): string => {
-    if (joke?.audio) {
-      return `data:${joke.audio.contentType};base64,${joke.audio.base64}`
-    }
-    return `${baseUrl}/jokes/${index}/tts`
-  }
 
   const ttsClick = async (index: number): Promise<void> => {
     setIsAudioLoading(true)
@@ -59,26 +35,6 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
     })
   }
 
-  const setJoke = (joke: JokeType, targetIndex?: number): void => {
-    if (targetIndex === undefined) {
-      client.setQueryData<JokeType>([index], joke)
-    } else {
-      addJoke(targetIndex)
-      client.setQueryData<JokeType>([targetIndex], joke)
-    }
-  }
-
-  const snackbarErrorClose = (): void => {
-    setErrorMessage(undefined)
-  }
-
-  useEffect(() => {
-    if (isLoadingError) {
-      console.error('Error fetching joke', { error })
-      setErrorMessage('Error fetching joke. Please reload to try again.')
-    }
-  }, [error, isLoadingError])
-
   return (
     <>
       <Typography minHeight={'2.5em'} variant="h4">
@@ -86,7 +42,8 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
           <>
             <Skeleton />
             <Skeleton />
-            <Skeleton />
+            <Skeleton sx={{ display: { md: 'none', xs: 'initial' } }} />
+            <Skeleton sx={{ display: { sm: 'none', xs: 'initial' } }} />
           </>
         )}
       </Typography>
@@ -105,12 +62,7 @@ const Joke = ({ addJoke, index, initialJoke }: JokeProps): JSX.Element => {
           </Button>
         </Grid>
       </Grid>
-      {index && joke && <Admin index={index} joke={joke} setJoke={setJoke} />}
-      <Snackbar autoHideDuration={15_000} onClose={snackbarErrorClose} open={errorMessage !== undefined}>
-        <Alert onClose={snackbarErrorClose} severity="error" variant="filled">
-          {errorMessage}
-        </Alert>
-      </Snackbar>
+      {index && joke && <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />}
     </>
   )
 }

@@ -1,17 +1,18 @@
 import { AmplifyUser } from '@aws-amplify/ui'
 import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
+import React from 'react'
+
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
-import React from 'react'
 
 export interface JokesAuthenticatorProps {
   setLoggedInUser: (user: AmplifyUser | undefined) => void
   setShowLogin: (state: boolean) => void
 }
 
-const JokesAuthenticator = ({ setLoggedInUser, setShowLogin }: JokesAuthenticatorProps): JSX.Element => {
+const JokesAuthenticator = ({ setLoggedInUser, setShowLogin }: JokesAuthenticatorProps): React.ReactNode => {
   const theme = {
     name: 'dark-mode-theme',
     overrides: [defaultDarkModeOverride],

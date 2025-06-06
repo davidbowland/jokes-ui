@@ -1,16 +1,17 @@
 import PrivacyLink from '@components/privacy-link'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import { Link } from 'gatsby'
 import React from 'react'
 import { Helmet } from 'react-helmet'
+
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 export interface ServerErrorProps {
   children: React.ReactNode
   title: string
 }
 
-const ServerErrorMessage = ({ children, title }: ServerErrorProps): JSX.Element => {
+const ServerErrorMessage = ({ children, title }: ServerErrorProps): React.ReactNode => {
   return (
     <>
       <Helmet>

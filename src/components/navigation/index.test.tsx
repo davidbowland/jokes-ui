@@ -1,21 +1,35 @@
 import Joke from '@components/joke'
-import * as jokes from '@services/jokes'
-import { index, initialJoke, initialResponse, jokeCount } from '@test/__mocks__'
+import { useJoke } from '@hooks/useJoke'
+import { index, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen } from '@testing-library/react'
-import * as gatsby from 'gatsby'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import React from 'react'
 
 import Navigation from './index'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke')
-jest.mock('@services/jokes')
-jest.mock('gatsby')
+jest.mock('@hooks/useJoke')
 
 describe('Navigation component', () => {
   const mockAddJoke = jest.fn()
   const replaceState = jest.fn()
+
+  const mockUseJokeResult = {
+    addJoke: jest.fn(),
+    errorMessage: undefined,
+    getTtsUrl: jest.fn(),
+    hasNextJoke: true,
+    hasPreviousJoke: true,
+    index,
+    joke: jokeType,
+    nextJoke: jest.fn(),
+    nextRandomJoke: jest.fn(),
+    previousJoke: jest.fn(),
+    resetErrorMessage: jest.fn(),
+    updateJoke: jest.fn(),
+  }
 
   beforeAll(() => {
     const mockMath = Object.create(global.Math)
@@ -31,181 +45,92 @@ describe('Navigation component', () => {
       }
       return <>Joke</>
     })
-    jest.mocked(jokes).getInitialData.mockResolvedValue(initialResponse)
-    jest.mocked(jokes).getJokeCount.mockResolvedValue(jokeCount)
+    jest.mocked(useJoke).mockReturnValue(mockUseJokeResult)
+    mockAddJoke.mockResolvedValue(62)
   })
 
   describe('rendering', () => {
-    test('expect rendering initial joke shows all three navigation buttons', async () => {
-      render(<Navigation initialIndex={index} />)
+    it('shows all three navigation buttons when available', async () => {
+      render(<Navigation />)
 
       expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
       expect(await screen.findByLabelText(/Previous joke/i)).toBeVisible()
       expect(await screen.findByLabelText(/Next joke/i)).toBeVisible()
     })
 
-    test('expect Joke rendered with initialIndex', async () => {
-      render(<Navigation initialIndex={index} />)
+    it('renders Joke with joke from useJoke', async () => {
+      render(<Navigation initialCount={74} initialIndex={22} />)
 
-      await screen.findByLabelText(/Random joke/i)
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, initialJoke: undefined }), {})
-    })
-
-    test('expect Joke rendered without initialIndex', async () => {
-      render(<Navigation />)
-
-      await screen.findByLabelText(/Random joke/i)
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, initialJoke }), {})
-    })
-  })
-
-  describe('getInitialData', () => {
-    test('expect getInitialData called when initialIndex is omitted', async () => {
-      render(<Navigation />)
-
-      await screen.findByLabelText(/Random joke/i)
-      expect(jest.mocked(jokes).getInitialData).toHaveBeenCalled()
-      expect(jest.mocked(jokes).getJokeCount).not.toHaveBeenCalled()
-    })
-
-    test('expect error message when getInitialData rejects', async () => {
-      jest.mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
-      render(<Navigation />)
-
-      expect(
-        await screen.findByText(/Error fetching initial joke data. Please reload to try again./i),
-      ).toBeInTheDocument()
-    })
-
-    test('expect closing getInitialData error message removes it', async () => {
-      jest.mocked(jokes).getInitialData.mockRejectedValueOnce(undefined)
-      render(<Navigation />)
-
-      await screen.findByText(/Error fetching initial joke data. Please reload to try again./i)
-      const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(closeSnackbarButton)
-
-      expect(
-        screen.queryByText(/Error fetching initial joke data. Please reload to try again./i),
-      ).not.toBeInTheDocument()
-    })
-  })
-
-  describe('getJokeCount', () => {
-    test('expect getJokeCount called when initialIndex is provided', async () => {
-      render(<Navigation initialIndex={index} />)
-
-      await screen.findByLabelText(/Random joke/i)
-      expect(jest.mocked(jokes).getJokeCount).toHaveBeenCalled()
-      expect(jest.mocked(jokes).getInitialData).not.toHaveBeenCalled()
-    })
-
-    test('expect error message when getJokeCount rejects', async () => {
-      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
-      render(<Navigation initialIndex={index} />)
-
-      expect(await screen.findByText(/Error fetching joke count. Please reload to try again./i)).toBeInTheDocument()
-    })
-
-    test('expect closing getJokeCount error message removes it', async () => {
-      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(undefined)
-      render(<Navigation initialIndex={index} />)
-
-      await screen.findByText(/Error fetching joke count. Please reload to try again./i)
-      const closeSnackbarButton = (await screen.findByLabelText(/Close/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(closeSnackbarButton)
-
-      expect(screen.queryByText(/Error fetching joke count. Please reload to try again../i)).not.toBeInTheDocument()
+      expect(useJoke).toHaveBeenCalledWith(22, 74)
+      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), {})
     })
   })
 
   describe('previous', () => {
-    test('expect clicking the previous joke button changes the joke displayed', async () => {
-      render(<Navigation initialIndex={index} />)
+    it('changes the joke displayed when clicking the previous joke button', async () => {
+      render(<Navigation />)
 
       const previousJokeButton: HTMLButtonElement = (await screen.findByLabelText(
         /Previous joke/i,
       )) as HTMLButtonElement
-      fireEvent.click(previousJokeButton)
+      userEvent.click(previousJokeButton)
 
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index - 1}`, { state: jokeCount })
+      await waitFor(() => {
+        expect(mockUseJokeResult.previousJoke).toHaveBeenCalledTimes(1)
+      })
     })
 
-    test('expect rendering first joke shows no previous button', async () => {
-      render(<Navigation initialIndex={1} />)
+    it('removes previous joke navigation button when no previous jokes', async () => {
+      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasPreviousJoke: false })
+      render(<Navigation />)
 
-      await screen.findByLabelText(/Random joke/i)
+      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
       expect(screen.queryByLabelText(/Previous joke/i)).not.toBeInTheDocument()
+      expect(await screen.findByLabelText(/Next joke/i)).toBeInTheDocument()
     })
   })
 
   describe('next', () => {
-    test('expect clicking the next joke button changes the joke displayed', async () => {
-      render(<Navigation initialIndex={index} />)
+    it('changes the joke displayed when clicking the next joke button', async () => {
+      render(<Navigation />)
 
       const nextJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Next joke/i)) as HTMLButtonElement
-      fireEvent.click(nextJokeButton)
+      userEvent.click(nextJokeButton)
 
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith(`/j/${index + 1}`, { state: jokeCount })
+      await waitFor(() => {
+        expect(mockUseJokeResult.nextJoke).toHaveBeenCalledTimes(1)
+      })
     })
 
-    test('expect rendering last joke shows no next button', async () => {
-      render(<Navigation initialIndex={jokeCount.count} />)
+    it('removes next joke navigation button when no next jokes', async () => {
+      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasNextJoke: false })
+      render(<Navigation />)
 
-      await screen.findByLabelText(/Random joke/i)
+      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
+      expect(await screen.findByLabelText(/Previous joke/i)).toBeVisible()
       expect(screen.queryByLabelText(/Next joke/i)).not.toBeInTheDocument()
     })
   })
 
   describe('random', () => {
-    test('expect random joke loads when no index passed', async () => {
+    it('loads random joke when no index is passed', async () => {
       render(<Navigation />)
 
-      await screen.findByLabelText(/Random joke/i)
-      expect(jest.mocked(jokes).getInitialData).toHaveBeenCalled()
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/42', { replace: true, state: jokeCount })
-    })
-
-    test('expect clicking the random joke button changes the joke displayed', async () => {
-      render(<Navigation initialIndex={index} />)
-
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      fireEvent.click(randomJokeButton)
+      userEvent.click(randomJokeButton)
 
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/65', { state: jokeCount })
+      await waitFor(() => {
+        expect(mockUseJokeResult.nextRandomJoke).toHaveBeenCalledTimes(1)
+      })
     })
 
-    test('expect viewed jokes avoided', async () => {
-      render(<Navigation initialIndex={65} />)
+    it('removes all navigation buttons when no joke', async () => {
+      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, joke: undefined })
+      render(<Navigation />)
 
-      const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      fireEvent.click(randomJokeButton)
-
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/64', { state: jokeCount })
-    })
-
-    test('expect jokes start over when all have been viewed', async () => {
-      const count = 2
-      jest.mocked(jokes).getJokeCount.mockResolvedValueOnce({ count })
-      render(<Navigation initialIndex={1} />)
-
-      const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      fireEvent.click(randomJokeButton)
-      fireEvent.click(randomJokeButton)
-
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
-      expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/2', { state: { count } })
-    })
-  })
-
-  describe('addJoke', () => {
-    test('expect adding a joke changes the joke index', () => {
-      const newIndex = 724
-      mockAddJoke.mockReturnValueOnce(newIndex)
-      render(<Navigation initialIndex={index} />)
-
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, initialJoke: undefined }), {})
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index: newIndex, initialJoke: undefined }), {})
+      expect(screen.queryByLabelText(/Random joke/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Previous joke/i)).not.toBeInTheDocument()
+      expect(screen.queryByLabelText(/Next joke/i)).not.toBeInTheDocument()
     })
   })
 })

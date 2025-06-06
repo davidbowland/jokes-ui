@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import BadRequest from './400'
+import BadRequest, { Head } from './400'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/server-error-message')
@@ -13,7 +13,7 @@ describe('400 error page', () => {
     jest.mocked(ServerErrorMessage).mockReturnValue(<>ServerErrorMessage</>)
   })
 
-  test('expect rendering BadRequest renders ServerErrorMessage', () => {
+  it('renders ServerErrorMessage', () => {
     const expectedTitle = '400: Bad Request'
     render(<BadRequest />)
     expect(ServerErrorMessage).toHaveBeenCalledWith(
@@ -21,5 +21,16 @@ describe('400 error page', () => {
       expect.anything(),
     )
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns title in Head component', () => {
+    const { container } = render(<Head />)
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <title>
+          400: Bad Request | dbowland.com
+        </title>
+      </div>
+    `)
   })
 })

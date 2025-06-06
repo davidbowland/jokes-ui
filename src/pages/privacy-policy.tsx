@@ -1,21 +1,18 @@
 import PrivacyPolicy from '@components/privacy-policy'
-import Paper from '@mui/material/Paper'
 import React from 'react'
-import { Helmet } from 'react-helmet'
 
-const PrivacyPage = (): JSX.Element => {
+import Paper from '@mui/material/Paper'
+
+const PrivacyPage = (): React.ReactNode => {
   return (
-    <>
-      <Helmet>
-        <title>Privacy Policy -- jokes.dbowland.com</title>
-      </Helmet>
-      <main>
-        <Paper elevation={3} sx={{ margin: 'auto', maxWidth: '900px' }}>
-          <PrivacyPolicy />
-        </Paper>
-      </main>
-    </>
+    <main>
+      <Paper elevation={3} sx={{ margin: 'auto', maxWidth: '900px' }}>
+        <PrivacyPolicy />
+      </Paper>
+    </main>
   )
 }
+
+export const Head = () => <title>Privacy Policy | jokes.dbowland.com</title>
 
 export default PrivacyPage

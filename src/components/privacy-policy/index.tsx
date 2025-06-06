@@ -1,9 +1,10 @@
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { Link } from 'gatsby'
 import React from 'react'
 
-const PrivacyPolicy = (): JSX.Element => {
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+const PrivacyPolicy = (): React.ReactNode => {
   return (
     <Stack padding={4} spacing={2}>
       <Typography variant="h4">Jokes Privacy Policy</Typography>

@@ -1,11 +1,12 @@
 import Disclaimer from '@components/disclaimer'
-import CssBaseline from '@mui/material/CssBaseline'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import { theme } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import React from 'react'
+
+import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 import Themed from './index'
 
@@ -29,25 +30,25 @@ describe('Themed component', () => {
     jest.mocked(useMediaQuery).mockReturnValue(false)
   })
 
-  test('expect rendering Themed has children in output', async () => {
+  it('displays children in output', async () => {
     render(<Themed>{children}</Themed>)
 
     expect(await screen.findByText(/fnord/)).toBeInTheDocument()
   })
 
-  test('expect rendering Themed renders CssBaseline', async () => {
+  it('renders CssBaseline', async () => {
     render(<Themed>{children}</Themed>)
 
     expect(CssBaseline).toHaveBeenCalledTimes(1)
   })
 
-  test('expect rendering Themed renders Disclaimer', async () => {
+  it('renders Disclaimer', async () => {
     render(<Themed>{children}</Themed>)
 
     expect(Disclaimer).toHaveBeenCalledTimes(1)
   })
 
-  test('expect rendering Themed uses light theme when requested', () => {
+  it('uses light theme when requested', () => {
     render(<Themed>{children}</Themed>)
 
     expect(createTheme).toHaveBeenCalledWith({
@@ -65,7 +66,7 @@ describe('Themed component', () => {
     expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ theme }), {})
   })
 
-  test('expect rendering Themed uses dark theme when reqeusted', () => {
+  it('uses dark theme when requested', () => {
     jest.mocked(useMediaQuery).mockReturnValueOnce(true)
     render(<Themed>{children}</Themed>)
 

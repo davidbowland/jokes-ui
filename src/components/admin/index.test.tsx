@@ -1,10 +1,8 @@
-import * as jokeService from '@services/jokes'
 import { index, jokeType, user } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Auth } from 'aws-amplify'
-import * as gatsby from 'gatsby'
 import React from 'react'
 
 import Admin from './index'
@@ -15,11 +13,10 @@ const mockSignOut = jest.fn()
 jest.mock('@aws-amplify/ui-react', () => ({
   Authenticator: jest.fn().mockImplementation(({ children }) => children({ signOut: mockSignOut }) ?? null),
 }))
-jest.mock('@services/jokes')
-jest.mock('gatsby')
 
 describe('Admin component', () => {
-  const setJoke = jest.fn()
+  const mockAddJoke = jest.fn()
+  const mockUpdateJoke = jest.fn()
 
   beforeAll(() => {
     const mockMath = Object.create(global.Math)
@@ -28,18 +25,17 @@ describe('Admin component', () => {
     console.error = jest.fn()
 
     jest.mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
-    jest.mocked(jokeService).postJoke.mockResolvedValue({ index: 62 })
   })
 
   it('shows nothing to logged out users', async () => {
     jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValueOnce(undefined)
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(screen.queryByText(/joke/i)).not.toBeInTheDocument()
   })
 
   it('shows the edit joke feature to logged in users', async () => {
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(await screen.findByText(/Update joke/i, { selector: 'button' })).toBeInTheDocument()
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
@@ -47,7 +43,7 @@ describe('Admin component', () => {
   })
 
   it('navigates to the add screen when "Add joke" is clicked', async () => {
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const editLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
     userEvent.click(editLabel)
@@ -61,8 +57,8 @@ describe('Admin component', () => {
   })
 
   it('invokes joke service when "Add joke" is clicked', async () => {
-    jest.mocked(jokeService).postJoke.mockResolvedValueOnce({ index: 17 })
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    mockAddJoke.mockResolvedValueOnce(17)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
     userEvent.click(addLabel)
@@ -76,18 +72,15 @@ describe('Admin component', () => {
     userEvent.click(addJokeButton)
 
     await waitFor(() => {
-      expect(jest.mocked(jokeService).postJoke).toHaveBeenCalled()
+      expect(mockAddJoke).toHaveBeenCalled()
     })
-    expect(jest.mocked(jokeService).postJoke).toHaveBeenCalledWith(
-      expect.objectContaining({ contents: jokeType.contents }),
-    )
-    expect(screen.queryByText('Created joke #17')).toBeInTheDocument()
-    expect(jest.mocked(gatsby).navigate).toHaveBeenCalledWith('/j/17')
+    expect(mockAddJoke).toHaveBeenCalledWith({ contents: jokeType.contents })
+    expect(await screen.findByText('Created joke #17')).toBeInTheDocument()
   })
 
-  it('displays an error message when there is a filaure adding a joke', async () => {
-    jest.mocked(jokeService).postJoke.mockRejectedValueOnce({ response: 'fnord' })
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+  it('displays an error message when there is a failure adding a joke', async () => {
+    mockAddJoke.mockRejectedValueOnce({ response: 'fnord' })
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
     userEvent.click(addLabel)
@@ -105,7 +98,7 @@ describe('Admin component', () => {
 
   it('edits the current joke and invokes the joke service', async () => {
     const expectedJoke = 'fnord'
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
     userEvent.clear(updateTextInput)
@@ -116,18 +109,14 @@ describe('Admin component', () => {
     userEvent.click(updateJokeButton)
 
     expect(await screen.findByText('Joke successfully updated!')).toBeInTheDocument()
-    expect(jest.mocked(jokeService).patchJoke).toHaveBeenCalledWith(42, [
-      { op: 'test', path: '/contents', value: 'LAWLS' },
-      { op: 'replace', path: '/contents', value: expectedJoke },
-      { op: 'remove', path: '/audio' },
-    ])
-    expect(jest.mocked(jokeService).patchJoke).toHaveBeenCalledTimes(1)
+    expect(mockUpdateJoke).toHaveBeenCalledWith({ contents: expectedJoke })
+    expect(mockUpdateJoke).toHaveBeenCalledTimes(1)
   })
 
   it("doesn't affect audio when editing a joke with no local audio", async () => {
     const expectedJoke = 'fnord'
     const noAudioJoke = { ...jokeType, audio: undefined }
-    render(<Admin index={index} joke={noAudioJoke} setJoke={setJoke} />)
+    render(<Admin addJoke={mockAddJoke} index={index} joke={noAudioJoke} updateJoke={mockUpdateJoke} />)
 
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
     await userEvent.clear(updateTextInput)
@@ -138,16 +127,13 @@ describe('Admin component', () => {
     userEvent.click(updateJokeButton)
 
     expect(await screen.findByText('Joke successfully updated!')).toBeInTheDocument()
-    expect(jest.mocked(jokeService).patchJoke).toHaveBeenCalledWith(42, [
-      { op: 'test', path: '/contents', value: 'LAWLS' },
-      { op: 'replace', path: '/contents', value: expectedJoke },
-    ])
-    expect(jest.mocked(jokeService).patchJoke).toHaveBeenCalledTimes(1)
+    expect(mockUpdateJoke).toHaveBeenCalledWith({ contents: expectedJoke })
+    expect(mockUpdateJoke).toHaveBeenCalledTimes(1)
   })
 
   it('displays an error message when there is a failure editing the joke', async () => {
-    jest.mocked(jokeService).patchJoke.mockRejectedValueOnce({ response: 'fnord' })
-    render(<Admin index={index} joke={jokeType} setJoke={setJoke} />)
+    mockUpdateJoke.mockRejectedValueOnce({ response: 'fnord' })
+    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
     await userEvent.type(updateTextInput, 'funny joke')

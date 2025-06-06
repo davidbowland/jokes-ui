@@ -204,7 +204,7 @@ jobs:
 
       - name: Set git name and email
         run: |
-          git config --local user.email "{GIT_EMAIL}"
+          git config --local user.email "${GIT_EMAIL}"
           git config --local user.name "github-actions[bot]"
       - name: Bump the minor version
         run: npm version minor

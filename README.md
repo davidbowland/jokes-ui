@@ -73,7 +73,7 @@ npm run workflow
 
 ## Additional Documentation
 
-### Additional Gastby Documentation
+### Additional Gatsby Documentation
 
 - [Documentation](https://www.gatsbyjs.com/docs/)
 

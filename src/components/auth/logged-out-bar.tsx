@@ -1,14 +1,15 @@
+import { Link } from 'gatsby'
+import React from 'react'
+
 import LoginIcon from '@mui/icons-material/Login'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { Link } from 'gatsby'
-import React from 'react'
 
 export interface LoggedOutBarProps {
   setShowLogin: (state: boolean) => void
 }
 
-const LoggedOutBar = ({ setShowLogin }: LoggedOutBarProps): JSX.Element => {
+const LoggedOutBar = ({ setShowLogin }: LoggedOutBarProps): React.ReactNode => {
   const signInClick = () => {
     setShowLogin(true)
   }

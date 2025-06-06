@@ -1,19 +1,20 @@
 import { AmplifyUser } from '@aws-amplify/ui'
 import '@aws-amplify/ui-react/styles.css'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
 import { Auth } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
+
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
 
 import JokesAuthenticator from './jokes-authenticator'
 import LoggedInBar from './logged-in-bar'
 import LoggedOutBar from './logged-out-bar'
 
 export interface AuthenticatedProps {
-  children: JSX.Element | JSX.Element[]
+  children: React.ReactNode | React.ReactNode[]
 }
 
-const Authenticated = ({ children }: AuthenticatedProps): JSX.Element => {
+const Authenticated = ({ children }: AuthenticatedProps): React.ReactNode => {
   const [loggedInUser, setLoggedInUser] = useState<AmplifyUser | undefined>()
   const [showLogin, setShowLogin] = useState(false)
 

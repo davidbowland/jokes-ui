@@ -2,17 +2,18 @@ import '@assets/css/index.css'
 import Disclaimer from '@components/disclaimer'
 import '@config/amplify'
 import '@fontsource/roboto'
+import React, { useMemo } from 'react'
+
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import React, { useMemo } from 'react'
 
 export interface ThemedProps {
-  children: JSX.Element | JSX.Element[]
+  children: React.ReactNode | React.ReactNode[]
 }
 
-const Themed = ({ children }: ThemedProps): JSX.Element => {
+const Themed = ({ children }: ThemedProps): React.ReactNode => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
 
   const theme = useMemo(

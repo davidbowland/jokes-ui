@@ -1,18 +1,20 @@
 import '@aws-amplify/ui-react/styles.css'
-import Divider from '@mui/material/Divider'
 import { JokeType } from '@types'
 import { Auth } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 
+import Divider from '@mui/material/Divider'
+
 import SignedIn from './signed-in'
 
 export interface AdminProps {
+  addJoke: (newJoke: JokeType) => Promise<number>
   index: number
   joke: JokeType
-  setJoke: (joke: JokeType, targetIndex?: number) => void
+  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
 }
 
-const Admin = ({ index, joke, setJoke }: AdminProps): JSX.Element => {
+const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNode => {
   const [isAdminVisible, setIsAdminVisible] = useState(false)
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const Admin = ({ index, joke, setJoke }: AdminProps): JSX.Element => {
       <>
         <Divider />
         <section className="site-administration">
-          <SignedIn index={index} joke={joke} setJoke={setJoke} />
+          <SignedIn addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />
         </section>
       </>
     )

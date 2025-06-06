@@ -1,7 +1,7 @@
 import ServerErrorMessage from '@components/server-error-message'
 import React from 'react'
 
-const NotFound = (): JSX.Element => {
+const NotFound = (): React.ReactNode => {
   const display404 = typeof window !== 'undefined' && window.location.pathname.match(/^\/j\/[^/]+$/) === null
   if (display404) {
     return (
@@ -13,5 +13,7 @@ const NotFound = (): JSX.Element => {
   }
   return <></>
 }
+
+export const Head = () => <title>404: Not Found | dbowland.com</title>
 
 export default NotFound

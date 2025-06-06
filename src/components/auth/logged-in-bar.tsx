@@ -1,4 +1,8 @@
 import { AmplifyUser } from '@aws-amplify/ui'
+import { Auth } from 'aws-amplify'
+import { Link } from 'gatsby'
+import React, { useState } from 'react'
+
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import LogoutIcon from '@mui/icons-material/Logout'
@@ -10,15 +14,12 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import Typography from '@mui/material/Typography'
-import { Auth } from 'aws-amplify'
-import { Link } from 'gatsby'
-import React, { useState } from 'react'
 
 export interface LoggedInBarProps {
   setLoggedInUser: (user: AmplifyUser | undefined) => void
 }
 
-const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): JSX.Element => {
+const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): React.ReactNode => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const closeMenu = (): void => {

@@ -30,7 +30,7 @@ describe('Authenticated component', () => {
       jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValue(undefined)
     })
 
-    test('expect system color mode', async () => {
+    it('uses system color mode', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -49,7 +49,7 @@ describe('Authenticated component', () => {
       jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValue(undefined)
     })
 
-    test('expect title, admin sign in, and children', async () => {
+    it('displays title, admin sign in, and children', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -62,7 +62,7 @@ describe('Authenticated component', () => {
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
 
-    test('expect clicking sign in shows authenticator', async () => {
+    it('shows authenticator when clicking sign in', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -75,7 +75,7 @@ describe('Authenticated component', () => {
       expect(Authenticator).toHaveBeenCalledTimes(1)
     })
 
-    test('expect logging in sets the user', async () => {
+    it('sets the user when logging in', async () => {
       const logInCallback = jest.fn()
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -100,7 +100,7 @@ describe('Authenticated component', () => {
       expect(screen.queryByText(/admin/i)).toBeInTheDocument()
     })
 
-    test('expect going back from login goes back', async () => {
+    it('goes back when canceling login', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -121,7 +121,7 @@ describe('Authenticated component', () => {
       jest.mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
     })
 
-    test('expect user name', async () => {
+    it('displays user name', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -134,7 +134,7 @@ describe('Authenticated component', () => {
       expect(screen.queryByText(/admin/i)).toBeInTheDocument()
     })
 
-    test('expect working menu', async () => {
+    it('has a working menu', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -146,7 +146,7 @@ describe('Authenticated component', () => {
       expect(await screen.findByText(/Sign out/i)).toBeVisible()
     })
 
-    test('expect selecting sign out signs the user out', async () => {
+    it('signs the user out when selecting sign out', async () => {
       render(
         <Authenticated>
           <p>Testing children</p>

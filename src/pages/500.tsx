@@ -1,7 +1,7 @@
 import ServerErrorMessage from '@components/server-error-message'
 import React from 'react'
 
-const InternalServerError = (): JSX.Element => {
+const InternalServerError = (): React.ReactNode => {
   return (
     <ServerErrorMessage title="500: Internal Server Error">
       An internal server error has occurred trying to serve your request. If you continue to experience this error,
@@ -9,5 +9,7 @@ const InternalServerError = (): JSX.Element => {
     </ServerErrorMessage>
   )
 }
+
+export const Head = () => <title>500: Internal Server Error | dbowland.com</title>
 
 export default InternalServerError

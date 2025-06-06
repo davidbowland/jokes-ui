@@ -1,3 +1,6 @@
+import { JokeType } from '@types'
+import React, { useEffect, useState } from 'react'
+
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
@@ -11,11 +14,6 @@ import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Tab from '@mui/material/Tab'
 import TextField from '@mui/material/TextField'
-import { patchJoke, postJoke } from '@services/jokes'
-import { JokeType, RemoveOperation } from '@types'
-import jsonpatch from 'fast-json-patch'
-import { navigate } from 'gatsby'
-import React, { useEffect, useState } from 'react'
 
 interface AdminNotice {
   severity?: 'error' | 'warning' | 'info' | 'success'
@@ -28,12 +26,13 @@ enum AdminView {
 }
 
 export interface SignedInProps {
+  addJoke: (newJoke: JokeType) => Promise<number>
   index: number
   joke: JokeType
-  setJoke: (joke: JokeType, targetIndex?: number) => void
+  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
 }
 
-const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
+const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.ReactNode => {
   const [editJoke, setEditJoke] = useState(joke.contents)
 
   const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
@@ -41,39 +40,28 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
   const [addJokeText, setAddJokeText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const addJoke = async (): Promise<void> => {
+  const handleAddJoke = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      const newJoke: JokeType = { contents: addJokeText }
-      const response = await postJoke(newJoke)
-      setAdminNotice({ severity: 'success', text: `Created joke #${response.index}` })
-      setJoke(newJoke, response.index)
-      navigate(`/j/${response.index}`)
+      const newIndex = await addJoke({ contents: addJokeText })
+      setAdminNotice({ severity: 'success', text: `Created joke #${newIndex}` })
     } catch (error) {
-      console.error('Error adding joke', { addJokeText, error })
       setAdminNotice({ severity: 'error', text: (error as any).response })
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
-  const updateJoke = async (): Promise<void> => {
+  const handleUpdateJoke = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      const newJoke = { ...joke, contents: editJoke }
-      const jsonPatchOperations = jsonpatch.compare(joke, newJoke, true)
-      await patchJoke(
-        index,
-        joke.audio
-          ? [...jsonPatchOperations, { op: 'remove', path: '/audio' } as RemoveOperation]
-          : jsonPatchOperations,
-      )
-      setJoke(newJoke)
+      await updateJoke({ contents: editJoke })
       setAdminNotice({ severity: 'success', text: 'Joke successfully updated!' })
     } catch (error) {
-      console.error('Error updating joke', { editJoke, error, index })
       setAdminNotice({ severity: 'error', text: (error as any).response })
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
@@ -115,7 +103,7 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
               </label>
             </CardContent>
             <CardActions sx={{ p: 2 }}>
-              <Button onClick={updateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
+              <Button onClick={handleUpdateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
                 Update joke
               </Button>
             </CardActions>
@@ -137,7 +125,7 @@ const SignedIn = ({ index, joke, setJoke }: SignedInProps): JSX.Element => {
               </label>
             </CardContent>
             <CardActions sx={{ p: 2 }}>
-              <Button onClick={addJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
+              <Button onClick={handleAddJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
                 Add joke
               </Button>
             </CardActions>

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import NotFound from './404'
+import NotFound, { Head } from './404'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/server-error-message')
@@ -21,7 +21,7 @@ describe('404 error page', () => {
     window.location.pathname = '/an-invalid-page'
   })
 
-  test('expect rendering NotFound renders ServerErrorMessage', () => {
+  it('renders ServerErrorMessage', () => {
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
     expect(ServerErrorMessage).toHaveBeenCalledWith(
@@ -31,15 +31,26 @@ describe('404 error page', () => {
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
-  test('expect no render when path begins /j/', () => {
+  it('does not render when path begins with /j/', () => {
     window.location.pathname = '/j/aeiou'
     render(<NotFound />)
     expect(ServerErrorMessage).toHaveBeenCalledTimes(0)
   })
 
-  test('expect render when pathname has three slashes', () => {
+  it('renders when pathname has three slashes', () => {
     window.location.pathname = '/j/aeiou/y'
     render(<NotFound />)
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns title in Head component', () => {
+    const { container } = render(<Head />)
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <title>
+          404: Not Found | dbowland.com
+        </title>
+      </div>
+    `)
   })
 })
