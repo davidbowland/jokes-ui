@@ -68,12 +68,13 @@ describe('Navigation component', () => {
 
   describe('previous', () => {
     it('changes the joke displayed when clicking the previous joke button', async () => {
+      const user = userEvent.setup()
       render(<Navigation />)
 
       const previousJokeButton: HTMLButtonElement = (await screen.findByLabelText(
         /Previous joke/i,
       )) as HTMLButtonElement
-      userEvent.click(previousJokeButton)
+      await user.click(previousJokeButton)
 
       await waitFor(() => {
         expect(mockUseJokeResult.previousJoke).toHaveBeenCalledTimes(1)
@@ -92,10 +93,11 @@ describe('Navigation component', () => {
 
   describe('next', () => {
     it('changes the joke displayed when clicking the next joke button', async () => {
+      const user = userEvent.setup()
       render(<Navigation />)
 
       const nextJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Next joke/i)) as HTMLButtonElement
-      userEvent.click(nextJokeButton)
+      await user.click(nextJokeButton)
 
       await waitFor(() => {
         expect(mockUseJokeResult.nextJoke).toHaveBeenCalledTimes(1)
@@ -114,10 +116,11 @@ describe('Navigation component', () => {
 
   describe('random', () => {
     it('loads random joke when no index is passed', async () => {
+      const user = userEvent.setup()
       render(<Navigation />)
 
       const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      userEvent.click(randomJokeButton)
+      await user.click(randomJokeButton)
 
       await waitFor(() => {
         expect(mockUseJokeResult.nextRandomJoke).toHaveBeenCalledTimes(1)

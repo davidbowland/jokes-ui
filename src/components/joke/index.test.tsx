@@ -2,7 +2,7 @@ import Admin from '@components/admin'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { index, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 
@@ -98,6 +98,7 @@ describe('Joke component', () => {
     })
 
     it('fetches the joke tts when clicking the text-to-speech button', async () => {
+      const user = userEvent.setup()
       render(
         <Joke
           addJoke={mockAddJoke}
@@ -113,7 +114,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      userEvent.click(ttsButton)
+      await user.click(ttsButton)
 
       await waitFor(() => {
         expect(mockGetTtsUrl).toHaveBeenCalledWith(index)
@@ -123,6 +124,7 @@ describe('Joke component', () => {
     })
 
     it('plays the tts when clicking the text-to-speech button', async () => {
+      const user = userEvent.setup()
       render(
         <Joke
           addJoke={mockAddJoke}
@@ -138,7 +140,7 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      userEvent.click(ttsButton)
+      await user.click(ttsButton)
 
       await waitFor(() => {
         expect(mockPlay).toHaveBeenCalledTimes(1)
@@ -146,6 +148,7 @@ describe('Joke component', () => {
     })
 
     it('resets the Text-to-speech button when playback ends', async () => {
+      const user = userEvent.setup()
       const mockAudioEnded = jest.fn()
       const endedEventCallback = (event: string, callback: any): void => {
         if (event === 'ended') {
@@ -170,10 +173,12 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      userEvent.click(ttsButton)
+      await user.click(ttsButton)
 
       await screen.findByText('Fetching audio')
-      mockAudioEnded()
+      act(() => {
+        mockAudioEnded()
+      })
 
       await waitFor(async () => {
         expect(await screen.findByText('Text-to-speech')).toBeEnabled()
@@ -181,6 +186,7 @@ describe('Joke component', () => {
     })
 
     it('resets the Text-to-speech button when playback errors occur', async () => {
+      const user = userEvent.setup()
       const mockAudioError = jest.fn()
       const errorEventCallback = (event: string, callback: any): void => {
         if (event === 'error') {
@@ -205,10 +211,12 @@ describe('Joke component', () => {
       const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
         selector: 'button',
       })) as HTMLButtonElement
-      userEvent.click(ttsButton)
+      await user.click(ttsButton)
 
       await screen.findByText('Fetching audio')
-      mockAudioError()
+      act(() => {
+        mockAudioError()
+      })
 
       await waitFor(async () => {
         expect(await screen.findByText('Text-to-speech')).toBeEnabled()

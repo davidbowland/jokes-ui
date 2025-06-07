@@ -1,7 +1,8 @@
 import { Authenticator, ThemeProvider } from '@aws-amplify/ui-react'
 import { user } from '@test/__mocks__'
 import '@testing-library/jest-dom'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { Auth } from 'aws-amplify'
 import React from 'react'
 
@@ -31,6 +32,7 @@ describe('Authenticated component', () => {
     })
 
     it('uses system color mode', async () => {
+      const user = userEvent.setup()
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -38,7 +40,7 @@ describe('Authenticated component', () => {
       )
 
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(signInButton)
+      await user.click(signInButton)
 
       expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ colorMode: 'system' }), expect.anything())
     })
@@ -63,19 +65,21 @@ describe('Authenticated component', () => {
     })
 
     it('shows authenticator when clicking sign in', async () => {
+      const user = userEvent.setup()
       render(
         <Authenticated>
           <p>Testing children</p>
         </Authenticated>,
       )
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(signInButton)
+      await user.click(signInButton)
 
       expect(await screen.findByText(/Cancel/i)).toBeInTheDocument()
       expect(Authenticator).toHaveBeenCalledTimes(1)
     })
 
     it('sets the user when logging in', async () => {
+      const user = userEvent.setup()
       const logInCallback = jest.fn()
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -89,9 +93,13 @@ describe('Authenticated component', () => {
           <p>Testing children</p>
         </Authenticated>,
       )
-      logInCallback()
+
+      act(() => {
+        logInCallback()
+      })
+
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(signInButton)
+      await user.click(signInButton)
 
       await waitFor(() => {
         expect(Authenticator).toHaveBeenCalled()
@@ -101,6 +109,7 @@ describe('Authenticated component', () => {
     })
 
     it('goes back when canceling login', async () => {
+      const user = userEvent.setup()
       render(
         <Authenticated>
           <p>Testing children</p>
@@ -108,9 +117,9 @@ describe('Authenticated component', () => {
       )
 
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(signInButton)
+      await user.click(signInButton)
       const goBackButton = (await screen.findByText(/Cancel/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(goBackButton)
+      await user.click(goBackButton)
 
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
@@ -135,27 +144,29 @@ describe('Authenticated component', () => {
     })
 
     it('has a working menu', async () => {
+      const user = userEvent.setup()
       render(
         <Authenticated>
           <p>Testing children</p>
         </Authenticated>,
       )
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(menuButton)
+      await user.click(menuButton)
 
       expect(await screen.findByText(/Sign out/i)).toBeVisible()
     })
 
     it('signs the user out when selecting sign out', async () => {
+      const user = userEvent.setup()
       render(
         <Authenticated>
           <p>Testing children</p>
         </Authenticated>,
       )
       const menuButton = (await screen.findByLabelText(/menu/i, { selector: 'button' })) as HTMLButtonElement
-      fireEvent.click(menuButton)
+      await user.click(menuButton)
       const signOutButton = (await screen.findByText(/Sign out/i)) as HTMLButtonElement
-      fireEvent.click(signOutButton)
+      await user.click(signOutButton)
 
       await waitFor(() => {
         expect(mockLocationReload).toHaveBeenCalled()
