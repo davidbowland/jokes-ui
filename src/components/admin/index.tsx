@@ -1,11 +1,11 @@
 import '@aws-amplify/ui-react/styles.css'
-import { JokeType } from '@types'
 import { Auth } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 
 import Divider from '@mui/material/Divider'
 
 import SignedIn from './signed-in'
+import { JokeType } from '@types'
 
 export interface AdminProps {
   addJoke: (newJoke: JokeType) => Promise<number>

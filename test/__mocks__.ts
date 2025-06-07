@@ -1,5 +1,6 @@
 /* eslint-disable sort-keys */
 import { AmplifyUser } from '@aws-amplify/ui'
+
 import { DisplayedJoke, InitialResponse, JokeCount, JokeResponse, JokeType, Theme } from '@types'
 
 export const displayedJoke: DisplayedJoke = {

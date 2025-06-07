@@ -1,10 +1,10 @@
 import { initialResponse } from '@test/__mocks__'
-import { JokeResponse } from '@types'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { API, Auth } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 import { getInitialData, getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
+import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('aws-amplify')

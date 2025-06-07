@@ -1,5 +1,4 @@
 import Admin from '@components/admin'
-import { JokeType } from '@types'
 import React, { useState } from 'react'
 
 import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
@@ -8,6 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
+
+import { JokeType } from '@types'
 
 export interface JokeProps {
   addJoke: (newJoke: JokeType) => Promise<number>

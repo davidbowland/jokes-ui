@@ -1,10 +1,10 @@
-import * as jokes from '@services/jokes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { displayedJoke, initialResponse, jokeCount, jokeType } from '@test/__mocks__'
 import { renderHook, waitFor } from '@testing-library/react'
 import React, { ReactNode } from 'react'
 
 import { useJoke } from './useJoke'
+import * as jokes from '@services/jokes'
 
 jest.mock('@services/jokes')
 

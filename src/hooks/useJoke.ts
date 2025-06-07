@@ -1,9 +1,10 @@
-import { baseUrl } from '@config/amplify'
-import { getInitialData, getJoke, getJokeCount, patchJoke, postJoke } from '@services/jokes'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { JokeType } from '@types'
 import jsonpatch from 'fast-json-patch'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
+import { baseUrl } from '@config/amplify'
+import { getInitialData, getJoke, getJokeCount, patchJoke, postJoke } from '@services/jokes'
+import { JokeType } from '@types'
 
 const randomInt = (max: number): number => Math.floor(max * Math.random())
 

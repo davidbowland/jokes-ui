@@ -1,7 +1,8 @@
-import { apiName, apiNameUnauthenticated } from '@config/amplify'
-import { InitialResponse, JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 import { API } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
+
+import { apiName, apiNameUnauthenticated } from '@config/amplify'
+import { InitialResponse, JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 
 const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
 

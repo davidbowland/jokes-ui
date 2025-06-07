@@ -1,4 +1,3 @@
-import { JokeType } from '@types'
 import React, { useEffect, useState } from 'react'
 
 import TabContext from '@mui/lab/TabContext'
@@ -14,6 +13,8 @@ import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
 import Tab from '@mui/material/Tab'
 import TextField from '@mui/material/TextField'
+
+import { JokeType } from '@types'
 
 interface AdminNotice {
   severity?: 'error' | 'warning' | 'info' | 'success'
