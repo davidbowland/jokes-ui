@@ -1,4 +1,5 @@
 import ServerErrorMessage from '@components/server-error-message'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 const BadRequest = (): React.ReactNode => {
@@ -10,6 +11,6 @@ const BadRequest = (): React.ReactNode => {
   )
 }
 
-export const Head = () => <title>400: Bad Request | dbowland.com</title>
+export const Head: HeadFC = () => <title>400: Bad Request | dbowland.com</title>
 
 export default BadRequest

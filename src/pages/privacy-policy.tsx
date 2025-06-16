@@ -1,4 +1,5 @@
 import PrivacyPolicy from '@components/privacy-policy'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 import Paper from '@mui/material/Paper'
@@ -13,6 +14,6 @@ const PrivacyPage = (): React.ReactNode => {
   )
 }
 
-export const Head = () => <title>Privacy Policy | jokes.dbowland.com</title>
+export const Head: HeadFC = () => <title>Privacy Policy | jokes.dbowland.com</title>
 
 export default PrivacyPage

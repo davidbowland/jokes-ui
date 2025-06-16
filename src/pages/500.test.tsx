@@ -24,7 +24,7 @@ describe('500 error page', () => {
   })
 
   it('returns title in Head component', () => {
-    const { container } = render(<Head />)
+    const { container } = render(<Head {...({} as any)} />)
     expect(container).toMatchInlineSnapshot(`
       <div>
         <title>

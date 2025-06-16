@@ -1,4 +1,5 @@
 import ServerErrorMessage from '@components/server-error-message'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 const InternalServerError = (): React.ReactNode => {
@@ -10,6 +11,6 @@ const InternalServerError = (): React.ReactNode => {
   )
 }
 
-export const Head = () => <title>500: Internal Server Error | dbowland.com</title>
+export const Head: HeadFC = () => <title>500: Internal Server Error | dbowland.com</title>
 
 export default InternalServerError

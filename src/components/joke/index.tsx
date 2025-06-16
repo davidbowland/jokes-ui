@@ -63,7 +63,7 @@ const Joke = ({ addJoke, getTtsUrl, index, joke, updateJoke }: JokeProps): React
           </Button>
         </Grid>
       </Grid>
-      {index && joke && <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />}
+      {!!index && joke && <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />}
     </>
   )
 }

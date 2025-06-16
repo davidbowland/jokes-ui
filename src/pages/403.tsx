@@ -1,4 +1,5 @@
 import ServerErrorMessage from '@components/server-error-message'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 const Forbidden = (): React.ReactNode => {
@@ -10,6 +11,6 @@ const Forbidden = (): React.ReactNode => {
   )
 }
 
-export const Head = () => <title>403: Forbidden | dbowland.com</title>
+export const Head: HeadFC = () => <title>403: Forbidden | dbowland.com</title>
 
 export default Forbidden

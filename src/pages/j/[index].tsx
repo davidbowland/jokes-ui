@@ -1,5 +1,6 @@
 import Navigation from '@components/navigation'
 import PrivacyLink from '@components/privacy-link'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 import Grid from '@mui/material/Grid'
@@ -21,6 +22,6 @@ const JokePage = ({ params }: JokePageProps): React.ReactNode => {
   )
 }
 
-export const Head = () => <title>Humor | dbowland.com</title>
+export const Head: HeadFC = () => <title>Humor | dbowland.com</title>
 
 export default JokePage

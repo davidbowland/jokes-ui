@@ -1,4 +1,5 @@
 import ServerErrorMessage from '@components/server-error-message'
+import { HeadFC } from 'gatsby'
 import React from 'react'
 
 const NotFound = (): React.ReactNode => {
@@ -14,6 +15,6 @@ const NotFound = (): React.ReactNode => {
   return <></>
 }
 
-export const Head = () => <title>404: Not Found | dbowland.com</title>
+export const Head: HeadFC = () => <title>404: Not Found | dbowland.com</title>
 
 export default NotFound
