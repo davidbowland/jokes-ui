@@ -1,9 +1,10 @@
-import Navigation from '@components/navigation'
-import PrivacyLink from '@components/privacy-link'
 import { HeadFC } from 'gatsby'
 import React from 'react'
 
 import Grid from '@mui/material/Grid'
+
+import Navigation from '@components/navigation'
+import PrivacyLink from '@components/privacy-link'
 
 export interface JokePageProps {
   params: {

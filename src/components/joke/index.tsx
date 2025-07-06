@@ -1,4 +1,3 @@
-import Admin from '@components/admin'
 import React, { useState } from 'react'
 
 import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
@@ -8,6 +7,7 @@ import Grid from '@mui/material/Grid'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 
+import Admin from '@components/admin'
 import { JokeType } from '@types'
 
 export interface JokeProps {
@@ -38,7 +38,7 @@ const Joke = ({ addJoke, getTtsUrl, index, joke, updateJoke }: JokeProps): React
 
   return (
     <>
-      <Typography minHeight={'2.5em'} variant="h4">
+      <Typography minHeight="2.5em" variant="h4">
         {joke?.contents ?? (
           <>
             <Skeleton />

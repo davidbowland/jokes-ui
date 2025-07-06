@@ -1,6 +1,7 @@
-import ServerErrorMessage from '@components/server-error-message'
 import { HeadFC } from 'gatsby'
 import React from 'react'
+
+import ServerErrorMessage from '@components/server-error-message'
 
 const BadRequest = (): React.ReactNode => {
   return (

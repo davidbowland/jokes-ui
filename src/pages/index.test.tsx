@@ -1,10 +1,10 @@
-import Navigation from '@components/navigation'
-import PrivacyLink from '@components/privacy-link'
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
 import IndexPage, { Head } from './index'
+import Navigation from '@components/navigation'
+import PrivacyLink from '@components/privacy-link'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/navigation')

@@ -1,5 +1,3 @@
-import Joke from '@components/joke'
-import { useJoke } from '@hooks/useJoke'
 import { navigate } from 'gatsby'
 import React, { useEffect } from 'react'
 
@@ -13,6 +11,9 @@ import Paper from '@mui/material/Paper'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
+
+import Joke from '@components/joke'
+import { useJoke } from '@hooks/useJoke'
 
 export interface NavigationProps {
   initialCount?: number

@@ -1,4 +1,3 @@
-import Admin from '@components/admin'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { index, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
@@ -7,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 
 import Joke from './index'
+import Admin from '@components/admin'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')
