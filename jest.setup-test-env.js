@@ -9,6 +9,5 @@ process.env.GATSBY_COGNITO_USER_POOL_ID = 'us-east_clientId'
 process.env.GATSBY_IDENTITY_POOL_ID = 'us-east-2:654rertyujkjhgfr678ijkhgf6y'
 process.env.GATSBY_JOKE_API_BASE_URL = 'http://localhost'
 process.env.GATSBY_JOKE_API_FETCH_COUNT = 3
-process.env.GATSBY_PINPOINT_ID = '86543wertyjhfghjkknbkn'
 
 window.URL.createObjectURL = jest.fn()
