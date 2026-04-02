@@ -1,22 +1,17 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React, { act } from 'react'
-import Cookies from 'universal-cookie'
+import React from 'react'
 
 import Disclaimer from './index'
 
-jest.mock('universal-cookie')
-
 describe('disclaimer component', () => {
-  const mockCookieGet = jest.fn()
-  const mockCookieSet = jest.fn()
-
-  beforeAll(() => {
-    jest.mocked(Cookies).mockReturnValue({
-      get: mockCookieGet,
-      set: mockCookieSet,
-    } as unknown as Cookies)
+  beforeEach(() => {
+    Object.defineProperty(document, 'cookie', {
+      configurable: true,
+      value: '',
+      writable: true,
+    })
   })
 
   it('loads under normal circumstances', async () => {
@@ -31,21 +26,16 @@ describe('disclaimer component', () => {
     const closeButton = (await screen.findByText(/Accept & continue/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    await act(() => userEvent.click(closeButton))
+    await userEvent.click(closeButton)
 
-    expect(mockCookieSet).toHaveBeenCalledWith('disclaimer_accept', 'true', {
-      path: '/',
-      sameSite: 'strict',
-      secure: true,
-    })
+    expect(document.cookie).toContain('disclaimer_accept=true')
     expect(screen.queryByText(/Cookie and Privacy Disclosure/i)).not.toBeInTheDocument()
   })
 
   it('loads closed when cookie is set', async () => {
-    mockCookieGet.mockReturnValueOnce('true')
+    document.cookie = 'disclaimer_accept=true'
     render(<Disclaimer />)
 
-    expect(mockCookieGet).toHaveBeenCalledWith('disclaimer_accept')
     expect(screen.queryByText(/Cookie and Privacy Disclosure/i)).not.toBeInTheDocument()
   })
 })

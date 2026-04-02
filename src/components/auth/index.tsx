@@ -3,9 +3,7 @@ import '@aws-amplify/ui-react/styles.css'
 import { Auth } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-
+import { NavBar } from './elements'
 import JokesAuthenticator from './jokes-authenticator'
 import LoggedInBar from './logged-in-bar'
 import LoggedOutBar from './logged-out-bar'
@@ -31,15 +29,13 @@ const Authenticated = ({ children }: AuthenticatedProps): React.ReactNode => {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          {loggedInUser ? (
-            <LoggedInBar setLoggedInUser={setLoggedInUser} />
-          ) : (
-            <LoggedOutBar setShowLogin={setShowLogin} />
-          )}
-        </Toolbar>
-      </AppBar>
+      <NavBar>
+        {loggedInUser ? (
+          <LoggedInBar setLoggedInUser={setLoggedInUser} />
+        ) : (
+          <LoggedOutBar setShowLogin={setShowLogin} />
+        )}
+      </NavBar>
       {showLogin && !loggedInUser ? (
         <JokesAuthenticator setLoggedInUser={setLoggedInUser} setShowLogin={setShowLogin} />
       ) : (

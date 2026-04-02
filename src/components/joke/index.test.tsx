@@ -11,7 +11,7 @@ import Admin from '@components/admin'
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')
 
-const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
+const baseUrl = process.env.NEXT_PUBLIC_JOKE_API_BASE_URL
 const Wrapper = ({ children }: { children: React.ReactNode | React.ReactNode[] }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -111,9 +111,7 @@ describe('Joke component', () => {
       )
 
       await screen.findByText(jokeType.contents)
-      const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
-        selector: 'button',
-      })) as HTMLButtonElement
+      const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
       await user.click(ttsButton)
 
       await waitFor(() => {
@@ -137,9 +135,7 @@ describe('Joke component', () => {
       )
 
       await screen.findByText(jokeType.contents)
-      const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
-        selector: 'button',
-      })) as HTMLButtonElement
+      const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
       await user.click(ttsButton)
 
       await waitFor(() => {
@@ -170,9 +166,7 @@ describe('Joke component', () => {
       )
 
       await screen.findByText(jokeType.contents)
-      const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
-        selector: 'button',
-      })) as HTMLButtonElement
+      const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
       await user.click(ttsButton)
 
       await screen.findByText('Fetching audio')
@@ -208,9 +202,7 @@ describe('Joke component', () => {
       )
 
       await screen.findByText(jokeType.contents)
-      const ttsButton: HTMLButtonElement = (await screen.findByText(/Text-to-speech/i, {
-        selector: 'button',
-      })) as HTMLButtonElement
+      const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
       await user.click(ttsButton)
 
       await screen.findByText('Fetching audio')

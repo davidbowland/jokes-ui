@@ -1,9 +1,8 @@
-import { Link } from 'gatsby'
+import { LogIn } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
-import LoginIcon from '@mui/icons-material/Login'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
+import { NavTitle } from './elements'
 
 export interface LoggedOutBarProps {
   setShowLogin: (state: boolean) => void
@@ -16,19 +15,18 @@ const LoggedOutBar = ({ setShowLogin }: LoggedOutBarProps): React.ReactNode => {
 
   return (
     <>
-      <Typography sx={{ flexGrow: 1 }} variant="h6">
-        <Link style={{ color: '#fff', textDecoration: 'none' }} to="/">
-          Jokes
+      <NavTitle>
+        <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+          Humor
         </Link>
-      </Typography>
-      <Button
+      </NavTitle>
+      <button
+        className="flex items-center gap-1.5 rounded-full border border-coal px-4 py-1.5 text-sm text-muted transition-all hover:border-gold/50 hover:text-gold"
         onClick={signInClick}
-        startIcon={<LoginIcon />}
-        sx={{ borderColor: '#fff', color: '#fff' }}
-        variant="outlined"
       >
+        <LogIn size={14} />
         Admin
-      </Button>
+      </button>
     </>
   )
 }

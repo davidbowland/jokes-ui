@@ -45,13 +45,13 @@ describe('Admin component', () => {
   it('navigates to the add screen when "Add joke" is clicked', async () => {
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const editLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
-    userEvent.click(editLabel)
+    const addTab = await screen.findByRole('tab', { name: /Add joke/i })
+    await userEvent.click(addTab)
 
     const addJokeButtons: HTMLButtonElement[] = (await screen.findAllByText(/Add joke/i, {
       selector: 'button',
     })) as HTMLButtonElement[]
-    expect(addJokeButtons.length).toEqual(1)
+    expect(addJokeButtons.length).toEqual(2)
     const addTextInput: HTMLInputElement = (await screen.findByLabelText('Joke to add')) as HTMLInputElement
     expect(addTextInput.value.length).toEqual(0)
   })
@@ -60,8 +60,8 @@ describe('Admin component', () => {
     mockAddJoke.mockResolvedValueOnce(17)
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
-    userEvent.click(addLabel)
+    const addTab = await screen.findByRole('tab', { name: /Add joke/i })
+    await userEvent.click(addTab)
     const addTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke to add/i)) as HTMLInputElement
     await userEvent.type(addTextInput, jokeType.contents)
     const addJokeButton: HTMLButtonElement = (
@@ -69,7 +69,7 @@ describe('Admin component', () => {
         selector: 'button',
       })
     )[1] as HTMLButtonElement
-    userEvent.click(addJokeButton)
+    await userEvent.click(addJokeButton)
 
     await waitFor(() => {
       expect(mockAddJoke).toHaveBeenCalled()
@@ -82,8 +82,8 @@ describe('Admin component', () => {
     mockAddJoke.mockRejectedValueOnce({ response: 'fnord' })
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const addLabel: HTMLLabelElement = (await screen.findByText(/Add joke/i)) as HTMLLabelElement
-    userEvent.click(addLabel)
+    const addTab = await screen.findByRole('tab', { name: /Add joke/i })
+    await userEvent.click(addTab)
     const addTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke to add/i)) as HTMLInputElement
     await userEvent.type(addTextInput, jokeType.contents)
     const addJokeButton: HTMLButtonElement = (
@@ -91,7 +91,7 @@ describe('Admin component', () => {
         selector: 'button',
       })
     )[1] as HTMLButtonElement
-    userEvent.click(addJokeButton)
+    await userEvent.click(addJokeButton)
 
     expect(await screen.findByText('fnord')).toBeInTheDocument()
   })
@@ -101,12 +101,12 @@ describe('Admin component', () => {
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
-    userEvent.clear(updateTextInput)
+    await userEvent.clear(updateTextInput)
     await userEvent.type(updateTextInput, expectedJoke)
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    userEvent.click(updateJokeButton)
+    await userEvent.click(updateJokeButton)
 
     expect(await screen.findByText('Joke successfully updated!')).toBeInTheDocument()
     expect(mockUpdateJoke).toHaveBeenCalledWith({ contents: expectedJoke })
@@ -124,7 +124,7 @@ describe('Admin component', () => {
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    userEvent.click(updateJokeButton)
+    await userEvent.click(updateJokeButton)
 
     expect(await screen.findByText('Joke successfully updated!')).toBeInTheDocument()
     expect(mockUpdateJoke).toHaveBeenCalledWith({ contents: expectedJoke })
@@ -140,7 +140,7 @@ describe('Admin component', () => {
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
       selector: 'button',
     })) as HTMLButtonElement
-    userEvent.click(updateJokeButton)
+    await userEvent.click(updateJokeButton)
 
     expect(await screen.findByText('fnord')).toBeInTheDocument()
   })

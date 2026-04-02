@@ -1,28 +1,39 @@
-import { HeadFC } from 'gatsby'
+import type { GetStaticPaths, GetStaticProps } from 'next'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 import React from 'react'
 
-import Grid from '@mui/material/Grid'
-
+import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
-import PrivacyLink from '@components/privacy-link'
 
-export interface JokePageProps {
-  params: {
-    index: string
-  }
-}
+const JokePage = (): React.ReactNode => {
+  const router = useRouter()
+  const [index, setIndex] = React.useState<number | undefined>(undefined)
 
-const JokePage = ({ params }: JokePageProps): React.ReactNode => {
+  React.useEffect(() => {
+    const match = window.location.pathname.match(/\/j\/([^/]+)/)
+    if (match) {
+      setIndex(parseInt(match[1], 10))
+    }
+  }, [router.asPath])
+
   return (
-    <Grid container justifyContent="center" sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-      <Grid item xs>
-        <Navigation initialIndex={parseInt(params.index, 10)} />
-        <PrivacyLink />
-      </Grid>
-    </Grid>
+    <>
+      <Head>
+        <title>Humor | dbowland.com</title>
+      </Head>
+      <JokePageLayout>{index === undefined ? null : <Navigation initialIndex={index} />}</JokePageLayout>
+    </>
   )
 }
 
-export const Head: HeadFC = () => <title>Humor | dbowland.com</title>
+export const getStaticPaths: GetStaticPaths = () => {
+  if (process.env.NODE_ENV === 'development') {
+    return { fallback: 'blocking', paths: [] }
+  }
+  return { fallback: false, paths: [{ params: { index: '__placeholder__' } }] }
+}
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} })
 
 export default JokePage

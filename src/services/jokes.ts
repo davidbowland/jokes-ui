@@ -4,7 +4,7 @@ import { Operation as PatchOperation } from 'fast-json-patch'
 import { apiName, apiNameUnauthenticated } from '@config/amplify'
 import { InitialResponse, JokeCount, JokeResponse, JokeType, PostResponse } from '@types'
 
-const fetchCount = process.env.GATSBY_JOKE_API_FETCH_COUNT
+const fetchCount = process.env.NEXT_PUBLIC_JOKE_API_FETCH_COUNT
 
 export const getInitialData = async (): Promise<InitialResponse> =>
   API.get(apiNameUnauthenticated, '/jokes/initial', {})

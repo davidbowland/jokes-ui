@@ -5,6 +5,8 @@ coverage/
 deploy/
 infrastructure/
 node_modules/
+next-env.d.ts
+out/
 public/
 static/
 *.min.*

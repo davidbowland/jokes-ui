@@ -1,20 +1,65 @@
-@media (prefers-color-scheme: dark) {
-  a {
-    color: #66b3ff;
+@import '@heroui/styles';
+
+@theme {
+  --color-background: #0b0b10;
+  --color-surface: #13131c;
+  --color-card: #1a1a26;
+  --color-gold: #f5c500;
+  --color-gold-dim: rgba(245, 197, 0, 0.12);
+  --color-cream: #f4eddc;
+  --color-muted: #6b6480;
+  --color-coal: #252535;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
   }
-  [data-amplify-authenticator] {
-    --amplify-components-authenticator-state-inactive-background-color: rgba(255, 255, 255, 0.09);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0b0b10;
+  color: #f4eddc;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes joke-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  [data-amplify-router] {
-    --amplify-components-authenticator-router-background-color: #272727;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .amplify-button--link {
-    --amplify-components-button-link-color: #66b3ff;
-  }
-  .amplify-button--primary {
-    --amplify-components-button-primary-background-color: #90caf9;
-  }
-  .amplify-button--primary:hover {
-    --amplify-components-button-primary-hover-background-color: #42a5f5;
-  }
+}
+
+.joke-enter {
+  animation: joke-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-amplify-authenticator] {
+  --amplify-components-authenticator-state-inactive-background-color: rgba(255, 255, 255, 0.09);
+}
+
+[data-amplify-router] {
+  --amplify-components-authenticator-router-background-color: #1a1a26;
+}
+
+.amplify-button--link {
+  --amplify-components-button-link-color: #f5c500;
+}
+
+.amplify-button--primary {
+  --amplify-components-button-primary-background-color: #f5c500;
+  --amplify-components-button-primary-color: #0b0b10;
+}
+
+.amplify-button--primary:hover {
+  --amplify-components-button-primary-hover-background-color: #d4a900;
 }

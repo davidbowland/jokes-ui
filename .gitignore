@@ -2,10 +2,15 @@
 node_modules/
 dist/
 coverage/
-public/
 
-# Gatsby
-.cache/
+# Next.js
+out/
+.next/
+
+# Generated artifacts
+public/
+public/sitemap*.xml
+public/robots.txt
 
 # Compiled Java class files
 *.class
@@ -47,3 +52,11 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+.claude/
+.kiro/specs/
+.superpowers/
+.vscode
+.worktrees/
+docs/
+tsconfig.tsbuildinfo

@@ -1,24 +1,19 @@
 import React, { useState } from 'react'
 
-import SpatialAudioOffIcon from '@mui/icons-material/SpatialAudioOff'
-import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
-import Grid from '@mui/material/Grid'
-import Skeleton from '@mui/material/Skeleton'
-import Typography from '@mui/material/Typography'
-
+import { JokeCounter, JokeSkeleton, JokeTitle, TtsButton } from './elements'
 import Admin from '@components/admin'
 import { JokeType } from '@types'
 
 export interface JokeProps {
   addJoke: (newJoke: JokeType) => Promise<number>
+  count?: number
   getTtsUrl: (index: number) => string
-  joke?: JokeType
   index?: number
+  joke?: JokeType
   updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
 }
 
-const Joke = ({ addJoke, getTtsUrl, index, joke, updateJoke }: JokeProps): React.ReactNode => {
+const Joke = ({ addJoke, count, getTtsUrl, index, joke, updateJoke }: JokeProps): React.ReactNode => {
   const [isAudioLoading, setIsAudioLoading] = useState(false)
 
   const ttsClick = async (index: number): Promise<void> => {
@@ -38,31 +33,15 @@ const Joke = ({ addJoke, getTtsUrl, index, joke, updateJoke }: JokeProps): React
 
   return (
     <>
-      <Typography minHeight="2.5em" variant="h4">
-        {joke?.contents ?? (
-          <>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton sx={{ display: { md: 'none', xs: 'initial' } }} />
-            <Skeleton sx={{ display: { sm: 'none', xs: 'initial' } }} />
-          </>
-        )}
-      </Typography>
-      <Grid container justifyContent="center">
-        <Grid item order={{ sm: 1, xs: 2 }} sm="auto" sx={{ p: '0.5em' }} xs={12}>
-          <Button
-            data-amplify-analytics-name="text-to-speech-click"
-            data-amplify-analytics-on="click"
-            disabled={joke === undefined || isAudioLoading}
-            onClick={() => index && ttsClick(index)}
-            startIcon={isAudioLoading ? <CircularProgress color="inherit" size={14} /> : <SpatialAudioOffIcon />}
-            sx={{ width: { sm: 'auto', xs: '100%' } }}
-            variant="outlined"
-          >
-            {isAudioLoading ? 'Fetching audio' : 'Text-to-speech'}
-          </Button>
-        </Grid>
-      </Grid>
+      <div className="mb-6 h-4">{index && count ? <JokeCounter count={count} index={index} /> : null}</div>
+      <JokeTitle key={joke ? 'loaded' : 'loading'}>{joke?.contents ?? <JokeSkeleton />}</JokeTitle>
+      <div className="flex justify-center py-8">
+        <TtsButton
+          isDisabled={joke === undefined || isAudioLoading}
+          isLoading={isAudioLoading}
+          onPress={() => index && ttsClick(index)}
+        />
+      </div>
       {!!index && joke && <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />}
     </>
   )

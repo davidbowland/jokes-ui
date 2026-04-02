@@ -1,8 +1,7 @@
 import '@aws-amplify/ui-react/styles.css'
+import { Separator } from '@heroui/react'
 import { Auth } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
-
-import Divider from '@mui/material/Divider'
 
 import SignedIn from './signed-in'
 import { JokeType } from '@types'
@@ -26,7 +25,7 @@ const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNod
   if (isAdminVisible) {
     return (
       <>
-        <Divider />
+        <Separator />
         <section className="site-administration">
           <SignedIn addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />
         </section>

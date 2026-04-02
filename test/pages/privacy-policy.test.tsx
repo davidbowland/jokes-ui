@@ -1,8 +1,8 @@
+import PrivacyPage from '@pages/privacy-policy'
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import React from 'react'
 
-import PrivacyPage, { Head } from './privacy-policy'
 import PrivacyPolicy from '@components/privacy-policy'
 
 jest.mock('@aws-amplify/analytics')
@@ -19,14 +19,8 @@ describe('Privacy page', () => {
     expect(PrivacyPolicy).toHaveBeenCalledTimes(1)
   })
 
-  it('returns title in Head component', () => {
-    const { container } = render(<Head {...({} as any)} />)
-    expect(container).toMatchInlineSnapshot(`
-      <div>
-        <title>
-          Privacy Policy | jokes.dbowland.com
-        </title>
-      </div>
-    `)
+  it('renders title', () => {
+    render(<PrivacyPage />)
+    expect(document.title).toBe('Privacy Policy | jokes.dbowland.com')
   })
 })

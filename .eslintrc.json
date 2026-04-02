@@ -29,11 +29,11 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": ["off"],
     "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "_" }],
-    "indent": ["error", 2],
     "jest/no-mocks-import": "off",
     "linebreak-style": ["error", "unix"],
     "no-negated-condition": ["error"],
     "quotes": ["error", "single", { "avoidEscape": true }],
+    "react/react-in-jsx-scope": "off",
     "react/jsx-curly-brace-presence": [
       "error",
       { "children": "never", "propElementValues": "always", "props": "never" }
@@ -43,6 +43,17 @@
     "sort-keys": ["error", "asc", { "caseSensitive": false, "natural": false }],
     "sort-vars": ["error"]
   },
+  "overrides": [
+    {
+      "env": { "node": true },
+      "files": ["scripts/**/*.js", "next.config.js"],
+      "rules": { "@typescript-eslint/no-require-imports": "off", "@typescript-eslint/no-var-requires": "off" }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": { "@typescript-eslint/no-var-requires": "off" }
+    }
+  ],
   "settings": {
     "react": {
       "version": "detect"

@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
-import Alert from '@mui/material/Alert'
-import Backdrop from '@mui/material/Backdrop'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import CircularProgress from '@mui/material/CircularProgress'
-import Tab from '@mui/material/Tab'
-import TextField from '@mui/material/TextField'
-
+import { AdminAlert, JokeCard, LoadingOverlay, TabBar, TabPanel } from './elements'
 import { JokeType } from '@types'
 
 interface AdminNotice {
@@ -33,10 +20,15 @@ export interface SignedInProps {
   updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
 }
 
+const ADMIN_TABS = [
+  { label: 'Edit joke', value: AdminView.EDIT_JOKE },
+  { label: 'Add joke', value: AdminView.ADD_JOKE },
+]
+
 const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.ReactNode => {
   const [editJoke, setEditJoke] = useState(joke.contents)
 
-  const [adminView, setAdminView] = useState(AdminView.EDIT_JOKE)
+  const [adminView, setAdminView] = useState<string>(AdminView.EDIT_JOKE)
   const [adminNotice, setAdminNotice] = useState({ text: '' } as AdminNotice)
   const [addJokeText, setAddJokeText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -65,7 +57,7 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
     }
   }
 
-  const updateAdminView = (event: React.SyntheticEvent<Element, Event>, newValue: AdminView) => {
+  const updateAdminView = (newValue: string) => {
     setAdminNotice({ text: '' })
     setAdminView(newValue)
   }
@@ -76,66 +68,37 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
 
   return (
     <div>
-      {adminNotice.severity && (
-        <Alert severity={adminNotice.severity} variant="filled">
-          {adminNotice.text}
-        </Alert>
-      )}
-      <TabContext value={adminView}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList aria-label="Administration tabs" onChange={updateAdminView}>
-            <Tab label="Edit joke" value={AdminView.EDIT_JOKE} />
-            <Tab label="Add joke" value={AdminView.ADD_JOKE} />
-          </TabList>
-        </Box>
-        <TabPanel value={AdminView.EDIT_JOKE}>
-          <Card variant="outlined">
-            <CardContent>
-              <label>
-                <TextField
-                  fullWidth
-                  label={`Joke #${index}`}
-                  name="update-joke-text"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
-                  type="text"
-                  value={editJoke}
-                  variant="filled"
-                />
-              </label>
-            </CardContent>
-            <CardActions sx={{ p: 2 }}>
-              <Button onClick={handleUpdateJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
-                Update joke
-              </Button>
-            </CardActions>
-          </Card>
-        </TabPanel>
-        <TabPanel value={AdminView.ADD_JOKE}>
-          <Card variant="outlined">
-            <CardContent>
-              <label>
-                <TextField
-                  fullWidth
-                  label="Joke to add"
-                  name="add-joke-text"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
-                  type="text"
-                  value={addJokeText}
-                  variant="filled"
-                />
-              </label>
-            </CardContent>
-            <CardActions sx={{ p: 2 }}>
-              <Button onClick={handleAddJoke} sx={{ width: { sm: 'auto', xs: '100%' } }} variant="contained">
-                Add joke
-              </Button>
-            </CardActions>
-          </Card>
-        </TabPanel>
-      </TabContext>
-      <Backdrop open={isLoading} sx={{ color: '#fff', zIndex: (theme: any) => theme.zIndex.drawer + 1 }}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {adminNotice.severity && <AdminAlert severity={adminNotice.severity}>{adminNotice.text}</AdminAlert>}
+      <TabBar activeTab={adminView} onTabChange={updateAdminView} tabs={ADMIN_TABS} />
+      <TabPanel activeTab={adminView} value={AdminView.EDIT_JOKE}>
+        <JokeCard buttonLabel="Update joke" onSubmit={handleUpdateJoke}>
+          <label>
+            <span className="mb-1 block text-sm font-medium">{`Joke #${index}`}</span>
+            <input
+              className="w-full rounded-lg border border-coal bg-surface px-3 py-2 text-cream placeholder-muted focus:border-gold/60 focus:outline-none"
+              name="update-joke-text"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
+              type="text"
+              value={editJoke}
+            />
+          </label>
+        </JokeCard>
+      </TabPanel>
+      <TabPanel activeTab={adminView} value={AdminView.ADD_JOKE}>
+        <JokeCard buttonLabel="Add joke" onSubmit={handleAddJoke}>
+          <label>
+            <span className="mb-1 block text-sm font-medium">Joke to add</span>
+            <input
+              className="w-full rounded-lg border border-coal bg-surface px-3 py-2 text-cream placeholder-muted focus:border-gold/60 focus:outline-none"
+              name="add-joke-text"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
+              type="text"
+              value={addJokeText}
+            />
+          </label>
+        </JokeCard>
+      </TabPanel>
+      {isLoading && <LoadingOverlay />}
     </div>
   )
 }

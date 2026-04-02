@@ -1,22 +1,20 @@
-import { HeadFC } from 'gatsby'
+import Head from 'next/head'
 import React from 'react'
 
-import Grid from '@mui/material/Grid'
-
+import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
-import PrivacyLink from '@components/privacy-link'
 
 const IndexPage = (): React.ReactNode => {
   return (
-    <Grid container justifyContent="center" sx={{ padding: { sm: '50px', xs: '25px 10px' } }}>
-      <Grid item xs>
+    <>
+      <Head>
+        <title>Humor | dbowland.com</title>
+      </Head>
+      <JokePageLayout>
         <Navigation />
-        <PrivacyLink />
-      </Grid>
-    </Grid>
+      </JokePageLayout>
+    </>
   )
 }
-
-export const Head: HeadFC = () => <title>Humor | dbowland.com</title>
 
 export default IndexPage

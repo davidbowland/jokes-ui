@@ -8,7 +8,7 @@ import * as jokes from '@services/jokes'
 
 jest.mock('@services/jokes')
 
-const baseUrl = process.env.GATSBY_JOKE_API_BASE_URL
+const baseUrl = process.env.NEXT_PUBLIC_JOKE_API_BASE_URL
 const Wrapper = ({ children }: { children: ReactNode | ReactNode[] }) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -146,8 +146,10 @@ describe('useJoke', () => {
     it('returns the displayed joke index', async () => {
       const { result } = renderHook(() => useJoke(), { wrapper: Wrapper })
 
-      await waitFor(() => expect(jokes.getInitialData).toHaveBeenCalled())
-      expect(result.current.index).toEqual(displayedJoke.index)
+      await waitFor(() => {
+        expect(result.current.index).toEqual(displayedJoke.index)
+      })
+      expect(jokes.getInitialData).toHaveBeenCalled()
     })
 
     it('returns the passed index', async () => {

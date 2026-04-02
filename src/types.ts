@@ -1,5 +1,4 @@
-export { RemoveOperation } from 'fast-json-patch'
-export { Theme } from '@mui/material/styles'
+export type { RemoveOperation } from 'fast-json-patch'
 
 export interface JokeAudio {
   base64: string

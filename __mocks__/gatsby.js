@@ -1,8 +1,6 @@
 const React = require('react')
-const gatsby = jest.requireActual('gatsby')
 
 module.exports = {
-  ...gatsby,
   GatsbyImage: jest.fn(),
   graphql: jest.fn(),
   Link: jest.fn().mockImplementation(

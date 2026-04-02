@@ -1,8 +1,8 @@
+import NotFound from '@pages/404'
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import React from 'react'
 
-import NotFound, { Head } from './404'
 import ServerErrorMessage from '@components/server-error-message'
 
 jest.mock('@aws-amplify/analytics')
@@ -21,36 +21,33 @@ describe('404 error page', () => {
     window.location.pathname = '/an-invalid-page'
   })
 
-  it('renders ServerErrorMessage', () => {
+  it('renders ServerErrorMessage', async () => {
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
-    expect(ServerErrorMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ title: expectedTitle }),
-      expect.anything(),
-    )
+    await waitFor(() => {
+      expect(ServerErrorMessage).toHaveBeenCalledWith(expect.objectContaining({ title: expectedTitle }), undefined)
+    })
     expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
   })
 
   it('does not render when path begins with /j/', () => {
     window.location.pathname = '/j/aeiou'
     render(<NotFound />)
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(0)
+    expect(ServerErrorMessage).not.toHaveBeenCalled()
   })
 
-  it('renders when pathname has three slashes', () => {
+  it('renders when pathname has three slashes', async () => {
     window.location.pathname = '/j/aeiou/y'
     render(<NotFound />)
-    expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+    await waitFor(() => {
+      expect(ServerErrorMessage).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it('returns title in Head component', () => {
-    const { container } = render(<Head {...({} as any)} />)
-    expect(container).toMatchInlineSnapshot(`
-      <div>
-        <title>
-          404: Not Found | dbowland.com
-        </title>
-      </div>
-    `)
+  it('renders title', async () => {
+    render(<NotFound />)
+    await waitFor(() => {
+      expect(document.title).toBe('404: Not Found | dbowland.com')
+    })
   })
 })

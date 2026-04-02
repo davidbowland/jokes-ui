@@ -1,19 +1,10 @@
 import { AmplifyUser } from '@aws-amplify/ui'
 import { Auth } from 'aws-amplify'
-import { Link } from 'gatsby'
+import { CircleUserRound, LogOut, X } from 'lucide-react'
+import Link from 'next/link'
 import React, { useState } from 'react'
 
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import LogoutIcon from '@mui/icons-material/Logout'
-import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import SwipeableDrawer from '@mui/material/SwipeableDrawer'
-import Typography from '@mui/material/Typography'
+import { NavTitle, SideMenu } from './elements'
 
 export interface LoggedInBarProps {
   setLoggedInUser: (user: AmplifyUser | undefined) => void
@@ -32,51 +23,52 @@ const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): React.ReactNode => 
 
   return (
     <>
-      <Typography sx={{ flexGrow: 1 }} variant="h6">
-        <Link style={{ color: '#fff', textDecoration: 'none' }} to="/">
-          Jokes
+      <NavTitle>
+        <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>
+          Humor
         </Link>
-      </Typography>
-      <Typography component="div">admin</Typography>
-      <IconButton
+      </NavTitle>
+      <span className="mr-3 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-0.5 text-xs font-medium tracking-widest text-gold uppercase">
+        admin
+      </span>
+      <button
         aria-controls="menu-appbar"
         aria-haspopup="true"
         aria-label="menu"
-        color="inherit"
-        edge="start"
+        className="rounded-full p-1.5 text-muted transition-colors hover:text-gold"
         onClick={openMenu}
-        size="large"
-        sx={{ ml: 0.5 }}
       >
-        <AccountCircleRoundedIcon />
-      </IconButton>
-      <SwipeableDrawer anchor="right" onClose={closeMenu} onOpen={openMenu} open={isDrawerOpen}>
-        <Box onClick={closeMenu} role="presentation" sx={{ width: 250 }}>
-          <List>
-            <ListItem
-              button
+        <CircleUserRound size={22} />
+      </button>
+      <SideMenu isOpen={isDrawerOpen} onClose={closeMenu}>
+        <div className="border-b border-coal p-4">
+          <p className="text-xs font-medium tracking-widest text-muted uppercase">Account</p>
+        </div>
+        <ul className="list-none p-0">
+          <li>
+            <button
+              className="flex w-full items-center gap-3 px-5 py-3.5 text-left text-sm text-cream transition-colors hover:bg-card hover:text-gold"
               onClick={() => {
                 closeMenu()
                 setLoggedInUser(undefined)
                 Auth.signOut().then(() => window.location.reload())
               }}
             >
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText primary="Sign out" />
-            </ListItem>
-          </List>
-          <List>
-            <ListItem button>
-              <ListItemIcon>
-                <CloseRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Close" />
-            </ListItem>
-          </List>
-        </Box>
-      </SwipeableDrawer>
+              <LogOut size={16} />
+              Sign out
+            </button>
+          </li>
+          <li>
+            <button
+              className="flex w-full items-center gap-3 px-5 py-3.5 text-left text-sm text-muted transition-colors hover:bg-card hover:text-cream"
+              onClick={closeMenu}
+            >
+              <X size={16} />
+              Close
+            </button>
+          </li>
+        </ul>
+      </SideMenu>
     </>
   )
 }

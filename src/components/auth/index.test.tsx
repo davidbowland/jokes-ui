@@ -18,7 +18,7 @@ describe('Authenticated component', () => {
   beforeAll(() => {
     jest.mocked(Auth).signOut.mockResolvedValue({})
     jest.mocked(Authenticator).mockReturnValue(<>Authenticator</>)
-    jest.mocked(ThemeProvider).mockImplementation(({ children }) => children as unknown as JSX.Element)
+    jest.mocked(ThemeProvider).mockImplementation(({ children }) => children as unknown as React.JSX.Element)
 
     Object.defineProperty(window, 'location', {
       configurable: true,
@@ -42,7 +42,7 @@ describe('Authenticated component', () => {
       const signInButton = (await screen.findByText(/Admin/i, { selector: 'button' })) as HTMLButtonElement
       await user.click(signInButton)
 
-      expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ colorMode: 'system' }), expect.anything())
+      expect(ThemeProvider).toHaveBeenCalledWith(expect.objectContaining({ colorMode: 'system' }), undefined)
     })
   })
 
@@ -59,7 +59,7 @@ describe('Authenticated component', () => {
       )
 
       expect(await screen.findByText(/Testing children/i)).toBeInTheDocument()
-      expect(await screen.findByText(/Jokes/i)).toBeInTheDocument()
+      expect(await screen.findByText(/Humor/i)).toBeInTheDocument()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })
@@ -105,7 +105,7 @@ describe('Authenticated component', () => {
         expect(Authenticator).toHaveBeenCalled()
       })
       expect(Authenticator).toHaveBeenCalledTimes(1)
-      expect(screen.queryByText(/admin/i)).toBeInTheDocument()
+      expect(screen.getByText(/admin/i)).toBeInTheDocument()
     })
 
     it('goes back when canceling login', async () => {
@@ -140,7 +140,7 @@ describe('Authenticated component', () => {
       await waitFor(() => {
         expect(jest.mocked(Auth).currentAuthenticatedUser).toHaveBeenCalled()
       })
-      expect(screen.queryByText(/admin/i)).toBeInTheDocument()
+      expect(screen.getByText(/admin/i)).toBeInTheDocument()
     })
 
     it('has a working menu', async () => {

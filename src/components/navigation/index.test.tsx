@@ -11,6 +11,9 @@ import { useJoke } from '@hooks/useJoke'
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke')
 jest.mock('@hooks/useJoke')
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+}))
 
 describe('Navigation component', () => {
   const mockAddJoke = jest.fn()
@@ -18,6 +21,7 @@ describe('Navigation component', () => {
 
   const mockUseJokeResult = {
     addJoke: jest.fn(),
+    count: 100,
     errorMessage: undefined,
     getTtsUrl: jest.fn(),
     hasNextJoke: true,
@@ -62,7 +66,7 @@ describe('Navigation component', () => {
       render(<Navigation initialCount={74} initialIndex={22} />)
 
       expect(useJoke).toHaveBeenCalledWith(22, 74)
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), {})
+      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), undefined)
     })
   })
 
@@ -81,12 +85,12 @@ describe('Navigation component', () => {
       })
     })
 
-    it('removes previous joke navigation button when no previous jokes', async () => {
+    it('disables previous joke navigation button when no previous jokes', async () => {
       jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasPreviousJoke: false })
       render(<Navigation />)
 
       expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
-      expect(screen.queryByLabelText(/Previous joke/i)).not.toBeInTheDocument()
+      expect(await screen.findByLabelText(/Previous joke/i)).toHaveAttribute('aria-disabled', 'true')
       expect(await screen.findByLabelText(/Next joke/i)).toBeInTheDocument()
     })
   })
@@ -104,13 +108,13 @@ describe('Navigation component', () => {
       })
     })
 
-    it('removes next joke navigation button when no next jokes', async () => {
+    it('disables next joke navigation button when no next jokes', async () => {
       jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasNextJoke: false })
       render(<Navigation />)
 
       expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
       expect(await screen.findByLabelText(/Previous joke/i)).toBeVisible()
-      expect(screen.queryByLabelText(/Next joke/i)).not.toBeInTheDocument()
+      expect(await screen.findByLabelText(/Next joke/i)).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
@@ -127,13 +131,13 @@ describe('Navigation component', () => {
       })
     })
 
-    it('removes all navigation buttons when no joke', async () => {
+    it('disables all navigation buttons when no joke', async () => {
       jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, joke: undefined })
       render(<Navigation />)
 
-      expect(screen.queryByLabelText(/Random joke/i)).not.toBeInTheDocument()
-      expect(screen.queryByLabelText(/Previous joke/i)).not.toBeInTheDocument()
-      expect(screen.queryByLabelText(/Next joke/i)).not.toBeInTheDocument()
+      expect(await screen.findByLabelText(/Random joke/i)).toHaveAttribute('aria-disabled', 'true')
+      expect(await screen.findByLabelText(/Previous joke/i)).toHaveAttribute('aria-disabled', 'true')
+      expect(await screen.findByLabelText(/Next joke/i)).toHaveAttribute('aria-disabled', 'true')
     })
   })
 })

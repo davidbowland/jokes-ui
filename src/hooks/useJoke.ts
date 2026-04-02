@@ -10,6 +10,7 @@ const randomInt = (max: number): number => Math.floor(max * Math.random())
 
 export interface UseJokeResults {
   addJoke: (newJoke: JokeType) => Promise<number>
+  count: number | undefined
   errorMessage: string | undefined
   getTtsUrl: () => string
   hasNextJoke: boolean
@@ -164,6 +165,7 @@ export const useJoke = (initialIndex?: number, initialCount?: number): UseJokeRe
 
   return {
     addJoke,
+    count,
     errorMessage,
     getTtsUrl,
     hasNextJoke,

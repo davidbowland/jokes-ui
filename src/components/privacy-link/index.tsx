@@ -1,13 +1,13 @@
-import { Link } from 'gatsby'
+import Link from 'next/link'
 import React from 'react'
-
-import Typography from '@mui/material/Typography'
 
 const PrivacyLink = (): React.ReactNode => {
   return (
-    <Typography component="div" sx={{ textAlign: 'center' }} variant="caption">
-      <Link to="/privacy-policy">Privacy policy</Link>
-    </Typography>
+    <div className="text-center text-xs">
+      <Link className="text-muted transition-colors hover:text-cream" href="/privacy-policy">
+        Privacy policy
+      </Link>
+    </div>
   )
 }
 
