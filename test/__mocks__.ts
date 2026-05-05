@@ -1,35 +1,28 @@
 /* eslint-disable sort-keys */
 import { AmplifyUser } from '@aws-amplify/ui'
 
-import { DisplayedJoke, InitialResponse, JokeCount, JokeResponse, JokeType } from '@types'
+import { InitialResponse, JokeCount, JokeResponse, JokeType } from '@types'
 
-export const displayedJoke: DisplayedJoke = {
-  index: 42,
-  contents: 'LOL',
-}
-
-export const initialJoke = { contents: displayedJoke.contents }
-
-export const index = 42
+export const jokeId = 'rnws6g7r'
 
 export const jokeCount: JokeCount = {
   count: 128,
 }
 
-export const initialResponse: InitialResponse = {
-  ...jokeCount,
-  joke: { data: initialJoke, id: displayedJoke.index },
-}
-
-export const jokeResponse: JokeResponse[] = [
-  { data: { contents: displayedJoke.contents }, id: displayedJoke.index },
-  { data: { contents: 'ROFL' }, id: 33 },
-]
-
 export const jokeType: JokeType = {
   audio: { base64: 'yalp', contentType: 'text/plain' },
   contents: 'LAWLS',
 }
+
+export const initialResponse: InitialResponse = {
+  ...jokeCount,
+  joke: { data: { contents: 'LOL' }, id: jokeId },
+}
+
+export const jokeResponse: JokeResponse[] = [
+  { data: { contents: 'LOL' }, id: jokeId },
+  { data: { contents: 'ROFL' }, id: '5xspzm6z' },
+]
 
 export const user: AmplifyUser = {
   username: '178300fb-3ab6-41e2-bab6-231964026e42',

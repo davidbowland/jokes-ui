@@ -1,9 +1,9 @@
 import { Volume2 } from 'lucide-react'
 import React from 'react'
 
-export const JokeCounter = ({ count, index }: { count: number; index: number }): React.ReactNode => (
+export const JokeCounter = ({ count }: { count: number }): React.ReactNode => (
   <p className="text-center text-xs font-medium uppercase tracking-[0.25em] text-muted">
-    No.&nbsp;{index}&nbsp;of&nbsp;{count}
+    {count}&nbsp;{count === 1 ? 'joke' : 'jokes'}
   </p>
 )
 

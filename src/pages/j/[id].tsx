@@ -8,12 +8,12 @@ import Navigation from '@components/navigation'
 
 const JokePage = (): React.ReactNode => {
   const router = useRouter()
-  const [index, setIndex] = React.useState<number | undefined>(undefined)
+  const [id, setId] = React.useState<string | undefined>(undefined)
 
   React.useEffect(() => {
     const match = window.location.pathname.match(/\/j\/([^/]+)/)
     if (match) {
-      setIndex(parseInt(match[1], 10))
+      setId(match[1])
     }
   }, [router.asPath])
 
@@ -22,7 +22,7 @@ const JokePage = (): React.ReactNode => {
       <Head>
         <title>Humor | dbowland.com</title>
       </Head>
-      <JokePageLayout>{index === undefined ? null : <Navigation initialIndex={index} />}</JokePageLayout>
+      <JokePageLayout>{id === undefined ? null : <Navigation initialId={id} />}</JokePageLayout>
     </>
   )
 }
@@ -31,7 +31,7 @@ export const getStaticPaths: GetStaticPaths = () => {
   if (process.env.NODE_ENV === 'development') {
     return { fallback: 'blocking', paths: [] }
   }
-  return { fallback: false, paths: [{ params: { index: '__placeholder__' } }] }
+  return { fallback: false, paths: [{ params: { id: '__placeholder__' } }] }
 }
 
 export const getStaticProps: GetStaticProps = () => ({ props: {} })

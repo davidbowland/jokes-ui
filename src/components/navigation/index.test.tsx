@@ -1,4 +1,4 @@
-import { index, jokeType } from '@test/__mocks__'
+import { jokeId, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -6,138 +6,114 @@ import React from 'react'
 
 import Navigation from './index'
 import Joke from '@components/joke'
-import { useJoke } from '@hooks/useJoke'
+import { useJokeMutations } from '@hooks/useJokeMutations'
+import { useJokeNavigation } from '@hooks/useJokeNavigation'
+import { useJokeQuery } from '@hooks/useJokeQuery'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke')
-jest.mock('@hooks/useJoke')
+jest.mock('@hooks/useJokeMutations')
+jest.mock('@hooks/useJokeNavigation')
+jest.mock('@hooks/useJokeQuery')
 jest.mock('next/router', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
 }))
 
 describe('Navigation component', () => {
-  const mockAddJoke = jest.fn()
   const replaceState = jest.fn()
 
-  const mockUseJokeResult = {
-    addJoke: jest.fn(),
+  const mockNavigation = {
+    canGoBack: true,
     count: 100,
     errorMessage: undefined,
-    getTtsUrl: jest.fn(),
-    hasNextJoke: true,
-    hasPreviousJoke: true,
-    index,
-    joke: jokeType,
-    nextJoke: jest.fn(),
-    nextRandomJoke: jest.fn(),
-    previousJoke: jest.fn(),
+    goBack: jest.fn(),
+    goRandom: jest.fn(),
+    id: jokeId,
+    resetErrorMessage: jest.fn(),
+  }
+
+  const mockMutations = {
+    addJoke: jest.fn(),
+    errorMessage: undefined,
     resetErrorMessage: jest.fn(),
     updateJoke: jest.fn(),
   }
 
   beforeAll(() => {
-    const mockMath = Object.create(global.Math)
-    mockMath.random = jest.fn().mockReturnValue(0.5)
     console.error = jest.fn()
-    global.Math = mockMath
     window.history.replaceState = replaceState
 
-    jest.mocked(Joke).mockImplementation(({ addJoke }) => {
-      const index = mockAddJoke()
-      if (index !== undefined) {
-        addJoke(index)
-      }
-      return <>Joke</>
-    })
-    jest.mocked(useJoke).mockReturnValue(mockUseJokeResult)
-    mockAddJoke.mockResolvedValue(62)
+    jest.mocked(Joke).mockReturnValue(<>Joke</>)
+    jest.mocked(useJokeNavigation).mockReturnValue(mockNavigation)
+    jest.mocked(useJokeQuery).mockReturnValue({ error: null, joke: jokeType })
+    jest.mocked(useJokeMutations).mockReturnValue(mockMutations)
   })
 
   describe('rendering', () => {
-    it('shows all three navigation buttons when available', async () => {
+    it('shows back and random navigation buttons', async () => {
       render(<Navigation />)
 
       expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
-      expect(await screen.findByLabelText(/Previous joke/i)).toBeVisible()
-      expect(await screen.findByLabelText(/Next joke/i)).toBeVisible()
+      expect(await screen.findByLabelText(/Go back/i)).toBeVisible()
     })
 
-    it('renders Joke with joke from useJoke', async () => {
-      render(<Navigation initialCount={74} initialIndex={22} />)
+    it('renders Joke with joke from hooks', async () => {
+      render(<Navigation initialId={jokeId} />)
 
-      expect(useJoke).toHaveBeenCalledWith(22, 74)
-      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ index, joke: jokeType }), undefined)
+      expect(useJokeNavigation).toHaveBeenCalledWith(jokeId)
+      expect(Joke).toHaveBeenCalledWith(expect.objectContaining({ id: jokeId, joke: jokeType }), undefined)
     })
   })
 
-  describe('previous', () => {
-    it('changes the joke displayed when clicking the previous joke button', async () => {
+  describe('back', () => {
+    it('calls goBack when clicking the back button', async () => {
       const user = userEvent.setup()
       render(<Navigation />)
 
-      const previousJokeButton: HTMLButtonElement = (await screen.findByLabelText(
-        /Previous joke/i,
-      )) as HTMLButtonElement
-      await user.click(previousJokeButton)
+      const backButton: HTMLButtonElement = (await screen.findByLabelText(/Go back/i)) as HTMLButtonElement
+      await user.click(backButton)
 
       await waitFor(() => {
-        expect(mockUseJokeResult.previousJoke).toHaveBeenCalledTimes(1)
+        expect(mockNavigation.goBack).toHaveBeenCalledTimes(1)
       })
     })
 
-    it('disables previous joke navigation button when no previous jokes', async () => {
-      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasPreviousJoke: false })
+    it('disables back button when no history', async () => {
+      jest.mocked(useJokeNavigation).mockReturnValue({ ...mockNavigation, canGoBack: false })
       render(<Navigation />)
 
-      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
-      expect(await screen.findByLabelText(/Previous joke/i)).toHaveAttribute('aria-disabled', 'true')
-      expect(await screen.findByLabelText(/Next joke/i)).toBeInTheDocument()
-    })
-  })
-
-  describe('next', () => {
-    it('changes the joke displayed when clicking the next joke button', async () => {
-      const user = userEvent.setup()
-      render(<Navigation />)
-
-      const nextJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Next joke/i)) as HTMLButtonElement
-      await user.click(nextJokeButton)
-
-      await waitFor(() => {
-        expect(mockUseJokeResult.nextJoke).toHaveBeenCalledTimes(1)
-      })
-    })
-
-    it('disables next joke navigation button when no next jokes', async () => {
-      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, hasNextJoke: false })
-      render(<Navigation />)
-
-      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
-      expect(await screen.findByLabelText(/Previous joke/i)).toBeVisible()
-      expect(await screen.findByLabelText(/Next joke/i)).toHaveAttribute('aria-disabled', 'true')
+      expect(await screen.findByLabelText(/Go back/i)).toHaveAttribute('aria-disabled', 'true')
     })
   })
 
   describe('random', () => {
-    it('loads random joke when no index is passed', async () => {
+    it('calls goRandom when clicking the random button', async () => {
       const user = userEvent.setup()
       render(<Navigation />)
 
-      const randomJokeButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
-      await user.click(randomJokeButton)
+      const randomButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
+      await user.click(randomButton)
 
       await waitFor(() => {
-        expect(mockUseJokeResult.nextRandomJoke).toHaveBeenCalledTimes(1)
+        expect(mockNavigation.goRandom).toHaveBeenCalledTimes(1)
       })
     })
 
-    it('disables all navigation buttons when no joke', async () => {
-      jest.mocked(useJoke).mockReturnValue({ ...mockUseJokeResult, joke: undefined })
+    it('disables random button when no joke loaded', async () => {
+      jest.mocked(useJokeQuery).mockReturnValue({ error: null, joke: undefined })
       render(<Navigation />)
 
       expect(await screen.findByLabelText(/Random joke/i)).toHaveAttribute('aria-disabled', 'true')
-      expect(await screen.findByLabelText(/Previous joke/i)).toHaveAttribute('aria-disabled', 'true')
-      expect(await screen.findByLabelText(/Next joke/i)).toHaveAttribute('aria-disabled', 'true')
+    })
+  })
+
+  describe('URL update', () => {
+    it('updates the URL when id changes', async () => {
+      render(<Navigation />)
+
+      await waitFor(() => {
+        expect(replaceState).toHaveBeenCalledWith(null, '', `/j/${jokeId}`)
+      })
     })
   })
 })

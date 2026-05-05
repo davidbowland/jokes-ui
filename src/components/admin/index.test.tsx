@@ -1,4 +1,4 @@
-import { index, jokeType, user } from '@test/__mocks__'
+import { jokeId, jokeType, user } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -29,21 +29,23 @@ describe('Admin component', () => {
 
   it('shows nothing to logged out users', async () => {
     jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValueOnce(undefined)
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(screen.queryByText(/joke/i)).not.toBeInTheDocument()
   })
 
   it('shows the edit joke feature to logged in users', async () => {
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(await screen.findByText(/Update joke/i, { selector: 'button' })).toBeInTheDocument()
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke ${jokeId}`, 'i'),
+    )) as HTMLInputElement
     expect(updateTextInput.value.length).toBeGreaterThan(0)
   })
 
   it('navigates to the add screen when "Add joke" is clicked', async () => {
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addTab = await screen.findByRole('tab', { name: /Add joke/i })
     await userEvent.click(addTab)
@@ -57,8 +59,8 @@ describe('Admin component', () => {
   })
 
   it('invokes joke service when "Add joke" is clicked', async () => {
-    mockAddJoke.mockResolvedValueOnce(17)
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    mockAddJoke.mockResolvedValueOnce('abc123')
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addTab = await screen.findByRole('tab', { name: /Add joke/i })
     await userEvent.click(addTab)
@@ -75,12 +77,12 @@ describe('Admin component', () => {
       expect(mockAddJoke).toHaveBeenCalled()
     })
     expect(mockAddJoke).toHaveBeenCalledWith({ contents: jokeType.contents })
-    expect(await screen.findByText('Created joke #17')).toBeInTheDocument()
+    expect(await screen.findByText('Created joke abc123')).toBeInTheDocument()
   })
 
   it('displays an error message when there is a failure adding a joke', async () => {
     mockAddJoke.mockRejectedValueOnce({ response: 'fnord' })
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addTab = await screen.findByRole('tab', { name: /Add joke/i })
     await userEvent.click(addTab)
@@ -98,9 +100,11 @@ describe('Admin component', () => {
 
   it('edits the current joke and invokes the joke service', async () => {
     const expectedJoke = 'fnord'
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke ${jokeId}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.clear(updateTextInput)
     await userEvent.type(updateTextInput, expectedJoke)
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
@@ -116,9 +120,11 @@ describe('Admin component', () => {
   it("doesn't affect audio when editing a joke with no local audio", async () => {
     const expectedJoke = 'fnord'
     const noAudioJoke = { ...jokeType, audio: undefined }
-    render(<Admin addJoke={mockAddJoke} index={index} joke={noAudioJoke} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={noAudioJoke} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke ${jokeId}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.clear(updateTextInput)
     await userEvent.type(updateTextInput, expectedJoke)
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
@@ -133,9 +139,11 @@ describe('Admin component', () => {
 
   it('displays an error message when there is a failure editing the joke', async () => {
     mockUpdateJoke.mockRejectedValueOnce({ response: 'fnord' })
-    render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
+    render(<Admin addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke ${jokeId}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.type(updateTextInput, 'funny joke')
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
       selector: 'button',

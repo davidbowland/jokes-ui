@@ -1,5 +1,4 @@
-import JokePage from '@pages/j/[index]'
-import { index } from '@test/__mocks__'
+import JokePage from '@pages/j/[id]'
 import '@testing-library/jest-dom'
 import { render, waitFor } from '@testing-library/react'
 import React from 'react'
@@ -7,11 +6,13 @@ import React from 'react'
 import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
 
+const testId = 'rnws6g7r'
+
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke-page-layout')
 jest.mock('@components/navigation')
 jest.mock('next/router', () => ({
-  useRouter: jest.fn().mockReturnValue({ asPath: '/j/42' }),
+  useRouter: jest.fn().mockReturnValue({ asPath: '/j/rnws6g7r' }),
 }))
 
 describe('Joke page', () => {
@@ -20,14 +21,14 @@ describe('Joke page', () => {
     jest.mocked(Navigation).mockReturnValue(<>Navigation</>)
     Object.defineProperty(window, 'location', {
       configurable: true,
-      value: { pathname: `/j/${index}` },
+      value: { pathname: `/j/${testId}` },
     })
   })
 
-  it('renders Navigation with correct index', async () => {
+  it('renders Navigation with correct id', async () => {
     render(<JokePage />)
     await waitFor(() => {
-      expect(Navigation).toHaveBeenCalledWith({ initialIndex: index }, undefined)
+      expect(Navigation).toHaveBeenCalledWith({ initialId: testId }, undefined)
     })
     expect(Navigation).toHaveBeenCalledTimes(1)
   })

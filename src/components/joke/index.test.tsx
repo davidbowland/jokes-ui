@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { index, jokeType } from '@test/__mocks__'
+import { jokeId, jokeType } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -27,7 +27,6 @@ const Wrapper = ({ children }: { children: React.ReactNode | React.ReactNode[] }
 
 describe('Joke component', () => {
   const mockAddJoke = jest.fn()
-  const mockGetTtsUrl = jest.fn()
   const mockUpdateJoke = jest.fn()
 
   beforeAll(() => {
@@ -40,43 +39,28 @@ describe('Joke component', () => {
 
       const setJokeArgs = mockUpdateJoke()
       if (setJokeArgs !== undefined) {
-        const { joke, index } = setJokeArgs
-        updateJoke(joke, index)
+        const { joke } = setJokeArgs
+        updateJoke(joke)
       }
       return <>Admin</>
     })
-    mockGetTtsUrl.mockReturnValue(`${baseUrl}/jokes/${index}/tts`)
 
     console.error = jest.fn()
   })
 
   describe('joke display', () => {
     it('does not render joke when it is undefined', async () => {
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={undefined}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={undefined} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       expect(screen.queryByText(jokeType.contents)).not.toBeInTheDocument()
     })
 
     it('renders joke', async () => {
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       expect(await screen.findByText(jokeType.contents)).toBeInTheDocument()
     })
@@ -99,40 +83,43 @@ describe('Joke component', () => {
 
     it('fetches the joke tts when clicking the text-to-speech button', async () => {
       const user = userEvent.setup()
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       await screen.findByText(jokeType.contents)
       const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
       await user.click(ttsButton)
 
       await waitFor(() => {
-        expect(mockGetTtsUrl).toHaveBeenCalledWith(index)
+        expect(global.Audio).toHaveBeenCalledWith(
+          `data:${jokeType.audio!.contentType};base64,${jokeType.audio!.base64}`,
+        )
       })
-      expect(global.Audio).toHaveBeenCalledWith(`${baseUrl}/jokes/${index}/tts`)
       expect(await screen.findByText('Fetching audio')).toBeInTheDocument()
+    })
+
+    it('uses API URL when no audio data is embedded', async () => {
+      const jokeWithoutAudio = { contents: 'No audio joke' }
+      const user = userEvent.setup()
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeWithoutAudio} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
+
+      await screen.findByText(jokeWithoutAudio.contents)
+      const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
+      await user.click(ttsButton)
+
+      await waitFor(() => {
+        expect(global.Audio).toHaveBeenCalledWith(`${baseUrl}/jokes/${jokeId}/tts`)
+      })
     })
 
     it('plays the tts when clicking the text-to-speech button', async () => {
       const user = userEvent.setup()
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       await screen.findByText(jokeType.contents)
       const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
@@ -154,16 +141,9 @@ describe('Joke component', () => {
       mockAddEventListener.mockImplementationOnce(endedEventCallback)
       mockAddEventListener.mockImplementationOnce(endedEventCallback)
       mockAddEventListener.mockImplementationOnce(endedEventCallback)
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       await screen.findByText(jokeType.contents)
       const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
@@ -190,16 +170,9 @@ describe('Joke component', () => {
       mockAddEventListener.mockImplementationOnce(errorEventCallback)
       mockAddEventListener.mockImplementationOnce(errorEventCallback)
       mockAddEventListener.mockImplementationOnce(errorEventCallback)
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       await screen.findByText(jokeType.contents)
       const ttsButton: HTMLButtonElement = (await screen.findByLabelText(/Text-to-speech/i)) as HTMLButtonElement
@@ -218,33 +191,19 @@ describe('Joke component', () => {
   })
 
   describe('Admin', () => {
-    it('does not render Admin when index is missing', async () => {
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={undefined}
-          joke={jokeType}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+    it('does not render Admin when id is missing', async () => {
+      render(<Joke addJoke={mockAddJoke} id={undefined} joke={jokeType} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       await screen.findByText(jokeType.contents)
       expect(Admin).not.toHaveBeenCalled()
     })
 
     it('does not render Admin when joke is missing', async () => {
-      render(
-        <Joke
-          addJoke={mockAddJoke}
-          getTtsUrl={mockGetTtsUrl}
-          index={index}
-          joke={undefined}
-          updateJoke={mockUpdateJoke}
-        />,
-        { wrapper: Wrapper },
-      )
+      render(<Joke addJoke={mockAddJoke} id={jokeId} joke={undefined} updateJoke={mockUpdateJoke} />, {
+        wrapper: Wrapper,
+      })
 
       expect(Admin).not.toHaveBeenCalled()
     })

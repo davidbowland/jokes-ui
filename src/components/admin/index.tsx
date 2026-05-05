@@ -7,13 +7,13 @@ import SignedIn from './signed-in'
 import { JokeType } from '@types'
 
 export interface AdminProps {
-  addJoke: (newJoke: JokeType) => Promise<number>
-  index: number
+  addJoke: (newJoke: JokeType) => Promise<string>
+  id: string
   joke: JokeType
-  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
+  updateJoke: (joke: JokeType) => Promise<void>
 }
 
-const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNode => {
+const Admin = ({ addJoke, id, joke, updateJoke }: AdminProps): React.ReactNode => {
   const [isAdminVisible, setIsAdminVisible] = useState(false)
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNod
       <>
         <Separator />
         <section className="site-administration">
-          <SignedIn addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />
+          <SignedIn addJoke={addJoke} id={id} joke={joke} updateJoke={updateJoke} />
         </section>
       </>
     )

@@ -14,10 +14,10 @@ enum AdminView {
 }
 
 export interface SignedInProps {
-  addJoke: (newJoke: JokeType) => Promise<number>
-  index: number
+  addJoke: (newJoke: JokeType) => Promise<string>
+  id: string
   joke: JokeType
-  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
+  updateJoke: (joke: JokeType) => Promise<void>
 }
 
 const ADMIN_TABS = [
@@ -25,7 +25,7 @@ const ADMIN_TABS = [
   { label: 'Add joke', value: AdminView.ADD_JOKE },
 ]
 
-const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.ReactNode => {
+const SignedIn = ({ addJoke, id, joke, updateJoke }: SignedInProps): React.ReactNode => {
   const [editJoke, setEditJoke] = useState(joke.contents)
 
   const [adminView, setAdminView] = useState<string>(AdminView.EDIT_JOKE)
@@ -36,8 +36,8 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
   const handleAddJoke = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      const newIndex = await addJoke({ contents: addJokeText })
-      setAdminNotice({ severity: 'success', text: `Created joke #${newIndex}` })
+      const newId = await addJoke({ contents: addJokeText })
+      setAdminNotice({ severity: 'success', text: `Created joke ${newId}` })
     } catch (error) {
       setAdminNotice({ severity: 'error', text: (error as any).response })
     } finally {
@@ -73,7 +73,7 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
       <TabPanel activeTab={adminView} value={AdminView.EDIT_JOKE}>
         <JokeCard buttonLabel="Update joke" onSubmit={handleUpdateJoke}>
           <label>
-            <span className="mb-1 block text-sm font-medium">{`Joke #${index}`}</span>
+            <span className="mb-1 block text-sm font-medium">{`Joke ${id}`}</span>
             <input
               className="w-full rounded-lg border border-coal bg-surface px-3 py-2 text-cream placeholder-muted focus:border-gold/60 focus:outline-none"
               name="update-joke-text"

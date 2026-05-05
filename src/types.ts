@@ -1,4 +1,4 @@
-export type { RemoveOperation } from 'fast-json-patch'
+export type { Operation as PatchOperation } from 'fast-json-patch'
 
 export interface JokeAudio {
   base64: string
@@ -6,28 +6,25 @@ export interface JokeAudio {
   version?: string
 }
 
-export interface JokeCount {
-  count: number
-}
-
 export interface JokeType {
   audio?: JokeAudio
   contents: string
 }
 
-export interface DisplayedJoke extends JokeType {
-  index: number
+export interface JokeCount {
+  count: number
+}
+
+export interface JokeResponse {
+  data: JokeType
+  id: string
 }
 
 export interface InitialResponse extends JokeCount {
   joke: JokeResponse
 }
 
-export interface JokeResponse {
-  data: JokeType
-  id: number
-}
-
 export interface PostResponse {
-  index: number
+  contents: string
+  index: string
 }

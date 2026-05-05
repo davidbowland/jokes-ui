@@ -138,7 +138,7 @@ Resources:
           var uri = request.uri;
 
           if (/^\/j\/[^\/]+(\/)?$/.test(uri)) {
-            request.uri = '/j/[index]/index.html';
+            request.uri = '/j/[id]/index.html';
             return request;
           }
 

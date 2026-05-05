@@ -11,8 +11,8 @@ jest.mock('aws-amplify')
 
 describe('Joke service', () => {
   const randomJokeResult: JokeResponse[] = [
-    { data: { contents: 'rofl' }, id: 3 },
-    { data: { contents: 'lol' }, id: 74 },
+    { data: { contents: 'rofl' }, id: 'abc123' },
+    { data: { contents: 'lol' }, id: 'def456' },
   ]
 
   beforeAll(() => {
@@ -34,19 +34,14 @@ describe('Joke service', () => {
 
   describe('getJoke', () => {
     beforeAll(() => {
-      jest.mocked(API).get.mockImplementation(async (_, path) => {
-        return randomJokeResult[parseInt(path.split('/').pop() as string, 10)]
-      })
+      jest.mocked(API).get.mockResolvedValue(randomJokeResult[0].data)
     })
 
-    it.each(Object.keys(randomJokeResult) as unknown as number[])(
-      'returns joke from jokes endpoint',
-      async (expectedId: number) => {
-        const result = await getJoke(expectedId)
-        expect(result).toEqual(randomJokeResult[expectedId])
-        expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', `/jokes/${expectedId}`, {})
-      },
-    )
+    it('returns joke from jokes endpoint', async () => {
+      const result = await getJoke('abc123')
+      expect(result).toEqual(randomJokeResult[0].data)
+      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/abc123', {})
+    })
   })
 
   describe('getJokeCount', () => {
@@ -106,7 +101,7 @@ describe('Joke service', () => {
 
   describe('patchJoke', () => {
     const patchEndpoint = jest.fn()
-    const index = Object.keys(randomJokeResult)[0] as unknown as number
+    const jokeId = 'abc123'
     const operation = [
       {
         op: 'add',
@@ -119,10 +114,10 @@ describe('Joke service', () => {
       jest.mocked(API).patch.mockImplementation(patchEndpoint)
     })
 
-    it('invokes the patch enpoint with index and patch operation', async () => {
-      await patchJoke(index, operation)
+    it('invokes the patch endpoint with id and patch operation', async () => {
+      await patchJoke(jokeId, operation)
       expect(patchEndpoint).toHaveBeenCalledTimes(1)
-      expect(API.patch).toHaveBeenCalledWith('JokesAPIGateway', `/jokes/${index}`, {
+      expect(API.patch).toHaveBeenCalledWith('JokesAPIGateway', `/jokes/${jokeId}`, {
         body: operation,
       })
     })

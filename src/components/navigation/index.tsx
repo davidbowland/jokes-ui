@@ -1,60 +1,57 @@
-import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react'
-import React, { useEffect } from 'react'
+import { ChevronLeft, Shuffle } from 'lucide-react'
+import React, { useCallback, useEffect } from 'react'
 
 import { ErrorToast, NavButtonRow, NavIconButton, NavigationContainer } from './elements'
 import Joke from '@components/joke'
-import { useJoke } from '@hooks/useJoke'
+import { useJokeMutations } from '@hooks/useJokeMutations'
+import { useJokeNavigation } from '@hooks/useJokeNavigation'
+import { useJokeQuery } from '@hooks/useJokeQuery'
 
 export interface NavigationProps {
-  initialCount?: number
-  initialIndex?: number
+  initialId?: string
 }
 
-const Navigation = ({ initialCount, initialIndex }: NavigationProps): React.ReactNode => {
+const Navigation = ({ initialId }: NavigationProps): React.ReactNode => {
+  const {
+    canGoBack,
+    count,
+    errorMessage: navError,
+    goBack,
+    goRandom,
+    id,
+    resetErrorMessage: resetNavError,
+  } = useJokeNavigation(initialId)
+  const { error: queryError, joke } = useJokeQuery(id)
   const {
     addJoke,
-    count,
-    errorMessage,
-    getTtsUrl,
-    hasNextJoke,
-    hasPreviousJoke,
-    index,
-    joke,
-    nextJoke,
-    nextRandomJoke,
-    previousJoke,
-    resetErrorMessage,
+    errorMessage: mutationError,
+    resetErrorMessage: resetMutationError,
     updateJoke,
-  } = useJoke(initialIndex, initialCount)
+  } = useJokeMutations(id)
+
+  const errorMessage =
+    navError ?? mutationError ?? (queryError ? 'Error fetching joke. Please reload to try again.' : undefined)
+  const resetErrorMessage = useCallback(() => {
+    resetNavError()
+    resetMutationError()
+  }, [resetNavError, resetMutationError])
 
   useEffect(() => {
-    if (index) {
-      window.history.replaceState(null, '', `/j/${index}`)
+    if (id) {
+      window.history.replaceState(null, '', `/j/${id}`)
     }
-  }, [index])
+  }, [id])
 
   return (
     <NavigationContainer>
-      <Joke
-        addJoke={addJoke}
-        count={count}
-        getTtsUrl={getTtsUrl}
-        index={index}
-        joke={joke}
-        key={index}
-        updateJoke={updateJoke}
-      />
+      <Joke addJoke={addJoke} count={count} id={id} joke={joke} updateJoke={updateJoke} />
       <NavButtonRow>
-        <NavIconButton aria-label="Previous joke" disabled={!joke || !hasPreviousJoke} onClick={previousJoke}>
+        <NavIconButton aria-label="Go back" disabled={!joke || !canGoBack} onClick={goBack}>
           <ChevronLeft size={18} />
-          <span className="text-sm">Prev</span>
+          <span className="text-sm">Back</span>
         </NavIconButton>
-        <NavIconButton aria-label="Random joke" disabled={!joke} onClick={nextRandomJoke} variant="random">
+        <NavIconButton aria-label="Random joke" disabled={!joke} onClick={goRandom} variant="random">
           <Shuffle size={18} />
-        </NavIconButton>
-        <NavIconButton aria-label="Next joke" disabled={!joke || !hasNextJoke} onClick={nextJoke}>
-          <span className="text-sm">Next</span>
-          <ChevronRight size={18} />
         </NavIconButton>
       </NavButtonRow>
       <ErrorToast onClose={resetErrorMessage} open={errorMessage !== undefined}>
