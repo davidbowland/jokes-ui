@@ -1,13 +1,9 @@
 /* eslint-disable sort-keys */
 import { AmplifyUser } from '@aws-amplify/ui'
 
-import { InitialResponse, JokeCount, JokeResponse, JokeType } from '@types'
+import { InitialResponse, JokeResponse, JokeType } from '@types'
 
 export const jokeId = 'rnws6g7r'
-
-export const jokeCount: JokeCount = {
-  count: 128,
-}
 
 export const jokeType: JokeType = {
   audio: { base64: 'yalp', contentType: 'text/plain' },
@@ -15,7 +11,6 @@ export const jokeType: JokeType = {
 }
 
 export const initialResponse: InitialResponse = {
-  ...jokeCount,
   joke: { data: { contents: 'LOL' }, id: jokeId },
 }
 

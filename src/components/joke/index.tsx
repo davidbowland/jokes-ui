@@ -1,19 +1,18 @@
 import React, { useState } from 'react'
 
-import { JokeCounter, JokeSkeleton, JokeTitle, TtsButton } from './elements'
+import { JokeSkeleton, JokeTitle, TtsButton } from './elements'
 import Admin from '@components/admin'
 import { baseUrl } from '@config/amplify'
 import { JokeType } from '@types'
 
 export interface JokeProps {
   addJoke: (newJoke: JokeType) => Promise<string>
-  count?: number
   id?: string
   joke?: JokeType
   updateJoke: (joke: JokeType) => Promise<void>
 }
 
-const Joke = ({ addJoke, count, id, joke, updateJoke }: JokeProps): React.ReactNode => {
+const Joke = ({ addJoke, id, joke, updateJoke }: JokeProps): React.ReactNode => {
   const [isAudioLoading, setIsAudioLoading] = useState(false)
 
   const ttsClick = async (jokeId: string): Promise<void> => {
@@ -36,7 +35,6 @@ const Joke = ({ addJoke, count, id, joke, updateJoke }: JokeProps): React.ReactN
 
   return (
     <>
-      <div className="mb-6 h-4">{count ? <JokeCounter count={count} /> : null}</div>
       <JokeTitle key={joke ? 'loaded' : 'loading'}>{joke?.contents ?? <JokeSkeleton />}</JokeTitle>
       <div className="flex justify-center py-8">
         <TtsButton

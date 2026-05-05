@@ -1,12 +1,6 @@
 import { Volume2 } from 'lucide-react'
 import React from 'react'
 
-export const JokeCounter = ({ count }: { count: number }): React.ReactNode => (
-  <p className="text-center text-xs font-medium uppercase tracking-[0.25em] text-muted">
-    {count}&nbsp;{count === 1 ? 'joke' : 'jokes'}
-  </p>
-)
-
 export const JokeTitle = ({ children }: { children: React.ReactNode }): React.ReactNode => (
   <h2 className="joke-enter min-h-[9rem] text-center font-display text-3xl font-normal leading-relaxed text-cream sm:text-4xl md:text-5xl md:leading-[1.35]">
     {children}

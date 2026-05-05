@@ -18,7 +18,6 @@ const Wrapper = ({ children }: { children: ReactNode | ReactNode[] }) => {
 describe('useJokeNavigation', () => {
   beforeAll(() => {
     jest.mocked(jokes).getInitialData.mockResolvedValue(initialResponse)
-    jest.mocked(jokes).getJokeCount.mockResolvedValue({ count: 128 })
     jest.mocked(jokes).getRandomJokes.mockResolvedValue(jokeResponse)
     console.error = jest.fn()
   })
@@ -28,13 +27,11 @@ describe('useJokeNavigation', () => {
       const { result } = renderHook(() => useJokeNavigation(), { wrapper: Wrapper })
 
       await waitFor(() => expect(result.current.id).toEqual(initialResponse.joke.id))
-      expect(result.current.count).toEqual(initialResponse.count)
     })
 
-    it('fetches only count when initialId is provided', async () => {
+    it('uses initialId directly when provided', async () => {
       const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
 
-      await waitFor(() => expect(result.current.count).toEqual(128))
       expect(result.current.id).toEqual(jokeId)
     })
 
@@ -44,20 +41,12 @@ describe('useJokeNavigation', () => {
 
       await waitFor(() => expect(result.current.errorMessage).toContain('Error fetching initial data'))
     })
-
-    it('sets error when joke count fetch fails', async () => {
-      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(new Error('fail'))
-      const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
-
-      await waitFor(() => expect(result.current.errorMessage).toContain('Error fetching joke count'))
-    })
   })
 
   describe('goRandom', () => {
     it('navigates to a random joke from the buffer', async () => {
       const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
 
-      // Wait for buffer to fill
       await waitFor(() => expect(jokes.getRandomJokes).toHaveBeenCalled())
 
       act(() => {
@@ -93,7 +82,6 @@ describe('useJokeNavigation', () => {
     })
 
     it('does not double-refill when already refilling', async () => {
-      // Make refill slow so we can trigger it twice
       let resolveRefill: (value: typeof jokeResponse) => void
       jest.mocked(jokes).getRandomJokes.mockImplementationOnce(
         () =>
@@ -103,15 +91,12 @@ describe('useJokeNavigation', () => {
       )
       const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
 
-      // First refill is in progress (triggered by useEffect)
-      // Try goRandom while buffer is empty — should show error, not crash
       act(() => {
         result.current.goRandom()
       })
 
       expect(result.current.errorMessage).toContain('Loading jokes')
 
-      // Resolve the pending refill
       await act(async () => {
         resolveRefill!(jokeResponse)
       })
@@ -124,13 +109,11 @@ describe('useJokeNavigation', () => {
 
       await waitFor(() => expect(jokes.getRandomJokes).toHaveBeenCalled())
 
-      // Navigate forward
       act(() => {
         result.current.goRandom()
       })
       expect(result.current.id).toEqual(jokeResponse[0].id)
 
-      // Navigate back
       act(() => {
         result.current.goBack()
       })
@@ -140,8 +123,6 @@ describe('useJokeNavigation', () => {
 
     it('does nothing when history is empty', async () => {
       const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
-
-      await waitFor(() => expect(jokes.getJokeCount).toHaveBeenCalled())
 
       act(() => {
         result.current.goBack()
@@ -153,8 +134,8 @@ describe('useJokeNavigation', () => {
 
   describe('resetErrorMessage', () => {
     it('clears the error message', async () => {
-      jest.mocked(jokes).getJokeCount.mockRejectedValueOnce(new Error('fail'))
-      const { result } = renderHook(() => useJokeNavigation(jokeId), { wrapper: Wrapper })
+      jest.mocked(jokes).getInitialData.mockRejectedValueOnce(new Error('fail'))
+      const { result } = renderHook(() => useJokeNavigation(), { wrapper: Wrapper })
 
       await waitFor(() => expect(result.current.errorMessage).toBeDefined())
 

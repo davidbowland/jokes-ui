@@ -24,7 +24,6 @@ describe('Navigation component', () => {
 
   const mockNavigation = {
     canGoBack: true,
-    count: 100,
     errorMessage: undefined,
     goBack: jest.fn(),
     goRandom: jest.fn(),

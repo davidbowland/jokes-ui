@@ -11,16 +11,12 @@ export interface JokeType {
   contents: string
 }
 
-export interface JokeCount {
-  count: number
-}
-
 export interface JokeResponse {
   data: JokeType
   id: string
 }
 
-export interface InitialResponse extends JokeCount {
+export interface InitialResponse {
   joke: JokeResponse
 }
 

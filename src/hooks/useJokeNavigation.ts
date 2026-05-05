@@ -1,14 +1,13 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { getInitialData, getJokeCount, getRandomJokes } from '@services/jokes'
+import { getInitialData, getRandomJokes } from '@services/jokes'
 import { JokeResponse, JokeType } from '@types'
 
 const BUFFER_REFILL_THRESHOLD = 2
 
 export interface UseJokeNavigationResult {
   canGoBack: boolean
-  count: number | undefined
   errorMessage: string | undefined
   goBack: () => void
   goRandom: () => void
@@ -18,7 +17,6 @@ export interface UseJokeNavigationResult {
 
 export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult => {
   const [id, setId] = useState<string | undefined>(initialId)
-  const [count, setCount] = useState<number | undefined>()
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
 
   // History of visited joke IDs for "back" navigation
@@ -85,21 +83,11 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
     setErrorMessage(undefined)
   }, [])
 
-  // Initial load
+  // Landing page: fetch a random joke to start with
   useEffect(() => {
-    if (initialId) {
-      // We have an ID from the URL — just fetch the count
-      getJokeCount()
-        .then((response) => setCount(response.count))
-        .catch((error) => {
-          console.error('Error fetching joke count', { error })
-          setErrorMessage('Error fetching joke count. Please reload to try again.')
-        })
-    } else {
-      // Landing page — get a random joke + count in one call
+    if (!initialId) {
       getInitialData()
         .then((response) => {
-          setCount(response.count)
           setId(response.joke.id)
           client.setQueryData<JokeType>(['joke', response.joke.id], response.joke.data)
         })
@@ -119,7 +107,6 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
 
   return {
     canGoBack: history.length > 0,
-    count,
     errorMessage,
     goBack,
     goRandom,

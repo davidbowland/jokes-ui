@@ -14,7 +14,6 @@ export interface NavigationProps {
 const Navigation = ({ initialId }: NavigationProps): React.ReactNode => {
   const {
     canGoBack,
-    count,
     errorMessage: navError,
     goBack,
     goRandom,
@@ -44,7 +43,7 @@ const Navigation = ({ initialId }: NavigationProps): React.ReactNode => {
 
   return (
     <NavigationContainer>
-      <Joke addJoke={addJoke} count={count} id={id} joke={joke} updateJoke={updateJoke} />
+      <Joke addJoke={addJoke} id={id} joke={joke} updateJoke={updateJoke} />
       <NavButtonRow>
         <NavIconButton aria-label="Go back" disabled={!joke || !canGoBack} onClick={goBack}>
           <ChevronLeft size={18} />
