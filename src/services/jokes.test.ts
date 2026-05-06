@@ -1,9 +1,8 @@
-import { initialResponse } from '@test/__mocks__'
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { API, Auth } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
-import { getInitialData, getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
+import { getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
@@ -18,18 +17,6 @@ describe('Joke service', () => {
   beforeAll(() => {
     const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession
     jest.mocked(Auth).currentSession.mockResolvedValue(userSession)
-  })
-
-  describe('getInitialData', () => {
-    beforeAll(() => {
-      jest.mocked(API).get.mockResolvedValue(initialResponse)
-    })
-
-    it('returns results from initial endpoint', async () => {
-      const result = await getInitialData()
-      expect(result).toEqual(initialResponse)
-      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/initial', {})
-    })
   })
 
   describe('getJoke', () => {

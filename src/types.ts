@@ -16,10 +16,6 @@ export interface JokeResponse {
   id: string
 }
 
-export interface InitialResponse {
-  joke: JokeResponse
-}
-
 export interface PostResponse {
   contents: string
   index: string

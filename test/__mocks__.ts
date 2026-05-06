@@ -1,17 +1,13 @@
 /* eslint-disable sort-keys */
 import { AmplifyUser } from '@aws-amplify/ui'
 
-import { InitialResponse, JokeResponse, JokeType } from '@types'
+import { JokeResponse, JokeType } from '@types'
 
 export const jokeId = 'rnws6g7r'
 
 export const jokeType: JokeType = {
   audio: { base64: 'yalp', contentType: 'text/plain' },
   contents: 'LAWLS',
-}
-
-export const initialResponse: InitialResponse = {
-  joke: { data: { contents: 'LOL' }, id: jokeId },
 }
 
 export const jokeResponse: JokeResponse[] = [

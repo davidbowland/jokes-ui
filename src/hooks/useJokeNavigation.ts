@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { getInitialData, getRandomJokes } from '@services/jokes'
+import { getRandomJokes } from '@services/jokes'
 import { JokeResponse, JokeType } from '@types'
 
 const BUFFER_REFILL_THRESHOLD = 2
@@ -83,27 +83,30 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
     setErrorMessage(undefined)
   }, [])
 
-  // Landing page: fetch a random joke to start with
+  // On mount: fill the buffer. If no initialId, pop the first joke as the current one.
   useEffect(() => {
-    if (!initialId) {
-      getInitialData()
-        .then((response) => {
-          setId(response.joke.id)
-          client.setQueryData<JokeType>(['joke', response.joke.id], response.joke.data)
-        })
-        .catch((error) => {
-          console.error('Error fetching initial data', { error })
-          setErrorMessage('Error fetching initial data. Please reload to try again.')
-        })
-    }
-  }, [])
+    const init = async () => {
+      isRefilling.current = true
+      try {
+        const jokes = await getRandomJokes(initialId ? [initialId] : [])
+        jokes.forEach((j) => client.setQueryData<JokeType>(['joke', j.id], j.data))
 
-  // Fill the buffer once we have an ID (initial load complete)
-  useEffect(() => {
-    if (id && bufferRef.current.length === 0) {
-      refillBuffer()
+        if (!initialId && jokes.length > 0) {
+          // Landing page — use the first random joke as the initial display
+          setId(jokes[0].id)
+          bufferRef.current = jokes.slice(1)
+        } else {
+          bufferRef.current = jokes
+        }
+      } catch (error) {
+        console.error('Error fetching jokes', { error })
+        setErrorMessage('Error loading jokes. Please reload to try again.')
+      } finally {
+        isRefilling.current = false
+      }
     }
-  }, [id])
+    init()
+  }, [])
 
   return {
     canGoBack: history.length > 0,
