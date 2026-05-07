@@ -1,47 +1,51 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getRandomJokes } from '@services/jokes'
 import { JokeResponse, JokeType } from '@types'
 
 const BUFFER_REFILL_THRESHOLD = 2
+const MAX_TIMELINE_LENGTH = 50
 
 export interface UseJokeNavigationResult {
   canGoBack: boolean
+  canGoForward: boolean
   errorMessage: string | undefined
   goBack: () => void
+  goForward: () => void
   goRandom: () => void
   id: string | undefined
   resetErrorMessage: () => void
 }
 
 export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult => {
-  const [id, setId] = useState<string | undefined>(initialId)
+  // Timeline of visited joke IDs — single source of truth for navigation state
+  const [timeline, setTimeline] = useState<string[]>(initialId ? [initialId] : [])
+  const [cursor, setCursor] = useState(initialId ? 0 : -1)
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
-
-  // History of visited joke IDs for "back" navigation
-  const [history, setHistory] = useState<string[]>([])
 
   // Pre-fetched jokes ready for instant "random" navigation
   const bufferRef = useRef<JokeResponse[]>([])
   const isRefilling = useRef(false)
 
   // Ref tracks current values so callbacks stay stable across renders
-  const stateRef = useRef({ history, id })
-  stateRef.current = { history, id }
+  const stateRef = useRef({ cursor, timeline })
+  stateRef.current = { cursor, timeline }
 
   const client = useQueryClient()
+
+  const id = useMemo(() => (cursor >= 0 && cursor < timeline.length ? timeline[cursor] : undefined), [cursor, timeline])
+  const canGoBack = cursor > 0
+  const canGoForward = cursor < timeline.length - 1
 
   const refillBuffer = useCallback(async () => {
     if (isRefilling.current) return
     isRefilling.current = true
     try {
-      const { history: h, id: currentId } = stateRef.current
-      const avoid = [...h, ...bufferRef.current.map((j) => j.id)]
-      if (currentId) avoid.push(currentId)
+      const { timeline: t } = stateRef.current
+      const avoid = [...t, ...bufferRef.current.map((j) => j.id)]
 
       const jokes = await getRandomJokes(avoid)
-      // Pre-populate React Query cache so navigation is instant
       jokes.forEach((j) => client.setQueryData<JokeType>(['joke', j.id], j.data))
       bufferRef.current = [...bufferRef.current, ...jokes]
     } catch (error) {
@@ -58,13 +62,13 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
       return
     }
 
-    const { id: currentId } = stateRef.current
-    if (currentId) {
-      setHistory((prev) => [...prev, currentId].slice(-20))
-    }
-
+    const { cursor: c, timeline: t } = stateRef.current
     const next = bufferRef.current.shift()!
-    setId(next.id)
+
+    // Truncate forward history (browser-style) and append new joke
+    const kept = t.slice(Math.max(0, c - MAX_TIMELINE_LENGTH + 2), c + 1)
+    setTimeline([...kept, next.id])
+    setCursor(kept.length)
 
     if (bufferRef.current.length < BUFFER_REFILL_THRESHOLD) {
       refillBuffer()
@@ -72,18 +76,20 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
   }, [refillBuffer])
 
   const goBack = useCallback((): void => {
-    const { history: h } = stateRef.current
-    if (h.length === 0) return
-    const previousId = h[h.length - 1]
-    setHistory((prev) => prev.slice(0, -1))
-    setId(previousId)
+    const { cursor: c } = stateRef.current
+    if (c > 0) setCursor(c - 1)
+  }, [])
+
+  const goForward = useCallback((): void => {
+    const { cursor: c, timeline: t } = stateRef.current
+    if (c < t.length - 1) setCursor(c + 1)
   }, [])
 
   const resetErrorMessage = useCallback((): void => {
     setErrorMessage(undefined)
   }, [])
 
-  // On mount: fill the buffer. If no initialId, pop the first joke as the current one.
+  // On mount: fill the buffer. If no initialId, pop the first joke into the timeline.
   useEffect(() => {
     const init = async () => {
       isRefilling.current = true
@@ -92,11 +98,11 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
         jokes.forEach((j) => client.setQueryData<JokeType>(['joke', j.id], j.data))
 
         if (!initialId && jokes.length > 0) {
-          // Landing page — use the first random joke as the initial display
-          setId(jokes[0].id)
-          bufferRef.current = jokes.slice(1)
+          setTimeline([jokes[0].id])
+          setCursor(0)
+          bufferRef.current = [...jokes.slice(1)]
         } else {
-          bufferRef.current = jokes
+          bufferRef.current = [...jokes]
         }
       } catch (error) {
         console.error('Error fetching jokes', { error })
@@ -109,9 +115,11 @@ export const useJokeNavigation = (initialId?: string): UseJokeNavigationResult =
   }, [])
 
   return {
-    canGoBack: history.length > 0,
+    canGoBack,
+    canGoForward,
     errorMessage,
     goBack,
+    goForward,
     goRandom,
     id,
     resetErrorMessage,

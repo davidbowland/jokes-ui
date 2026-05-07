@@ -1,4 +1,4 @@
-import { ChevronLeft, Shuffle } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Shuffle } from 'lucide-react'
 import React, { useCallback, useEffect } from 'react'
 
 import { ErrorToast, NavButtonRow, NavIconButton, NavigationContainer } from './elements'
@@ -14,8 +14,10 @@ export interface NavigationProps {
 const Navigation = ({ initialId }: NavigationProps): React.ReactNode => {
   const {
     canGoBack,
+    canGoForward,
     errorMessage: navError,
     goBack,
+    goForward,
     goRandom,
     id,
     resetErrorMessage: resetNavError,
@@ -51,6 +53,10 @@ const Navigation = ({ initialId }: NavigationProps): React.ReactNode => {
         </NavIconButton>
         <NavIconButton aria-label="Random joke" disabled={!joke} onClick={goRandom} variant="random">
           <Shuffle size={18} />
+        </NavIconButton>
+        <NavIconButton aria-label="Go forward" disabled={!joke || !canGoForward} onClick={goForward}>
+          <span className="text-sm">Next</span>
+          <ChevronRight size={18} />
         </NavIconButton>
       </NavButtonRow>
       <ErrorToast onClose={resetErrorMessage} open={errorMessage !== undefined}>

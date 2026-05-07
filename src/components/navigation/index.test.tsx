@@ -24,8 +24,10 @@ describe('Navigation component', () => {
 
   const mockNavigation = {
     canGoBack: true,
+    canGoForward: true,
     errorMessage: undefined,
     goBack: jest.fn(),
+    goForward: jest.fn(),
     goRandom: jest.fn(),
     id: jokeId,
     resetErrorMessage: jest.fn(),
@@ -49,11 +51,12 @@ describe('Navigation component', () => {
   })
 
   describe('rendering', () => {
-    it('shows back and random navigation buttons', async () => {
+    it('shows back, random, and forward navigation buttons', async () => {
       render(<Navigation />)
 
-      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
       expect(await screen.findByLabelText(/Go back/i)).toBeVisible()
+      expect(await screen.findByLabelText(/Random joke/i)).toBeVisible()
+      expect(await screen.findByLabelText(/Go forward/i)).toBeVisible()
     })
 
     it('renders Joke with joke from hooks', async () => {
@@ -69,7 +72,7 @@ describe('Navigation component', () => {
       const user = userEvent.setup()
       render(<Navigation />)
 
-      const backButton: HTMLButtonElement = (await screen.findByLabelText(/Go back/i)) as HTMLButtonElement
+      const backButton = await screen.findByLabelText(/Go back/i)
       await user.click(backButton)
 
       await waitFor(() => {
@@ -85,12 +88,33 @@ describe('Navigation component', () => {
     })
   })
 
+  describe('forward', () => {
+    it('calls goForward when clicking the forward button', async () => {
+      const user = userEvent.setup()
+      render(<Navigation />)
+
+      const forwardButton = await screen.findByLabelText(/Go forward/i)
+      await user.click(forwardButton)
+
+      await waitFor(() => {
+        expect(mockNavigation.goForward).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    it('disables forward button when no forward history', async () => {
+      jest.mocked(useJokeNavigation).mockReturnValue({ ...mockNavigation, canGoForward: false })
+      render(<Navigation />)
+
+      expect(await screen.findByLabelText(/Go forward/i)).toHaveAttribute('aria-disabled', 'true')
+    })
+  })
+
   describe('random', () => {
     it('calls goRandom when clicking the random button', async () => {
       const user = userEvent.setup()
       render(<Navigation />)
 
-      const randomButton: HTMLButtonElement = (await screen.findByLabelText(/Random joke/i)) as HTMLButtonElement
+      const randomButton = await screen.findByLabelText(/Random joke/i)
       await user.click(randomButton)
 
       await waitFor(() => {
