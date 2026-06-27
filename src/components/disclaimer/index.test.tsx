@@ -6,21 +6,23 @@ import React from 'react'
 import Disclaimer from './index'
 
 describe('disclaimer component', () => {
-  beforeEach(() => {
+  function setup() {
     Object.defineProperty(document, 'cookie', {
       configurable: true,
       value: '',
       writable: true,
     })
-  })
+  }
 
   it('loads under normal circumstances', async () => {
+    setup()
     render(<Disclaimer />)
 
     expect(await screen.findByText(/Accept & continue/i)).toBeVisible()
   })
 
   it('closes when button clicked', async () => {
+    setup()
     render(<Disclaimer />)
 
     const closeButton = (await screen.findByText(/Accept & continue/i, {
@@ -33,6 +35,7 @@ describe('disclaimer component', () => {
   })
 
   it('loads closed when cookie is set', async () => {
+    setup()
     document.cookie = 'disclaimer_accept=true'
     render(<Disclaimer />)
 

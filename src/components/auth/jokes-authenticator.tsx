@@ -1,7 +1,5 @@
 import { AmplifyUser } from '@aws-amplify/ui'
 import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
-import { Button } from '@heroui/react'
-import { XCircle } from 'lucide-react'
 import React from 'react'
 
 export interface JokesAuthenticatorProps {
@@ -15,29 +13,35 @@ const JokesAuthenticator = ({ setLoggedInUser, setShowLogin }: JokesAuthenticato
     overrides: [defaultDarkModeOverride],
   }
 
+  const components = {
+    SignIn: {
+      Footer: () => (
+        <div className="pb-5 text-center">
+          <button
+            className="rounded border border-coal px-5 py-2 text-xs text-muted transition-colors duration-200 hover:border-coal/40 hover:text-cream"
+            onClick={() => setShowLogin(false)}
+            type="button"
+          >
+            Cancel
+          </button>
+        </div>
+      ),
+    },
+  }
+
   return (
-    <main style={{ padding: '50px' }}>
-      <section>
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center px-4 pt-20 pb-10">
+      <div className="w-full max-w-sm">
         <ThemeProvider colorMode="system" theme={theme}>
-          <div className="mx-auto max-w-[900px] p-4 shadow-lg sm:p-6">
-            <div className="mx-auto flex flex-col gap-4">
-              <Authenticator hideSignUp={true}>
-                {({ user }) => {
-                  setLoggedInUser(user)
-                  return <></>
-                }}
-              </Authenticator>
-              <div className="text-center">
-                <Button onPress={() => setShowLogin(false)} variant="outline">
-                  <XCircle size={18} />
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </div>
+          <Authenticator components={components} hideSignUp={true}>
+            {({ user }) => {
+              setLoggedInUser(user)
+              return <></>
+            }}
+          </Authenticator>
         </ThemeProvider>
-      </section>
-    </main>
+      </div>
+    </div>
   )
 }
 

@@ -17,7 +17,15 @@ describe('Authenticated component', () => {
 
   beforeAll(() => {
     jest.mocked(Auth).signOut.mockResolvedValue({})
-    jest.mocked(Authenticator).mockReturnValue(<>Authenticator</>)
+    jest.mocked(Authenticator).mockImplementation(({ components }: any) => {
+      const Footer = components?.SignIn?.Footer
+      return (
+        <>
+          Authenticator
+          {Footer && <Footer />}
+        </>
+      )
+    })
     jest.mocked(ThemeProvider).mockImplementation(({ children }) => children as unknown as React.JSX.Element)
 
     Object.defineProperty(window, 'location', {
@@ -59,7 +67,7 @@ describe('Authenticated component', () => {
       )
 
       expect(await screen.findByText(/Testing children/i)).toBeInTheDocument()
-      expect(await screen.findByText(/Humor/i)).toBeInTheDocument()
+      expect(await screen.findByText(/Punchline/i)).toBeInTheDocument()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
       expect(screen.queryByText(/Cancel/i)).not.toBeInTheDocument()
     })

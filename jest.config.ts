@@ -27,7 +27,7 @@ const config: Config = {
     '@fontsource/(.*)$': '<rootDir>/__mocks__/file-mock.js',
     '@heroui/react': '<rootDir>/__mocks__/@heroui/react.js',
     'lucide-react': '<rootDir>/__mocks__/lucide-react.js',
-    '^uuid$': '<rootDir>/node_modules/uuid/index.js',
+    '^uuid$': '<rootDir>/node_modules/uuid/dist/cjs/index.js',
   },
   setupFiles: ['<rootDir>/jest.setup-test-env.js'],
   testEnvironment: 'jsdom',

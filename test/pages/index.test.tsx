@@ -30,6 +30,6 @@ describe('Index page', () => {
 
   it('renders title', () => {
     render(<IndexPage />)
-    expect(document.title).toBe('Humor | dbowland.com')
+    expect(document.title).toBe('Punchline | dbowland.com')
   })
 })

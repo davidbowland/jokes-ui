@@ -38,7 +38,9 @@ describe('Admin component', () => {
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(await screen.findByText(/Update joke/i, { selector: 'button' })).toBeInTheDocument()
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke #${index}`, 'i'),
+    )) as HTMLInputElement
     expect(updateTextInput.value.length).toBeGreaterThan(0)
   })
 
@@ -57,7 +59,7 @@ describe('Admin component', () => {
   })
 
   it('invokes joke service when "Add joke" is clicked', async () => {
-    mockAddJoke.mockResolvedValueOnce(17)
+    mockAddJoke.mockResolvedValueOnce(62)
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     const addTab = await screen.findByRole('tab', { name: /Add joke/i })
@@ -75,7 +77,7 @@ describe('Admin component', () => {
       expect(mockAddJoke).toHaveBeenCalled()
     })
     expect(mockAddJoke).toHaveBeenCalledWith({ contents: jokeType.contents })
-    expect(await screen.findByText('Created joke #17')).toBeInTheDocument()
+    expect(await screen.findByText('Created joke 62')).toBeInTheDocument()
   })
 
   it('displays an error message when there is a failure adding a joke', async () => {
@@ -100,7 +102,9 @@ describe('Admin component', () => {
     const expectedJoke = 'fnord'
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke #${index}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.clear(updateTextInput)
     await userEvent.type(updateTextInput, expectedJoke)
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
@@ -118,7 +122,9 @@ describe('Admin component', () => {
     const noAudioJoke = { ...jokeType, audio: undefined }
     render(<Admin addJoke={mockAddJoke} index={index} joke={noAudioJoke} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke #${index}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.clear(updateTextInput)
     await userEvent.type(updateTextInput, expectedJoke)
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
@@ -135,7 +141,9 @@ describe('Admin component', () => {
     mockUpdateJoke.mockRejectedValueOnce({ response: 'fnord' })
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
-    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(/Joke #42/i)) as HTMLInputElement
+    const updateTextInput: HTMLInputElement = (await screen.findByLabelText(
+      new RegExp(`Joke #${index}`, 'i'),
+    )) as HTMLInputElement
     await userEvent.type(updateTextInput, 'funny joke')
     const updateJokeButton: HTMLButtonElement = (await screen.findByText(/Update joke/i, {
       selector: 'button',

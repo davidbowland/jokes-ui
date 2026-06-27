@@ -1,3 +1,7 @@
+const { TextDecoder, TextEncoder } = require('util')
+global.TextDecoder = TextDecoder
+global.TextEncoder = TextEncoder
+
 // Environment variables
 process.env.NEXT_PUBLIC_COGNITO_APP_CLIENT_ID = 'somereallylongvalue1111'
 process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID = 'us-east_clientId'

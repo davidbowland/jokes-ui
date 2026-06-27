@@ -4,7 +4,7 @@ import { CircleUserRound, LogOut, X } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-import { NavTitle, SideMenu } from './elements'
+import { NavTitle, PunchlineLogo, SideMenu } from './elements'
 
 export interface LoggedInBarProps {
   setLoggedInUser: (user: AmplifyUser | undefined) => void
@@ -13,61 +13,54 @@ export interface LoggedInBarProps {
 const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): React.ReactNode => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-  const closeMenu = (): void => {
-    setIsDrawerOpen(false)
-  }
-
-  const openMenu = (): void => {
-    setIsDrawerOpen(true)
-  }
+  const closeMenu = (): void => setIsDrawerOpen(false)
+  const openMenu = (): void => setIsDrawerOpen(true)
 
   return (
     <>
-      <NavTitle>
-        <Link href="/" style={{ color: 'inherit', textDecoration: 'none' }}>
-          Humor
-        </Link>
-      </NavTitle>
-      <span className="mr-3 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-0.5 text-xs font-medium tracking-widest text-gold uppercase">
-        admin
-      </span>
-      <button
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        aria-label="menu"
-        className="rounded-full p-1.5 text-muted transition-colors hover:text-gold"
-        onClick={openMenu}
-      >
-        <CircleUserRound size={22} />
-      </button>
+      <Link className="flex items-center gap-2.5 no-underline" href="/">
+        <PunchlineLogo className="h-7 w-auto text-gold" />
+        <NavTitle>Punchline</NavTitle>
+      </Link>
+      <div className="flex items-center gap-3">
+        <span className="rounded border border-gold/25 bg-gold/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-gold">
+          admin
+        </span>
+        <button
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          aria-label="Account menu"
+          className="rounded p-1.5 text-muted transition-colors duration-200 hover:bg-card hover:text-cream"
+          onClick={openMenu}
+        >
+          <CircleUserRound size={20} strokeWidth={1.5} />
+        </button>
+      </div>
       <SideMenu isOpen={isDrawerOpen} onClose={closeMenu}>
-        <div className="border-b border-coal p-4">
-          <p className="text-xs font-medium tracking-widest text-muted uppercase">Account</p>
-        </div>
-        <ul className="list-none p-0">
-          <li>
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-coal px-5 py-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">Account</p>
             <button
-              className="flex w-full items-center gap-3 px-5 py-3.5 text-left text-sm text-cream transition-colors hover:bg-card hover:text-gold"
+              className="rounded p-1 text-muted transition-colors duration-200 hover:text-cream"
+              onClick={closeMenu}
+            >
+              <X size={15} />
+            </button>
+          </div>
+          <nav className="flex flex-col gap-1 p-3">
+            <button
+              className="flex items-center gap-3 rounded-lg px-4 py-3 text-left text-sm text-cream transition-colors duration-200 hover:bg-card hover:text-gold"
               onClick={() => {
                 closeMenu()
                 setLoggedInUser(undefined)
                 Auth.signOut().then(() => window.location.reload())
               }}
             >
-              <LogOut size={16} />
+              <LogOut size={14} strokeWidth={1.5} />
               Sign out
             </button>
-          </li>
-          <li>
-            <button
-              className="flex w-full items-center gap-3 px-5 py-3.5 text-left text-sm text-muted transition-colors hover:bg-card hover:text-cream"
-              onClick={closeMenu}
-            >
-              <X size={16} />
-              Close
-            </button>
-          </li>
-        </ul>
+          </nav>
+        </div>
       </SideMenu>
     </>
   )

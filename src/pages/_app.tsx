@@ -1,5 +1,6 @@
 import '@fontsource/dm-sans'
 import '@fontsource/playfair-display'
+import '@fontsource/playfair-display/400-italic.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
 import React, { useEffect } from 'react'

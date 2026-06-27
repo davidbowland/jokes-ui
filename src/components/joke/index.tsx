@@ -2,23 +2,26 @@ import React, { useState } from 'react'
 
 import { JokeCounter, JokeSkeleton, JokeTitle, TtsButton } from './elements'
 import Admin from '@components/admin'
+import { baseUrl } from '@config/amplify'
 import { JokeType } from '@types'
 
 export interface JokeProps {
-  addJoke: (newJoke: JokeType) => Promise<number>
+  addJoke: (newJoke: JokeType) => Promise<string>
   count?: number
-  getTtsUrl: (index: number) => string
-  index?: number
+  index?: string
   joke?: JokeType
-  updateJoke: (joke: JokeType, indexOverride?: number) => Promise<void>
+  updateJoke: (joke: JokeType) => Promise<void>
 }
 
-const Joke = ({ addJoke, count, getTtsUrl, index, joke, updateJoke }: JokeProps): React.ReactNode => {
+const Joke = ({ addJoke, count, index, joke, updateJoke }: JokeProps): React.ReactNode => {
   const [isAudioLoading, setIsAudioLoading] = useState(false)
 
-  const ttsClick = async (index: number): Promise<void> => {
+  const ttsClick = async (): Promise<void> => {
     setIsAudioLoading(true)
-    const audio = new Audio(getTtsUrl(index))
+    const ttsUrl = joke?.audio
+      ? `data:${joke.audio.contentType};base64,${joke.audio.base64}`
+      : `${baseUrl}/jokes/${index}/tts`
+    const audio = new Audio(ttsUrl)
     audio.addEventListener('canplaythrough', () => {
       audio.play()
     })
@@ -32,18 +35,22 @@ const Joke = ({ addJoke, count, getTtsUrl, index, joke, updateJoke }: JokeProps)
   }
 
   return (
-    <>
-      <div className="mb-6 h-4">{index && count ? <JokeCounter count={count} index={index} /> : null}</div>
+    <div className="flex flex-col items-center gap-8">
+      <div className="flex h-8 items-center">{index && count ? <JokeCounter count={count} index={index} /> : null}</div>
       <JokeTitle key={joke ? 'loaded' : 'loading'}>{joke?.contents ?? <JokeSkeleton />}</JokeTitle>
-      <div className="flex justify-center py-8">
+      <div className="flex justify-center py-2">
         <TtsButton
           isDisabled={joke === undefined || isAudioLoading}
           isLoading={isAudioLoading}
-          onPress={() => index && ttsClick(index)}
+          onPress={() => index && ttsClick()}
         />
       </div>
-      {!!index && joke && <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />}
-    </>
+      {!!index && joke && (
+        <div className="w-full">
+          <Admin addJoke={addJoke} index={index} joke={joke} updateJoke={updateJoke} />
+        </div>
+      )}
+    </div>
   )
 }
 

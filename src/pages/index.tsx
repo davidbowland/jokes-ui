@@ -8,7 +8,7 @@ const IndexPage = (): React.ReactNode => {
   return (
     <>
       <Head>
-        <title>Humor | dbowland.com</title>
+        <title>Punchline | dbowland.com</title>
       </Head>
       <JokePageLayout>
         <Navigation />
