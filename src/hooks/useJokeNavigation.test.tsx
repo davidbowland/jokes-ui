@@ -33,8 +33,7 @@ describe('useJokeNavigation', () => {
 
   const initHook = async (initialIndex?: string) => {
     const hook = renderHook(() => useJokeNavigation(initialIndex), { wrapper: Wrapper })
-    await waitFor(() => expect(jest.mocked(jokes).getRandomJokes).toHaveBeenCalled())
-    await act(async () => {})
+    await waitFor(() => expect(hook.result.current.index).toBeDefined())
     return hook
   }
 
