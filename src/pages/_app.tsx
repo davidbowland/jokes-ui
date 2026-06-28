@@ -7,7 +7,6 @@ import React, { useEffect } from 'react'
 
 import '@assets/css/index.css'
 import Authenticated from '@components/auth'
-import Disclaimer from '@components/disclaimer'
 import '@config/amplify'
 
 const STALE_TIME = 60 * 60 * 1_000
@@ -34,7 +33,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Authenticated>
         <Component {...pageProps} />
       </Authenticated>
-      <Disclaimer />
     </QueryClientProvider>
   )
 }
