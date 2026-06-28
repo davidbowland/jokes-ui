@@ -17,11 +17,12 @@ describe('404 error page', () => {
     })
   })
 
-  beforeEach(() => {
+  const setup = () => {
     window.location.pathname = '/an-invalid-page'
-  })
+  }
 
   it('renders ServerErrorMessage', async () => {
+    setup()
     const expectedTitle = '404: Not Found'
     render(<NotFound />)
     await waitFor(() => {
@@ -45,6 +46,7 @@ describe('404 error page', () => {
   })
 
   it('renders title', async () => {
+    setup()
     render(<NotFound />)
     await waitFor(() => {
       expect(document.title).toBe('404: Not Found | dbowland.com')
