@@ -8,9 +8,12 @@ out/
 .next/
 
 # Generated artifacts
-public/
-public/sitemap*.xml
-public/robots.txt
+public/*
+!public/favicon.svg
+!public/favicon-16x16.png
+!public/favicon-32x32.png
+!public/apple-touch-icon.png
+!public/og-image.png
 
 # Compiled Java class files
 *.class

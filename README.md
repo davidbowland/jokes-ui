@@ -1,104 +1,73 @@
-# jokes-ui
+# Punchline
 
-Gatsby and Amplify implementation of jokes-api and jokes-infrastructure. Example: <https://jokes.bowland.link/>
+![Punchline — fresh jokes, one punchline at a time](public/og-image.png)
 
-## Static Site
+## About
+
+Punchline serves up one joke at a time, with text-to-speech, endless random navigation, and a lightweight admin
+mode (behind Cognito auth) for adding and editing jokes. It's a static Next.js site backed by
+[jokes-api](https://github.com/davidbowland/jokes-api) and deployed to S3 + CloudFront via AWS SAM.
+
+Site: [jokes.dbowland.com](https://jokes.dbowland.com/)
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) (Pages Router, static export) + [React](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) v4 with a custom design system (`src/assets/css/index.css`)
+- [TanStack Query](https://tanstack.com/query/latest) for data fetching/caching
+- [AWS Amplify](https://aws.amazon.com/amplify/) for Cognito authentication
+- [Playfair Display](https://fonts.google.com/specimen/Playfair+Display) + [DM Sans](https://fonts.google.com/specimen/DM+Sans) via [Fontsource](https://fontsource.org/)
+- AWS SAM + S3 + CloudFront for hosting
+
+## Local Development
 
 ### Prerequisites
 
-1. [Node](https://nodejs.org/en/)
-1. [NPM](https://www.npmjs.com/)
+1. [Node.js](https://nodejs.org/en/) (see `engines` in `package.json` for the required version)
+2. [npm](https://www.npmjs.com/)
 
-### Local Development
+### Getting Started
 
-The Gatsby development server automatically rerenders in the browser when the source code changes. Start the local development server with:
+Install dependencies and start the dev server, which hot-reloads as source files change:
 
 ```bash
-npm run start
+npm install
+npm start
 ```
 
-Alternatively, run a production build and serve that static content with:
+Then view the site at <http://localhost:3000/>.
+
+To build and serve the static production output locally instead:
 
 ```bash
 npm run serve
 ```
 
-Then view the server at <http://localhost:3000/>
+### Testing
 
-### Unit Tests
-
-[Jest](https://jestjs.io/) tests are run automatically on commit and push. If the test coverage threshold is not met, the push will fail. See `jest.config.ts` for coverage threshold.
-
-Manually run tests with:
+Unit tests run via [Jest](https://jestjs.io/) and execute automatically on commit (via Husky + lint-staged) and
+in CI. Coverage thresholds are enforced — see `jest.config.ts`.
 
 ```bash
-npm run test
+npm test
 ```
 
-### Prettier / Linter
-
-Both [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/) are executed on commit. Manually prettify and lint code with:
+### Type Checking & Linting
 
 ```bash
+npm run typecheck
 npm run lint
 ```
 
-### Deploying to Production
+`lint` runs [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/) with `--fix`.
 
-This project automatically deploys to production when a merge to `master` is made via a pull request.
+## Deployment
 
-## Deploy Script
+Merging to `master` triggers the CI pipeline (`.github/workflows/pipeline.yaml`), which runs the test suite,
+builds the static site, and deploys it to production automatically.
 
-In extreme cases, the UI can be deployed with:
+To deploy manually (requires the `developer` role and the [AWS SAM CLI](https://aws.amazon.com/serverless/sam/)):
 
 ```bash
 npm run deploy
 ```
-
-The `developer` role and [AWS SAM CLI](https://aws.amazon.com/serverless/sam/) are required to deploy this project.
-
-### Testing the Workflow
-
-Use [act](https://github.com/nektos/act) to test the GitHub workflow. Install it with:
-
-```bash
-brew install act
-```
-
-When running locally, workflow needs some secret values specified. If the necessary environment variables are declared, the secrets can be specified with:
-
-```bash
-npm run workflow
-```
-
-## Additional Documentation
-
-### Additional Gatsby Documentation
-
-- [Documentation](https://www.gatsbyjs.com/docs/)
-
-- [Tutorials](https://www.gatsbyjs.com/tutorial/)
-
-- [Guides](https://www.gatsbyjs.com/tutorial/)
-
-- [API Reference](https://www.gatsbyjs.com/docs/api-reference/)
-
-- [Plugin Library](https://www.gatsbyjs.com/plugins)
-
-- [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/)
-
-### Additional Deploy Documentation
-
-- [SSH2 module](https://www.npmjs.com/package/ssh2)
-
-- [SFTP stream methods](https://github.com/mscdex/ssh2-streams/blob/master/SFTPStream.md#sftpstream-methods)
-
-### Additional Workflow Documentation
-
-- [Workflow Syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions)
-
-- [actions/setup_node](https://github.com/actions/setup-node)
-
-- [actions/checkout](https://github.com/actions/checkout)
-
-- [ad-m/github-push-action](https://github.com/ad-m/github-push-action)

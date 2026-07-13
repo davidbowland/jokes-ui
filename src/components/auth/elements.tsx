@@ -2,13 +2,13 @@ import React from 'react'
 import { createPortal } from 'react-dom'
 
 export const PunchlineLogo = ({ className = '' }: { className?: string }): React.ReactNode => (
-  <svg aria-hidden="true" className={className} fill="none" viewBox="0 0 28 23" xmlns="http://www.w3.org/2000/svg">
-    {/* Left quotation mark — ball with upward-left tail */}
-    <circle cx="7" cy="17.5" fill="currentColor" r="5.5" />
-    <path d="M7 12 Q6 5.5 5 1" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4.5" />
-    {/* Right quotation mark */}
-    <circle cx="21" cy="17.5" fill="currentColor" r="5.5" />
-    <path d="M21 12 Q20 5.5 19 1" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4.5" />
+  <svg aria-hidden="true" className={className} fill="none" viewBox="2 0 52 62" xmlns="http://www.w3.org/2000/svg">
+    {/* P stem doubling as the mic body */}
+    <rect fill="currentColor" height="45" rx="4.5" width="9" x="17" y="9" />
+    {/* Mic capsule forming the bowl of the P */}
+    <ellipse cx="34" cy="21" fill="none" rx="13" ry="14" stroke="currentColor" strokeWidth="8" />
+    {/* Cord flick */}
+    <path d="M18 53 Q8 57 11 47" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="5" />
   </svg>
 )
 
