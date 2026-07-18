@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys */
 import { AmplifyUser } from '@aws-amplify/ui'
 
 import { DisplayedJoke, JokeCount, JokeResponse, JokeType } from '@types'

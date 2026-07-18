@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 if (process.env.DEVELOPMENT === 'true') {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const fs = require('fs')
   fs.readFileSync('.env.development', 'utf8')
     .split('\n')
