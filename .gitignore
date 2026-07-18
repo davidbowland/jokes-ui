@@ -6,6 +6,7 @@ coverage/
 # Next.js
 out/
 .next/
+.swc/
 
 # Generated artifacts
 public/*
@@ -57,7 +58,6 @@ Thumbs.db
 *.wmv
 
 .claude/
-.kiro/specs/
 .superpowers/
 .vscode
 .worktrees/

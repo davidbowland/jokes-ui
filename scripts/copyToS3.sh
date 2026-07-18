@@ -5,7 +5,7 @@ set -e
 
 S3_BUCKET="$1"
 if [[ -z "$1" ]]; then
-  S3_BUCKET=dbowland-ui-test
+  S3_BUCKET=jokes-ui-test
 fi
 
 ### Deploy code by copying build output to S3
