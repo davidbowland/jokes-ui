@@ -35,7 +35,6 @@
     "@heroui/react": "^3.0.1",
     "@tanstack/react-query": "^5.83.0",
     "aws-amplify": "^5.3.33",
-    "crypto-browserify": "^3.12.1",
     "fast-json-patch": "^3.1.1",
     "framer-motion": "^11.18.2",
     "husky": "^9.1.7",
@@ -44,13 +43,11 @@
     "next-sitemap": "^4.2.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "stream-browserify": "^3.0.0",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.2",
-    "@tanstack/eslint-plugin-query": "^5.96.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^15.0.7",
     "@testing-library/user-event": "^14.6.1",
