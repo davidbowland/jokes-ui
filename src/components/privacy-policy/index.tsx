@@ -25,9 +25,28 @@ const PrivacyPolicy = (): React.ReactNode => (
     <div className="flex flex-col gap-6">
       <PolicySection title="What We Collect">
         <p>
-          Our servers automatically log your IP address, browser type, and the pages you visit. We use these logs to
-          detect abuse and keep the site running. If you log in, we set a session cookie to keep you authenticated.
-          That&apos;s everything we collect.
+          When your browser asks our server for a joke, the request is written to a log: your IP address, the time, the
+          address requested, and your browser&apos;s user-agent string. We keep these logs to see what breaks.
+        </p>
+        <p>
+          We don&apos;t record which pages you view. The website keeps no access log of its own, so only requests that
+          reach the joke API appear anywhere. Reading jokes requires no account, and we store nothing in your browser
+          while you do it.
+        </p>
+      </PolicySection>
+
+      <PolicySection title="If You Sign In">
+        <p>
+          Only site administrators can sign in — there is no public sign-up. Amazon Cognito holds an
+          administrator&apos;s email address and phone number to manage the account. While signed in, the browser keeps
+          the session token in local storage; no cookie is set.
+        </p>
+      </PolicySection>
+
+      <PolicySection title="Read-Aloud Jokes">
+        <p>
+          When a joke is read aloud, its text is sent to Amazon Polly, which returns the audio. Polly receives the joke
+          and nothing about you.
         </p>
       </PolicySection>
 
@@ -41,15 +60,20 @@ const PrivacyPolicy = (): React.ReactNode => (
       <PolicySection title="What We Don't Do">
         <p>
           We don&apos;t sell your data. We don&apos;t share it with advertisers. We don&apos;t build profiles. We
-          intentionally don&apos;t collect contact information or anything personally identifying beyond what appears in
-          a standard server log.
+          don&apos;t run analytics. Beyond a standard server log — and an administrator&apos;s own contact details — we
+          intentionally collect nothing that identifies you.
         </p>
       </PolicySection>
 
-      <PolicySection title="When We Share Your Data">
+      <PolicySection title="Who Else Handles Your Data">
         <p>
-          We share data only when legally required — for example, in response to a valid court order or law enforcement
-          request.
+          Amazon Web Services hosts this site, stores the logs, runs Cognito for administrator sign-in, and provides
+          Polly for the read-aloud audio. Log lines recording an error are copied to a separate error-reporting function
+          we run in the same AWS account.
+        </p>
+        <p>
+          Nobody else receives your data. Beyond that hosting, we share it only when legally required — for example, in
+          response to a valid court order or law enforcement request.
         </p>
       </PolicySection>
 
@@ -65,7 +89,10 @@ const PrivacyPolicy = (): React.ReactNode => (
       </PolicySection>
 
       <PolicySection title="Data Retention">
-        <p>Server logs are kept for up to 90 days, then deleted.</p>
+        <p>
+          Server logs are deleted automatically after 30 days, as are the copied error lines. Administrator accounts
+          last until we remove them.
+        </p>
       </PolicySection>
 
       <PolicySection title="Age">
@@ -84,13 +111,8 @@ const PrivacyPolicy = (): React.ReactNode => (
           Questions about this policy? Email{' '}
           <Link className="text-gold hover:underline" href="mailto:privacy@dbowland.com">
             privacy@dbowland.com
-          </Link>{' '}
-          or write to:
-        </p>
-        <p className="font-medium text-cream/70">
-          dbowland.com Privacy
-          <br />
-          P.O. Box 81226, Seattle, WA 98108-1226
+          </Link>
+          .
         </p>
       </PolicySection>
     </div>
@@ -103,7 +125,7 @@ const PrivacyPolicy = (): React.ReactNode => (
         <span aria-hidden="true">←</span>
         Back to Punchline
       </Link>
-      <p className="text-xs text-muted/60">Last updated June 2026</p>
+      <p className="text-xs text-muted/60">Effective August 1, 2026</p>
     </div>
   </div>
 )
