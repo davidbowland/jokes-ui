@@ -1,6 +1,6 @@
 import { AmplifyUser } from '@aws-amplify/ui'
 
-import { DisplayedJoke, JokeCount, JokeResponse, JokeType } from '@types'
+import { DisplayedJoke, JokeResponse, JokeType } from '@types'
 
 export const displayedJoke: DisplayedJoke = {
   index: 'qp8pzhqc',
@@ -10,10 +10,6 @@ export const displayedJoke: DisplayedJoke = {
 export const initialJoke = { contents: displayedJoke.contents }
 
 export const index = 'qp8pzhqc'
-
-export const jokeCount: JokeCount = {
-  count: 128,
-}
 
 export const jokeResponse: JokeResponse[] = [
   { data: { contents: displayedJoke.contents }, id: displayedJoke.index },

@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { index, jokeType } from '@test/__mocks__'
-import { act, renderHook, waitFor } from '@testing-library/react'
 import React, { ReactNode } from 'react'
 
 import { useJokeMutations } from './useJokeMutations'
 import * as jokes from '@services/jokes'
+import { index, jokeType } from '@test/__mocks__'
+import { act, renderHook, waitFor } from '@testing-library/react'
 
 jest.mock('@services/jokes')
 
@@ -21,7 +21,7 @@ describe('useJokeMutations', () => {
     })
     queryClient.setQueryData(['joke', index], jokeType)
 
-    jest.mocked(jokes).postJoke.mockResolvedValue({ contents: 'LOL', index: 'new62' })
+    jest.mocked(jokes).postJoke.mockResolvedValue({ contents: 'LOL', id: 'new62' })
     jest.mocked(jokes).patchJoke.mockResolvedValue({ contents: 'updated' })
   }
 

@@ -18,7 +18,7 @@ export const useJokeMutations = (currentIndex: string | undefined): UseJokeMutat
 
   const createJokeFn = async (newJoke: JokeType): Promise<string> => {
     const response = await postJoke(newJoke)
-    return response.index
+    return response.id
   }
   const { error: createError, mutateAsync: createJoke } = useMutation({ mutationFn: createJokeFn })
 

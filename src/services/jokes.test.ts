@@ -2,7 +2,7 @@ import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import { API, Auth } from 'aws-amplify'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
-import { getJoke, getJokeCount, getRandomJokes, patchJoke, postJoke } from './jokes'
+import { getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
@@ -28,18 +28,6 @@ describe('Joke service', () => {
       const result = await getJoke('joke1')
       expect(result).toEqual(randomJokeResult[0].data)
       expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/joke1', {})
-    })
-  })
-
-  describe('getJokeCount', () => {
-    beforeAll(() => {
-      jest.mocked(API).get.mockResolvedValue({ count: 128 })
-    })
-
-    it('returns joke count from count endpoint', async () => {
-      const result = await getJokeCount()
-      expect(result).toEqual({ count: 128 })
-      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/count', {})
     })
   })
 
@@ -75,7 +63,7 @@ describe('Joke service', () => {
     })
 
     it('returns the result from the create joke endpoint', async () => {
-      const expectedResult = { index: 148 }
+      const expectedResult = { contents: 'LOL', id: 'joke148' }
       postEndpoint.mockReturnValue(expectedResult)
 
       const result = await postJoke(joke)

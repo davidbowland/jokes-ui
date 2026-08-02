@@ -15,10 +15,6 @@ export interface DisplayedJoke extends JokeType {
   index: string
 }
 
-export interface JokeCount {
-  count: number
-}
-
 export interface JokeResponse {
   data: JokeType
   id: string
@@ -26,5 +22,5 @@ export interface JokeResponse {
 
 export interface PostResponse {
   contents: string
-  index: string
+  id: string
 }
