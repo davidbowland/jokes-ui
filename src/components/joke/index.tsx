@@ -18,8 +18,11 @@ const Joke = ({ addJoke, count, index, joke, updateJoke }: JokeProps): React.Rea
 
   const ttsClick = async (): Promise<void> => {
     setIsAudioLoading(true)
+    // contentType is optional because Polly declares its ContentType optional. Interpolating an
+    // absent one would build `data:undefined;base64,...` and silently fail to play, so fall back
+    // to what jokes-api actually asks Polly for (OutputFormat: 'ogg_vorbis').
     const ttsUrl = joke?.audio
-      ? `data:${joke.audio.contentType};base64,${joke.audio.base64}`
+      ? `data:${joke.audio.contentType ?? 'audio/ogg'};base64,${joke.audio.base64}`
       : `${baseUrl}/jokes/${index}/tts`
     const audio = new Audio(ttsUrl)
     audio.addEventListener('canplaythrough', () => {
