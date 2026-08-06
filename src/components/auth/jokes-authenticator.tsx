@@ -1,9 +1,9 @@
-import { AmplifyUser } from '@aws-amplify/ui'
 import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
+import { AuthUser } from 'aws-amplify/auth'
 import React from 'react'
 
 export interface JokesAuthenticatorProps {
-  setLoggedInUser: (user: AmplifyUser | undefined) => void
+  setLoggedInUser: (user: AuthUser | undefined) => void
   setShowLogin: (state: boolean) => void
 }
 

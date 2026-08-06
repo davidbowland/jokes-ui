@@ -1,6 +1,5 @@
-import { AmplifyUser } from '@aws-amplify/ui'
 import '@aws-amplify/ui-react/styles.css'
-import { Auth } from 'aws-amplify'
+import { AuthUser, getCurrentUser } from 'aws-amplify/auth'
 import React, { useEffect, useState } from 'react'
 
 import { NavBar } from './elements'
@@ -13,7 +12,7 @@ export interface AuthenticatedProps {
 }
 
 const Authenticated = ({ children }: AuthenticatedProps): React.ReactNode => {
-  const [loggedInUser, setLoggedInUser] = useState<AmplifyUser | undefined>()
+  const [loggedInUser, setLoggedInUser] = useState<AuthUser | undefined>()
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
@@ -22,7 +21,7 @@ const Authenticated = ({ children }: AuthenticatedProps): React.ReactNode => {
 
   // Set user if already logged in
   useEffect(() => {
-    Auth.currentAuthenticatedUser()
+    getCurrentUser()
       .then(setLoggedInUser)
       .catch(() => null)
   }, [])

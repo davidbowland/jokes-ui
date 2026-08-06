@@ -1,5 +1,4 @@
-import { AmplifyUser } from '@aws-amplify/ui'
-import { Auth } from 'aws-amplify'
+import { AuthUser, signOut } from 'aws-amplify/auth'
 import { CircleUserRound, LogOut, X } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -7,7 +6,7 @@ import React, { useState } from 'react'
 import { NavTitle, PunchlineLogo, SideMenu } from './elements'
 
 export interface LoggedInBarProps {
-  setLoggedInUser: (user: AmplifyUser | undefined) => void
+  setLoggedInUser: (user: AuthUser | undefined) => void
 }
 
 const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): React.ReactNode => {
@@ -53,7 +52,7 @@ const LoggedInBar = ({ setLoggedInUser }: LoggedInBarProps): React.ReactNode => 
               onClick={() => {
                 closeMenu()
                 setLoggedInUser(undefined)
-                Auth.signOut().then(() => window.location.reload())
+                signOut().then(() => window.location.reload())
               }}
             >
               <LogOut size={14} strokeWidth={1.5} />

@@ -1,12 +1,21 @@
-import { CognitoUserSession } from 'amazon-cognito-identity-js'
-import { API, Auth } from 'aws-amplify'
+import { get, patch, post } from 'aws-amplify/api'
+import { fetchAuthSession } from 'aws-amplify/auth'
 import { Operation as PatchOperation } from 'fast-json-patch'
 
 import { getJoke, getRandomJokes, patchJoke, postJoke } from './jokes'
 import { JokeResponse } from '@types'
 
 jest.mock('@aws-amplify/analytics')
-jest.mock('aws-amplify')
+jest.mock('aws-amplify/api')
+jest.mock('aws-amplify/auth')
+jest.mock('@config/amplify', () => ({
+  apiName: 'JokesAPIGateway',
+  apiNameUnauthenticated: 'JokesAPIGatewayUnauthenticated',
+}))
+
+const mockResponse = (data: unknown): any => ({
+  response: Promise.resolve({ body: { json: () => Promise.resolve(data) } }),
+})
 
 describe('Joke service', () => {
   const randomJokeResult: JokeResponse[] = [
@@ -15,19 +24,28 @@ describe('Joke service', () => {
   ]
 
   beforeAll(() => {
-    const userSession = { getIdToken: () => ({ getJwtToken: () => '' }) } as CognitoUserSession
-    jest.mocked(Auth).currentSession.mockResolvedValue(userSession)
+    jest.mocked(fetchAuthSession).mockResolvedValue({
+      tokens: { idToken: { toString: () => 'mock-jwt-token', payload: {} } },
+    } as any)
   })
 
   describe('getJoke', () => {
     beforeAll(() => {
-      jest.mocked(API).get.mockResolvedValue(randomJokeResult[0].data)
+      jest.mocked(get).mockReturnValue(mockResponse(randomJokeResult[0].data))
     })
 
     it('returns joke from jokes endpoint', async () => {
       const result = await getJoke('joke1')
+
       expect(result).toEqual(randomJokeResult[0].data)
-      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/joke1', {})
+      expect(get).toHaveBeenCalledWith({ apiName: 'JokesAPIGatewayUnauthenticated', path: '/jokes/joke1' })
+    })
+
+    it('sends no Authorization header', async () => {
+      await getJoke('joke1')
+
+      expect(jest.mocked(get).mock.calls[0][0].options?.headers).toBeUndefined()
+      expect(fetchAuthSession).not.toHaveBeenCalled()
     })
   })
 
@@ -35,45 +53,58 @@ describe('Joke service', () => {
     const recentIds = ['id32', 'id45', 'id79']
 
     beforeAll(() => {
-      jest.mocked(API).get.mockResolvedValue(randomJokeResult)
+      jest.mocked(get).mockReturnValue(mockResponse(randomJokeResult))
     })
 
     it('returns random jokes using recentIds', async () => {
       const result = await getRandomJokes(recentIds)
 
       expect(result).toEqual(randomJokeResult)
-      expect(API.get).toHaveBeenCalledWith('JokesAPIGatewayUnauthenticated', '/jokes/random', {
-        queryStringParameters: { avoid: 'id32,id45,id79', count: '3' },
+      expect(get).toHaveBeenCalledWith({
+        apiName: 'JokesAPIGatewayUnauthenticated',
+        options: { queryParams: { avoid: 'id32,id45,id79', count: '3' } },
+        path: '/jokes/random',
       })
+    })
+
+    it('sends no Authorization header', async () => {
+      await getRandomJokes(recentIds)
+
+      expect(jest.mocked(get).mock.calls[0][0].options?.headers).toBeUndefined()
+      expect(fetchAuthSession).not.toHaveBeenCalled()
     })
   })
 
   describe('postJoke', () => {
-    const postEndpoint = jest.fn()
     const joke = Object.values(randomJokeResult)[0].data
 
     beforeAll(() => {
-      jest.mocked(API).post.mockImplementation(postEndpoint)
+      jest.mocked(post).mockReturnValue(mockResponse(undefined))
     })
 
     it('invokes the jokes endpoint to create a joke', async () => {
       await postJoke(joke)
-      expect(postEndpoint).toHaveBeenCalledTimes(1)
-      expect(API.post).toHaveBeenCalledWith('JokesAPIGateway', '/jokes', { body: joke })
+
+      expect(post).toHaveBeenCalledTimes(1)
+      expect(post).toHaveBeenCalledWith({
+        apiName: 'JokesAPIGateway',
+        options: { body: joke, headers: { Authorization: 'Bearer mock-jwt-token' } },
+        path: '/jokes',
+      })
     })
 
     it('returns the result from the create joke endpoint', async () => {
       const expectedResult = { contents: 'LOL', id: 'joke148' }
-      postEndpoint.mockReturnValue(expectedResult)
+      jest.mocked(post).mockReturnValueOnce(mockResponse(expectedResult))
 
       const result = await postJoke(joke)
-      expect(postEndpoint).toHaveBeenCalledTimes(1)
+
+      expect(post).toHaveBeenCalledTimes(1)
       expect(result).toEqual(expectedResult)
     })
   })
 
   describe('patchJoke', () => {
-    const patchEndpoint = jest.fn()
     const jokeIndex = 'joke42'
     const operation = [
       {
@@ -84,14 +115,50 @@ describe('Joke service', () => {
     ] as unknown as PatchOperation[]
 
     beforeAll(() => {
-      jest.mocked(API).patch.mockImplementation(patchEndpoint)
+      jest.mocked(patch).mockReturnValue(mockResponse(undefined))
     })
 
     it('invokes the patch endpoint with index and patch operation', async () => {
       await patchJoke(jokeIndex, operation)
-      expect(patchEndpoint).toHaveBeenCalledTimes(1)
-      expect(API.patch).toHaveBeenCalledWith('JokesAPIGateway', `/jokes/${jokeIndex}`, {
-        body: operation,
+
+      expect(patch).toHaveBeenCalledTimes(1)
+      expect(patch).toHaveBeenCalledWith({
+        apiName: 'JokesAPIGateway',
+        options: { body: operation, headers: { Authorization: 'Bearer mock-jwt-token' } },
+        path: `/jokes/${jokeIndex}`,
+      })
+    })
+
+    it('returns the result from the patch endpoint', async () => {
+      const expectedResult = { contents: 'ROFL' }
+      jest.mocked(patch).mockReturnValueOnce(mockResponse(expectedResult))
+
+      const result = await patchJoke(jokeIndex, operation)
+
+      expect(result).toEqual(expectedResult)
+    })
+
+    it('sends empty headers when the session cannot be fetched', async () => {
+      jest.mocked(fetchAuthSession).mockRejectedValueOnce(new Error('Not signed in'))
+
+      await patchJoke(jokeIndex, operation)
+
+      expect(patch).toHaveBeenCalledWith({
+        apiName: 'JokesAPIGateway',
+        options: { body: operation, headers: {} },
+        path: `/jokes/${jokeIndex}`,
+      })
+    })
+
+    it('sends empty headers when the session has no id token', async () => {
+      jest.mocked(fetchAuthSession).mockResolvedValueOnce({ tokens: undefined } as any)
+
+      await patchJoke(jokeIndex, operation)
+
+      expect(patch).toHaveBeenCalledWith({
+        apiName: 'JokesAPIGateway',
+        options: { body: operation, headers: {} },
+        path: `/jokes/${jokeIndex}`,
       })
     })
   })

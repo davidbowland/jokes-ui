@@ -1,5 +1,5 @@
 import '@aws-amplify/ui-react/styles.css'
-import { Auth } from 'aws-amplify'
+import { getCurrentUser } from 'aws-amplify/auth'
 import React, { useEffect, useState } from 'react'
 
 import SignedIn from './signed-in'
@@ -16,7 +16,7 @@ const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNod
   const [isAdminVisible, setIsAdminVisible] = useState(false)
 
   useEffect(() => {
-    Auth.currentAuthenticatedUser()
+    getCurrentUser()
       .then(() => setIsAdminVisible(true))
       .catch(() => null)
   }, [])

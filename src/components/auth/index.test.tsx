@@ -1,14 +1,15 @@
 import { Authenticator, ThemeProvider } from '@aws-amplify/ui-react'
+import { getCurrentUser, signOut } from 'aws-amplify/auth'
+import React from 'react'
+
+import Authenticated from './index'
 import { user } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Auth } from 'aws-amplify'
-import React from 'react'
-
-import Authenticated from './index'
 
 jest.mock('aws-amplify')
+jest.mock('aws-amplify/auth')
 jest.mock('@aws-amplify/analytics')
 jest.mock('@aws-amplify/ui-react')
 
@@ -16,7 +17,7 @@ describe('Authenticated component', () => {
   const mockLocationReload = jest.fn()
 
   beforeAll(() => {
-    jest.mocked(Auth).signOut.mockResolvedValue({})
+    jest.mocked(signOut).mockResolvedValue()
     jest.mocked(Authenticator).mockImplementation(({ components }: any) => {
       const Footer = components?.SignIn?.Footer
       return (
@@ -36,7 +37,7 @@ describe('Authenticated component', () => {
 
   describe('theme', () => {
     beforeAll(() => {
-      jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValue(undefined)
+      jest.mocked(getCurrentUser).mockRejectedValue(undefined)
     })
 
     it('uses system color mode', async () => {
@@ -56,7 +57,7 @@ describe('Authenticated component', () => {
 
   describe('signed out', () => {
     beforeAll(() => {
-      jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValue(undefined)
+      jest.mocked(getCurrentUser).mockRejectedValue(undefined)
     })
 
     it('displays title, admin sign in, and children', async () => {
@@ -135,7 +136,7 @@ describe('Authenticated component', () => {
 
   describe('signed in', () => {
     beforeAll(() => {
-      jest.mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
+      jest.mocked(getCurrentUser).mockResolvedValue(user)
     })
 
     it('displays user name', async () => {
@@ -146,7 +147,7 @@ describe('Authenticated component', () => {
       )
 
       await waitFor(() => {
-        expect(jest.mocked(Auth).currentAuthenticatedUser).toHaveBeenCalled()
+        expect(jest.mocked(getCurrentUser)).toHaveBeenCalled()
       })
       expect(screen.getByText(/admin/i)).toBeInTheDocument()
     })
@@ -179,7 +180,7 @@ describe('Authenticated component', () => {
       await waitFor(() => {
         expect(mockLocationReload).toHaveBeenCalled()
       })
-      expect(jest.mocked(Auth).signOut).toHaveBeenCalled()
+      expect(jest.mocked(signOut)).toHaveBeenCalled()
       expect(await screen.findByText(/Admin/i)).toBeInTheDocument()
       expect(screen.queryByText(/Dave/i)).not.toBeInTheDocument()
     })

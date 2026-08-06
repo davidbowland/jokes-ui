@@ -1,13 +1,14 @@
+import { getCurrentUser } from 'aws-amplify/auth'
+import React from 'react'
+
+import Admin from './index'
 import { index, jokeType, user } from '@test/__mocks__'
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Auth } from 'aws-amplify'
-import React from 'react'
-
-import Admin from './index'
 
 jest.mock('aws-amplify')
+jest.mock('aws-amplify/auth')
 jest.mock('@aws-amplify/analytics')
 const mockSignOut = jest.fn()
 jest.mock('@aws-amplify/ui-react', () => ({
@@ -24,11 +25,11 @@ describe('Admin component', () => {
     global.Math = mockMath
     console.error = jest.fn()
 
-    jest.mocked(Auth).currentAuthenticatedUser.mockResolvedValue(user)
+    jest.mocked(getCurrentUser).mockResolvedValue(user)
   })
 
   it('shows nothing to logged out users', async () => {
-    jest.mocked(Auth).currentAuthenticatedUser.mockRejectedValueOnce(undefined)
+    jest.mocked(getCurrentUser).mockRejectedValueOnce(undefined)
     render(<Admin addJoke={mockAddJoke} index={index} joke={jokeType} updateJoke={mockUpdateJoke} />)
 
     expect(screen.queryByText(/joke/i)).not.toBeInTheDocument()

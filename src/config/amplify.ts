@@ -1,4 +1,4 @@
-import { Amplify, Auth } from 'aws-amplify'
+import { Amplify } from 'aws-amplify'
 
 const appClientId = process.env.NEXT_PUBLIC_COGNITO_APP_CLIENT_ID
 const userPoolId = process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID
@@ -12,25 +12,22 @@ export const apiNameUnauthenticated = 'JokesAPIGatewayUnauthenticated'
 
 Amplify.configure({
   API: {
-    endpoints: [
-      {
-        custom_header: async () => ({
-          Authorization: `Bearer ${(await Auth.currentSession()).getIdToken().getJwtToken()}`,
-        }),
+    REST: {
+      [apiName]: {
         endpoint: baseUrl,
-        name: apiName,
+        region: userPoolId.split('_')[0],
       },
-      {
+      [apiNameUnauthenticated]: {
         endpoint: baseUrl,
-        name: apiNameUnauthenticated,
+        region: userPoolId.split('_')[0],
       },
-    ],
+    },
   },
   Auth: {
-    identityPoolId,
-    mandatorySignIn: false,
-    region: userPoolId.split('_')[0],
-    userPoolId,
-    userPoolWebClientId: appClientId,
+    Cognito: {
+      identityPoolId,
+      userPoolClientId: appClientId,
+      userPoolId,
+    },
   },
 })
