@@ -48,7 +48,11 @@ export const patchJoke = async (id: string, operations: PatchOperation[]): Promi
 export const postJoke = async (joke: JokeType): Promise<PostResponse> => {
   const { body } = await post({
     apiName,
-    options: { body: joke as AnyBody, headers: await authHeaders() },
+    // Amplify v6 retries failed requests up to three times by default, including POST — v5's
+    // API.post did not retry at all. Creating a joke is the only non-idempotent call here, so a
+    // 5xx returned after the write had already landed would create duplicates. GET and PATCH are
+    // safe to replay and keep the default strategy.
+    options: { body: joke as AnyBody, headers: await authHeaders(), retryStrategy: { strategy: 'no-retry' } },
     path: '/jokes',
   }).response
   return body.json() as unknown as Promise<PostResponse>

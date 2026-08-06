@@ -88,9 +88,19 @@ describe('Joke service', () => {
       expect(post).toHaveBeenCalledTimes(1)
       expect(post).toHaveBeenCalledWith({
         apiName: 'JokesAPIGateway',
-        options: { body: joke, headers: { Authorization: 'Bearer mock-jwt-token' } },
+        options: {
+          body: joke,
+          headers: { Authorization: 'Bearer mock-jwt-token' },
+          retryStrategy: { strategy: 'no-retry' },
+        },
         path: '/jokes',
       })
+    })
+
+    it('does not retry, because creating a joke is not idempotent', async () => {
+      await postJoke(joke)
+
+      expect(jest.mocked(post).mock.calls[0][0].options?.retryStrategy).toEqual({ strategy: 'no-retry' })
     })
 
     it('returns the result from the create joke endpoint', async () => {

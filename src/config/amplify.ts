@@ -25,6 +25,11 @@ Amplify.configure({
   },
   Auth: {
     Cognito: {
+      // v5's `mandatorySignIn: false` is spelled `allowGuestAccess: true` in v6 (see
+      // parseAWSExports' `allowGuestAccess: aws_mandatory_sign_in !== 'enable'`). Omitting it
+      // would silently switch guest access off and stop issuing identity-pool credentials to
+      // signed-out visitors.
+      allowGuestAccess: true,
       identityPoolId,
       userPoolClientId: appClientId,
       userPoolId,
