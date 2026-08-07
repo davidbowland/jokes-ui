@@ -1,15 +1,14 @@
-import IndexPage from '@pages/index'
-import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
 import React from 'react'
 
 import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
+import IndexPage from '@pages/index'
+import '@testing-library/jest-dom'
+import { render } from '@testing-library/react'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke-page-layout')
 jest.mock('@components/navigation')
-jest.mock('aws-amplify')
 
 describe('Index page', () => {
   beforeAll(() => {

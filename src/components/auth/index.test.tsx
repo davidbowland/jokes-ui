@@ -8,7 +8,6 @@ import '@testing-library/jest-dom'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-jest.mock('aws-amplify')
 jest.mock('aws-amplify/auth')
 jest.mock('@aws-amplify/analytics')
 jest.mock('@aws-amplify/ui-react')
