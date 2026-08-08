@@ -1,7 +1,3 @@
-import { index, jokeType } from '@test/__mocks__'
-import '@testing-library/jest-dom'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import React from 'react'
 
 import Navigation from './index'
@@ -9,6 +5,10 @@ import Joke from '@components/joke'
 import { useJokeMutations } from '@hooks/useJokeMutations'
 import { useJokeNavigation } from '@hooks/useJokeNavigation'
 import { useJokeQuery } from '@hooks/useJokeQuery'
+import { index, jokeType } from '@test/__mocks__'
+import '@testing-library/jest-dom'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/joke')

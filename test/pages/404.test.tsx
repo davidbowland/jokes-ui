@@ -1,9 +1,9 @@
-import NotFound from '@pages/404'
-import '@testing-library/jest-dom'
-import { render, waitFor } from '@testing-library/react'
 import React from 'react'
 
 import ServerErrorMessage from '@components/server-error-message'
+import NotFound from '@pages/404'
+import '@testing-library/jest-dom'
+import { render, waitFor } from '@testing-library/react'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/server-error-message')

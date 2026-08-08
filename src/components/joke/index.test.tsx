@@ -1,12 +1,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { index, jokeType } from '@test/__mocks__'
-import '@testing-library/jest-dom'
-import { act, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import React from 'react'
 
 import Joke from './index'
 import Admin from '@components/admin'
+import { index, jokeType } from '@test/__mocks__'
+import '@testing-library/jest-dom'
+import { act, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('@aws-amplify/analytics')
 jest.mock('@components/admin')

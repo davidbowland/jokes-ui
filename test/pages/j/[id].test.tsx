@@ -1,10 +1,10 @@
-import JokePage from '@pages/j/[id]'
-import '@testing-library/jest-dom'
-import { render, waitFor } from '@testing-library/react'
 import React from 'react'
 
 import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
+import JokePage from '@pages/j/[id]'
+import '@testing-library/jest-dom'
+import { render, waitFor } from '@testing-library/react'
 
 const testJokeIndex = 'qp8pzhqc'
 
