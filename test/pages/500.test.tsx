@@ -24,4 +24,9 @@ describe('500 error page', () => {
     render(<InternalServerError />)
     expect(document.title).toBe('500: Internal Server Error | dbowland.com')
   })
+
+  it('excludes the page from search indexes', () => {
+    render(<InternalServerError />)
+    expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow')
+  })
 })

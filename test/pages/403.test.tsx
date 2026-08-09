@@ -24,4 +24,9 @@ describe('403 error page', () => {
     render(<Forbidden />)
     expect(document.title).toBe('403: Forbidden | dbowland.com')
   })
+
+  it('excludes the page from search indexes', () => {
+    render(<Forbidden />)
+    expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow')
+  })
 })

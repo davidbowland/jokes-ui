@@ -31,7 +31,7 @@ const config: Config = {
   },
   setupFiles: ['<rootDir>/jest.setup-test-env.js'],
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: ['node_modules', '\\.cache', '<rootDir>.*/out'],
+  testPathIgnorePatterns: ['node_modules', '\\.cache', '<rootDir>.*/out/'],
 }
 
 export default createJestConfig(config)

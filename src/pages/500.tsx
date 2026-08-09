@@ -8,6 +8,7 @@ const InternalServerError = (): React.ReactNode => {
     <>
       <Head>
         <title>500: Internal Server Error | dbowland.com</title>
+        <meta content="noindex, nofollow" name="robots" />
       </Head>
       <ServerErrorMessage title="500: Internal Server Error">
         An internal server error has occurred trying to serve your request. If you continue to experience this error,

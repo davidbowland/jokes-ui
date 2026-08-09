@@ -1,4 +1,3 @@
-import '@aws-amplify/ui-react/styles.css'
 import { getCurrentUser } from 'aws-amplify/auth'
 import React, { useEffect, useState } from 'react'
 
@@ -26,7 +25,7 @@ const Admin = ({ addJoke, index, joke, updateJoke }: AdminProps): React.ReactNod
       <div className="mt-4">
         <div className="mb-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-coal" />
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted/60">Administration</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">Administration</span>
           <div className="h-px flex-1 bg-coal" />
         </div>
         <section className="site-administration">

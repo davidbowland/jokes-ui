@@ -8,6 +8,7 @@ const BadRequest = (): React.ReactNode => {
     <>
       <Head>
         <title>400: Bad Request | dbowland.com</title>
+        <meta content="noindex, nofollow" name="robots" />
       </Head>
       <ServerErrorMessage title="400: Bad Request">
         Your request was malformed or otherwise could not be understood by the server. Please modify your request before

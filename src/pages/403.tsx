@@ -8,6 +8,7 @@ const Forbidden = (): React.ReactNode => {
     <>
       <Head>
         <title>403: Forbidden | dbowland.com</title>
+        <meta content="noindex, nofollow" name="robots" />
       </Head>
       <ServerErrorMessage title="403: Forbidden">
         You are not allowed to access the resource you requested. If you feel you have reached this page in error,

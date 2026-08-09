@@ -1,11 +1,13 @@
-import '@aws-amplify/ui-react/styles.css'
 import { AuthUser, getCurrentUser } from 'aws-amplify/auth'
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 
 import { NavBar } from './elements'
-import JokesAuthenticator from './jokes-authenticator'
 import LoggedInBar from './logged-in-bar'
 import LoggedOutBar from './logged-out-bar'
+
+// Loaded on demand so the Amplify UI stylesheet stays off the critical render path
+const JokesAuthenticator = dynamic(() => import('./jokes-authenticator'), { ssr: false })
 
 export interface AuthenticatedProps {
   children: React.ReactNode | React.ReactNode[]

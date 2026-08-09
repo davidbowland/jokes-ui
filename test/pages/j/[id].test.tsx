@@ -2,7 +2,7 @@ import React from 'react'
 
 import JokePageLayout from '@components/joke-page-layout'
 import Navigation from '@components/navigation'
-import JokePage from '@pages/j/[id]'
+import JokePage, { PLACEHOLDER_JOKE_ID } from '@pages/j/[id]'
 import '@testing-library/jest-dom'
 import { render, waitFor } from '@testing-library/react'
 
@@ -43,5 +43,22 @@ describe('Joke page', () => {
   it('renders title', () => {
     render(<JokePage />)
     expect(document.title).toBe('Humor | dbowland.com')
+  })
+
+  it('leaves real joke pages indexable', async () => {
+    window.location.pathname = `/j/${testJokeIndex}`
+    render(<JokePage />)
+    await waitFor(() => {
+      expect(Navigation).toHaveBeenCalled()
+    })
+    expect(document.querySelector('meta[name="robots"]')).toBeNull()
+  })
+
+  it('excludes the placeholder page from search indexes', async () => {
+    window.location.pathname = `/j/${PLACEHOLDER_JOKE_ID}`
+    render(<JokePage />)
+    await waitFor(() => {
+      expect(document.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow')
+    })
   })
 })

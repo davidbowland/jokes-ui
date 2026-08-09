@@ -125,7 +125,7 @@ const PrivacyPolicy = (): React.ReactNode => (
         <span aria-hidden="true">←</span>
         Back to Punchline
       </Link>
-      <p className="text-xs text-muted/60">Effective August 1, 2026</p>
+      <p className="text-xs text-muted">Effective August 1, 2026</p>
     </div>
   </div>
 )

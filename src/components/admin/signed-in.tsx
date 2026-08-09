@@ -75,7 +75,7 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
           <label>
             <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted">{`Joke #${index}`}</span>
             <input
-              className="w-full rounded-md border border-coal bg-surface/60 px-4 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-colors duration-200"
+              className="w-full rounded-md border border-coal bg-surface/60 px-4 py-2.5 text-sm text-cream placeholder:text-muted focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-colors duration-200"
               name="update-joke-text"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEditJoke(event.target.value)}
               type="text"
@@ -89,7 +89,7 @@ const SignedIn = ({ addJoke, index, joke, updateJoke }: SignedInProps): React.Re
           <label>
             <span className="mb-2 block text-xs font-semibold uppercase tracking-wider text-muted">Joke to add</span>
             <input
-              className="w-full rounded-md border border-coal bg-surface/60 px-4 py-2.5 text-sm text-cream placeholder:text-muted/60 focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-colors duration-200"
+              className="w-full rounded-md border border-coal bg-surface/60 px-4 py-2.5 text-sm text-cream placeholder:text-muted focus:border-gold/40 focus:outline-none focus:ring-1 focus:ring-gold/20 transition-colors duration-200"
               name="add-joke-text"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddJokeText(event.target.value)}
               placeholder="Write something funny…"

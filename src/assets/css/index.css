@@ -1,4 +1,4 @@
-@import '@heroui/styles';
+@import 'tailwindcss';
 
 @theme {
   --color-background: #0c0d15;
@@ -7,7 +7,7 @@
   --color-gold: #e04a57;
   --color-gold-dim: rgba(224, 74, 87, 0.1);
   --color-cream: #ede9df;
-  --color-muted: #5e5b70;
+  --color-muted: #8b88a0;
   --color-coal: #252538;
 }
 

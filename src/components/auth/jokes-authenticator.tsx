@@ -1,4 +1,5 @@
 import { Authenticator, defaultDarkModeOverride, ThemeProvider } from '@aws-amplify/ui-react'
+import '@aws-amplify/ui-react/styles.css'
 import { AuthUser } from 'aws-amplify/auth'
 import React from 'react'
 
