@@ -18,7 +18,8 @@ const PrivacyPolicy = (): React.ReactNode => (
         <Link className="text-cream transition-colors hover:text-gold" href="https://jokes.dbowland.com/">
           jokes.dbowland.com
         </Link>{' '}
-        takes no account, sets no cookie, and runs no analytics or ads. The site is meant for people 13 and older.
+        takes no account, sets no cookie, and runs no analytics or ads. Accounts exist solely for site administration.
+        They are not public. The site is meant for people 13 and older.
       </p>
     </div>
 
@@ -50,7 +51,7 @@ const PrivacyPolicy = (): React.ReactNode => (
         <span aria-hidden="true">←</span>
         Back to Punchline
       </Link>
-      <p className="text-xs text-muted">Effective August 10, 2026</p>
+      <p className="text-xs text-muted">Last updated August 10, 2026</p>
     </div>
   </div>
 )
