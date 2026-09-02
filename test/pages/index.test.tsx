@@ -31,4 +31,9 @@ describe('Index page', () => {
     render(<IndexPage />)
     expect(document.title).toBe('Punchline | dbowland.com')
   })
+
+  it('names production as the canonical, so the test deploy does not compete with it', () => {
+    render(<IndexPage />)
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe('https://jokes.dbowland.com/')
+  })
 })

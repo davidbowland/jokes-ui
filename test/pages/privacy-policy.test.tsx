@@ -23,4 +23,11 @@ describe('Privacy page', () => {
     render(<PrivacyPage />)
     expect(document.title).toBe('Privacy Policy | jokes.dbowland.com')
   })
+
+  it('names production as the canonical, so the test deploy does not compete with it', () => {
+    render(<PrivacyPage />)
+    expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
+      'https://jokes.dbowland.com/privacy-policy/',
+    )
+  })
 })

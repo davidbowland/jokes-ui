@@ -10,6 +10,13 @@ const IndexPage = (): React.ReactNode => {
       <Head>
         <title>Punchline | dbowland.com</title>
         <meta content="Fresh jokes, one punchline at a time." name="description" />
+        {/*
+          Hardcoded to production, and deliberately not derived from the environment: this same build
+          is deployed byte for byte to jokes.bowland.link, where it serves a full crawlable copy of
+          this page. The canonical is the only tag that tells a search engine which of the two is the
+          original -- og:url below is an unfurl hint and is not read for canonicalization.
+        */}
+        <link href="https://jokes.dbowland.com/" rel="canonical" />
         <meta content="Punchline" property="og:site_name" />
         <meta content="Punchline" property="og:title" />
         <meta content="Fresh jokes, one punchline at a time." property="og:description" />
